@@ -1,5 +1,6 @@
 package com.cocktailmasters.backend.vote.domain.entity;
 
+import com.cocktailmasters.backend.common.domain.entity.BaseEntity;
 import jakarta.persistence.AttributeOverride;
 import jakarta.persistence.Column;
 import jakarta.validation.constraints.NotNull;
@@ -11,7 +12,7 @@ import lombok.experimental.SuperBuilder;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PROTECTED)
 @AttributeOverride(name = "id", column = @Column(name = "vote_item_id"))
-public class VoteItem {
+public class VoteItem extends BaseEntity {
 
     @NotNull
     private String voteItemTitle;
