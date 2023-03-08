@@ -20,9 +20,7 @@ public class Vote extends BaseEntity {
     private String voteTitle;
 
     private String voteContent;
-
     private String voteImageUrl;
-
     private String voteThumbnailUrl;
 
     @Builder.Default
