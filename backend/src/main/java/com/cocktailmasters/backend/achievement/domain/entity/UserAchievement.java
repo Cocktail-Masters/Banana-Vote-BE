@@ -1,7 +1,8 @@
 package com.cocktailmasters.backend.achievement.domain.entity;
 
-import jakarta.persistence.AttributeOverride;
-import jakarta.persistence.Column;
+import com.cocktailmasters.backend.account.domain.entity.User;
+import com.cocktailmasters.backend.common.domain.entity.BaseEntity;
+import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -13,5 +14,9 @@ import lombok.experimental.SuperBuilder;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PROTECTED)
 @AttributeOverride(name = "id", column = @Column(name = "user_achievement_id"))
-public class UserAchievement {
+@Entity
+public class UserAchievement extends BaseEntity {
+
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    private User user;
 }
