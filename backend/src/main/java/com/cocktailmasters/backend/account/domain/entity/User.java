@@ -2,6 +2,7 @@ package com.cocktailmasters.backend.account.domain.entity;
 
 import com.cocktailmasters.backend.achievement.domain.entity.UserAchievement;
 import com.cocktailmasters.backend.common.domain.entity.BaseEntity;
+import com.cocktailmasters.backend.goods.domain.entity.UserBadge;
 import com.cocktailmasters.backend.goods.domain.entity.UserGoods;
 import com.cocktailmasters.backend.point.domain.entity.PointLog;
 import com.cocktailmasters.backend.report.domain.entity.BanLog;
@@ -67,6 +68,9 @@ public class User extends BaseEntity {
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<UserAchievement> userAchievements = new ArrayList<>();
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    private List<UserBadge> userBadges = new ArrayList<>();
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<PointLog> pointLogs = new ArrayList<>();
