@@ -1,10 +1,8 @@
 package com.cocktailmasters.backend.common.domain.entity;
 
+import com.cocktailmasters.backend.account.domain.entity.UserTag;
 import com.cocktailmasters.backend.vote.domain.entity.VoteTag;
-import jakarta.persistence.AttributeOverride;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.OneToMany;
+import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
@@ -26,6 +24,9 @@ public class Tag extends BaseEntity {
     @Builder.Default
     private Long tagUsedNumber = 0L;
 
-    @OneToMany(mappedBy = "tag")
+    @OneToMany(mappedBy = "tag", cascade = CascadeType.ALL)
     private List<VoteTag> voteTags = new ArrayList<>();
+
+    @OneToMany(mappedBy = "tag", cascade = CascadeType.ALL)
+    private List<UserTag> userTags = new ArrayList<>();
 }
