@@ -1,8 +1,8 @@
 package com.cocktailmasters.backend.vote.domain.entity;
 
+import com.cocktailmasters.backend.account.domain.entity.User;
 import com.cocktailmasters.backend.common.domain.entity.BaseEntity;
-import jakarta.persistence.AttributeOverride;
-import jakarta.persistence.Column;
+import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
@@ -14,6 +14,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PROTECTED)
 @AttributeOverride(name = "id", column = @Column(name = "vote_id"))
+@Entity
 public class Vote extends BaseEntity {
 
     @NotNull
@@ -44,4 +45,7 @@ public class Vote extends BaseEntity {
     @NotNull
     @Builder.Default
     private boolean isClosed = false;
+
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    private User user;
 }
