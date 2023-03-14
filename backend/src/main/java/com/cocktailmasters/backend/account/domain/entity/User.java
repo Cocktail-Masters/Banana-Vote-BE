@@ -5,6 +5,7 @@ import com.cocktailmasters.backend.common.domain.entity.BaseEntity;
 import com.cocktailmasters.backend.point.domain.entity.PointLog;
 import com.cocktailmasters.backend.report.domain.entity.BanLog;
 import com.cocktailmasters.backend.report.domain.entity.Report;
+import com.cocktailmasters.backend.season.domain.entity.SeasonRanking;
 import com.cocktailmasters.backend.vote.domain.entity.*;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
@@ -56,6 +57,9 @@ public class User extends BaseEntity {
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<Megaphone> megaphones = new ArrayList<>();
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    private List<SeasonRanking> seasonRankings = new ArrayList<>();
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<UserAchievement> userAchievements = new ArrayList<>();
