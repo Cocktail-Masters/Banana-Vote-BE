@@ -1,10 +1,7 @@
 package com.cocktailmasters.backend.account.domain.entity;
 
 import com.cocktailmasters.backend.common.domain.entity.BaseEntity;
-import com.cocktailmasters.backend.vote.domain.entity.Opinion;
-import com.cocktailmasters.backend.vote.domain.entity.Picket;
-import com.cocktailmasters.backend.vote.domain.entity.Prediction;
-import com.cocktailmasters.backend.vote.domain.entity.Vote;
+import com.cocktailmasters.backend.vote.domain.entity.*;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
@@ -52,4 +49,7 @@ public class User extends BaseEntity {
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<Picket> pickets = new ArrayList<>();
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    private List<Megaphone> megaphones = new ArrayList<>();
 }
