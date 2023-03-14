@@ -1,5 +1,6 @@
 package com.cocktailmasters.backend.vote.domain.entity;
 
+import com.cocktailmasters.backend.account.domain.entity.User;
 import com.cocktailmasters.backend.common.domain.entity.BaseEntity;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
@@ -22,6 +23,9 @@ public class Picket extends BaseEntity {
 
     @Builder.Default
     private int picketReportedNumber = 0;
+
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    private User user;
 
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private Vote vote;
