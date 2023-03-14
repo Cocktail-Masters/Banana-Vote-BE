@@ -1,8 +1,8 @@
 package com.cocktailmasters.backend.point.domain.entity;
 
+import com.cocktailmasters.backend.account.domain.entity.User;
 import com.cocktailmasters.backend.common.domain.entity.BaseEntity;
-import jakarta.persistence.AttributeOverride;
-import jakarta.persistence.Column;
+import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -15,6 +15,7 @@ import lombok.experimental.SuperBuilder;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PROTECTED)
 @AttributeOverride(name = "id", column = @Column(name = "point_log_id"))
+@Entity
 public class PointLog extends BaseEntity {
 
     @NotNull
@@ -22,4 +23,7 @@ public class PointLog extends BaseEntity {
 
     @NotNull
     private String description;
+
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    private User user;
 }
