@@ -1,6 +1,7 @@
 package com.cocktailmasters.backend.account.domain.entity;
 
 import com.cocktailmasters.backend.common.domain.entity.BaseEntity;
+import com.cocktailmasters.backend.vote.domain.entity.Prediction;
 import com.cocktailmasters.backend.vote.domain.entity.Vote;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
@@ -37,4 +38,7 @@ public class User extends BaseEntity {
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<Vote> votes = new ArrayList<>();
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    private List<Prediction> predictions = new ArrayList<>();
 }
