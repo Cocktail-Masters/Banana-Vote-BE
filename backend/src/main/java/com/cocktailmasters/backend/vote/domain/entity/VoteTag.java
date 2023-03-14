@@ -1,6 +1,7 @@
 package com.cocktailmasters.backend.vote.domain.entity;
 
 import com.cocktailmasters.backend.common.domain.entity.BaseEntity;
+import com.cocktailmasters.backend.common.domain.entity.Tag;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -18,4 +19,7 @@ public class VoteTag extends BaseEntity {
 
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private Vote vote;
+
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    private Tag tag;
 }
