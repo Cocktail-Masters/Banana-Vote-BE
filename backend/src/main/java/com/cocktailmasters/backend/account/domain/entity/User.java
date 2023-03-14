@@ -2,6 +2,7 @@ package com.cocktailmasters.backend.account.domain.entity;
 
 import com.cocktailmasters.backend.common.domain.entity.BaseEntity;
 import com.cocktailmasters.backend.point.domain.entity.PointLog;
+import com.cocktailmasters.backend.report.domain.entity.BanLog;
 import com.cocktailmasters.backend.vote.domain.entity.*;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
@@ -56,4 +57,7 @@ public class User extends BaseEntity {
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<PointLog> pointLogs = new ArrayList<>();
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    private List<BanLog> banLogs = new ArrayList<>();
 }
