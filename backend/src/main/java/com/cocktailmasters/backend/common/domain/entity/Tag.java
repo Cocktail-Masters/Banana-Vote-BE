@@ -1,21 +1,32 @@
 package com.cocktailmasters.backend.common.domain.entity;
 
-import jakarta.persistence.AttributeOverride;
-import jakarta.persistence.Column;
+import com.cocktailmasters.backend.account.domain.entity.UserTag;
+import com.cocktailmasters.backend.vote.domain.entity.VoteTag;
+import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Getter
 @SuperBuilder
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PROTECTED)
 @AttributeOverride(name = "id", column = @Column(name = "tag_id"))
-public class Tag {
+@Entity
+public class Tag extends BaseEntity {
 
     @NotNull
     private String tagName;
 
     @Builder.Default
     private Long tagUsedNumber = 0L;
+
+    @OneToMany(mappedBy = "tag", cascade = CascadeType.ALL)
+    private List<VoteTag> voteTags = new ArrayList<>();
+
+    @OneToMany(mappedBy = "tag", cascade = CascadeType.ALL)
+    private List<UserTag> userTags = new ArrayList<>();
 }

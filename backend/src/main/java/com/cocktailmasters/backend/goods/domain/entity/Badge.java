@@ -1,19 +1,22 @@
 package com.cocktailmasters.backend.goods.domain.entity;
 
-import jakarta.persistence.AttributeOverride;
-import jakarta.persistence.Column;
+import com.cocktailmasters.backend.common.domain.entity.BaseEntity;
+import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Getter
 @SuperBuilder
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PROTECTED)
 @AttributeOverride(name = "id", column = @Column(name = "badge_id"))
-public class Badge {
+@Entity
+public class Badge extends BaseEntity {
 
     @NotNull
     private String badgeName;
@@ -31,4 +34,7 @@ public class Badge {
 
     @Builder.Default
     private Long badgeSoldNumber = 0L;
+
+    @OneToMany(mappedBy = "badge", cascade = CascadeType.ALL)
+    private List<UserBadge> userBadges = new ArrayList<>();
 }
