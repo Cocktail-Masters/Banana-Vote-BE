@@ -30,6 +30,9 @@ dependencies {
 
     implementation 'mysql:mysql-connector-java:8.0.32'
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+
+    // for swagger
+    implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.0.4'
 }
 
 tasks.named('test') {
