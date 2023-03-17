@@ -27,6 +27,8 @@ public class Season extends BaseEntity {
     @NotNull
     private LocalDateTime seasonEndDate;
 
+    private String seasonDescription;
+
     @OneToMany(mappedBy = "season", cascade = CascadeType.ALL)
     private List<SeasonRanking> seasonRankings = new ArrayList<>();
 }
