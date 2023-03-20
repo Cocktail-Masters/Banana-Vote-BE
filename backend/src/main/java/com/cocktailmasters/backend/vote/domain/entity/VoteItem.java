@@ -35,6 +35,7 @@ public class VoteItem extends BaseEntity {
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private Vote vote;
 
+    @Builder.Default
     @OneToMany(mappedBy = "voteItem", cascade = CascadeType.ALL)
     private List<Prediction> predictions = new ArrayList<>();
 }

@@ -24,9 +24,11 @@ public class Tag extends BaseEntity {
     @Builder.Default
     private Long tagUsedNumber = 0L;
 
+    @Builder.Default
     @OneToMany(mappedBy = "tag", cascade = CascadeType.ALL)
     private List<VoteTag> voteTags = new ArrayList<>();
 
+    @Builder.Default
     @OneToMany(mappedBy = "tag", cascade = CascadeType.ALL)
     private List<UserTag> userTags = new ArrayList<>();
 }

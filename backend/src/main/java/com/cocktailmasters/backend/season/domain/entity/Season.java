@@ -3,10 +3,7 @@ package com.cocktailmasters.backend.season.domain.entity;
 import com.cocktailmasters.backend.common.domain.entity.BaseEntity;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import lombok.experimental.SuperBuilder;
 
 import java.time.LocalDateTime;
@@ -27,6 +24,7 @@ public class Season extends BaseEntity {
     @NotNull
     private LocalDateTime seasonEndDate;
 
+    @Builder.Default
     @OneToMany(mappedBy = "season", cascade = CascadeType.ALL)
     private List<SeasonRanking> seasonRankings = new ArrayList<>();
 }

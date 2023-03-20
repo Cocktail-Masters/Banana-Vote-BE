@@ -35,6 +35,7 @@ public class Badge extends BaseEntity {
     @Builder.Default
     private Long badgeSoldNumber = 0L;
 
+    @Builder.Default
     @OneToMany(mappedBy = "badge", cascade = CascadeType.ALL)
     private List<UserBadge> userBadges = new ArrayList<>();
 }
