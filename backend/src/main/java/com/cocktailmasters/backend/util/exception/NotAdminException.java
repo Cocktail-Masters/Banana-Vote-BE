@@ -1,5 +1,3 @@
 package com.cocktailmasters.backend.util.exception;
 
-public class NotAdminException extends Exception {
-    
-}
+public class NotAdminException extends Exception { }
