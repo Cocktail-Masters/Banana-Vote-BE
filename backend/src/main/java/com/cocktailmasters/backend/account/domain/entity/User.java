@@ -39,8 +39,8 @@ public class User extends BaseEntity {
 
     private LocalDateTime banReleaseDate;
 
-    @Deprecated
-    private int ban_number = 0;
+    @Builder.Default
+    private int banNumber = 0;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<Vote> votes = new ArrayList<>();
