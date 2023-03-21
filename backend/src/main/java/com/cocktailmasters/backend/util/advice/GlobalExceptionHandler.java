@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 
 import com.cocktailmasters.backend.util.exception.AuthException;
 import com.cocktailmasters.backend.util.exception.NotAdminException;
+import com.fasterxml.jackson.core.JsonParseException;
 
 @ControllerAdvice
 public class GlobalExceptionHandler {
@@ -16,6 +17,11 @@ public class GlobalExceptionHandler {
         // Exception
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
             .body("Server error!!!");
+    }
+
+    @ExceptionHandler(JsonParseException.class)
+    public ResponseEntity<String> handleJsonParseException(JsonParseException ex) {
+        return ResponseEntity.badRequest().body("request format is invalid");
     }
 
     @ExceptionHandler(AuthException.class)
