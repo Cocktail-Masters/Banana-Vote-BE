@@ -18,8 +18,13 @@ public class VoteController {
 
     @PostMapping("")
     public ResponseEntity<String> createVote(Long userId,
-                                             CreateVoteRequest createVoteRequest) {
-        return ResponseEntity.status(HttpStatus.CREATED)
-                .body(voteService.createVote(userId, createVoteRequest));
+                                             CreateVoteRequest createVoteRequest) throws Exception {
+        //TODO: 사용자 검사
+        if (voteService.createVote(userId, createVoteRequest)) {
+            return ResponseEntity.status(HttpStatus.CREATED)
+                    .body("");
+        }
+        //TODO: 예외 특정
+        throw new Exception();
     }
 }
