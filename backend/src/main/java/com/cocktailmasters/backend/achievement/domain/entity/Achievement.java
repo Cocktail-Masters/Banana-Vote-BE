@@ -3,10 +3,7 @@ package com.cocktailmasters.backend.achievement.domain.entity;
 import com.cocktailmasters.backend.common.domain.entity.BaseEntity;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import lombok.experimental.SuperBuilder;
 
 import java.util.ArrayList;
@@ -32,6 +29,7 @@ public class Achievement extends BaseEntity {
     @NotNull
     private int rewardPoint;
 
+    @Builder.Default
     @OneToMany(mappedBy = "achievement", cascade = CascadeType.ALL)
     private List<UserAchievement> userAchievements = new ArrayList<>();
 }

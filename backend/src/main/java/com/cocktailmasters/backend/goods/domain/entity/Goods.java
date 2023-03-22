@@ -33,6 +33,7 @@ public class Goods extends BaseEntity {
     @Builder.Default
     private Long goodsSoldNumber = 0L;
 
+    @Builder.Default
     @OneToMany(mappedBy = "goods", cascade = CascadeType.ALL)
     private List<UserGoods> userGoods = new ArrayList<>();
 }
