@@ -31,4 +31,8 @@ public class Tag extends BaseEntity {
     @Builder.Default
     @OneToMany(mappedBy = "tag", cascade = CascadeType.ALL)
     private List<UserTag> userTags = new ArrayList<>();
+
+    public void countTagUsedNumber() {
+        this.tagUsedNumber++;
+    }
 }
