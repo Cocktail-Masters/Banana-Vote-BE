@@ -18,13 +18,13 @@ import java.util.List;
 public class VoteItem extends BaseEntity {
 
     @NotNull
-    private String voteItemTitle;
-
-    private String iframeLink;
-    private String voteItemImageUrl;
+    private int voteItemNumber;
 
     @NotNull
-    private int voteItemNumber;
+    private String voteItemTitle;
+
+    private String voteItemImageUrl;
+    private String iframeLink;
 
     @Builder.Default
     private Long totalPoints = 0L;
