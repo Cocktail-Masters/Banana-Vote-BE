@@ -31,7 +31,7 @@ public class VoteService {
 
     @Transactional
     public String createVote(Long userId, CreateVoteRequest createVoteRequest) {
-        findUserById(userId);
+//        User user = findUserById(userId);
         List<VoteItem> voteItems = new ArrayList<>();
         List<VoteTag> voteTags = new ArrayList<>();
         createVoteRequest.getVoteItems()
@@ -44,6 +44,7 @@ public class VoteService {
                     voteTags.add(createVoteTag(tag));
                 });
         voteRepository.save(Vote.builder()
+//                .user(user)
                 .voteTitle(createVoteRequest.getVoteTitle())
                 .voteContent(createVoteRequest.getVoteContent())
                 .voteImageUrl(createVoteRequest.getVoteImageUrl())
