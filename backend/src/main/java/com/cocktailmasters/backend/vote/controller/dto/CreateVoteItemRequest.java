@@ -7,6 +7,7 @@ import lombok.Getter;
 @Builder
 public class CreateVoteItemRequest {
 
+    private int itemNumber;
     private String title;
     private String imageUrl;
     private String iframeLink;
