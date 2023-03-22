@@ -14,7 +14,7 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class Season {
+public class SeasonDto {
     private long id = -1;
 
     @JsonFormat(pattern = "yyyy-MM-dd")
