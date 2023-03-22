@@ -18,5 +18,5 @@ public class CreateVoteRequest {
     private Boolean isPublic;
     private Boolean isAnonymous;
     private List<CreateVoteItemRequest> voteItems;
-    private String[] tags;
+    private List<String> tags;
 }
