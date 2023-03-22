@@ -2,6 +2,7 @@ package com.cocktailmasters.backend.season.controller.dto;
 
 import java.time.LocalDate;
 
+import com.cocktailmasters.backend.season.domain.entity.Season;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
@@ -25,4 +26,11 @@ public class SeasonDto {
     private LocalDate endDate;
 
     private String description;
+
+    public SeasonDto(Season season) {
+        this.id = season.getId();
+        this.startDate = season.getSeasonStartDate();
+        this.endDate = season.getSeasonEndDate();
+        this.description = season.getSeasonDescription();
+    }
 }
