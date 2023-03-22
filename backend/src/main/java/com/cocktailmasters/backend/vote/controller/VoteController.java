@@ -19,7 +19,7 @@ public class VoteController {
     @PostMapping("")
     public ResponseEntity<String> createVote(Long userId,
                                              CreateVoteRequest createVoteRequest) throws Exception {
-        //TODO: 사용자 검사
+        //TODO: 사용자 검사 및 입력 값 검사
         if (voteService.createVote(userId, createVoteRequest)) {
             return ResponseEntity.status(HttpStatus.CREATED)
                     .body("");
