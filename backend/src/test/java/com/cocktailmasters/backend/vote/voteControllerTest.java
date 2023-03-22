@@ -56,7 +56,7 @@ public class voteControllerTest {
                 .tags(tags)
                 .build();
 
-        given(voteService.createVote(1L, createVoteRequest)).willReturn(new String(""));
+        given(voteService.createVote(1L, createVoteRequest)).willReturn(true);
 
         Gson gson = new Gson();
         String content = gson.toJson(createVoteRequest);

@@ -30,8 +30,9 @@ public class VoteService {
     private final VoteTagRepository voteTagRepository;
 
     @Transactional
-    public String createVote(Long userId, CreateVoteRequest createVoteRequest) {
-//        User user = findUserById(userId);
+    public boolean createVote(Long userId, CreateVoteRequest createVoteRequest) {
+        // TODO: controller에서 사용자 검사 후, service에서 사용자 객체 받기
+        // User user = findUserById(userId);
         List<VoteItem> voteItems = new ArrayList<>();
         List<VoteTag> voteTags = new ArrayList<>();
         createVoteRequest.getVoteItems()
@@ -44,7 +45,7 @@ public class VoteService {
                     voteTags.add(createVoteTag(tag));
                 });
         voteRepository.save(Vote.builder()
-//                .user(user)
+                // .user(user)
                 .voteTitle(createVoteRequest.getVoteTitle())
                 .voteContent(createVoteRequest.getVoteContent())
                 .voteImageUrl(createVoteRequest.getVoteImageUrl())
@@ -55,7 +56,7 @@ public class VoteService {
                 .voteItems(voteItems)
                 .voteTags(voteTags)
                 .build());
-        return new String("");
+        return true;
     }
 
     private VoteItem createVoteItem(CreateVoteItemRequest createVoteItemRequest) {
@@ -92,6 +93,6 @@ public class VoteService {
     private User findUserById(Long userId) {
         return userRepository.findById(userId)
                 .orElseThrow();
-        // develop pull 후에 예외처리
+        // TODO: develop pull 후에 예외처리
     }
 }
