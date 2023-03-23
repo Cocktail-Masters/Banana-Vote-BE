@@ -4,8 +4,8 @@ import com.cocktailmasters.backend.account.domain.entity.User;
 import com.cocktailmasters.backend.account.domain.repository.UserRepository;
 import com.cocktailmasters.backend.common.domain.entity.Tag;
 import com.cocktailmasters.backend.common.domain.repository.TagRepository;
-import com.cocktailmasters.backend.vote.controller.dto.CreateVoteItemRequest;
 import com.cocktailmasters.backend.vote.controller.dto.CreateVoteRequest;
+import com.cocktailmasters.backend.vote.controller.dto.item.CreateVoteItemRequest;
 import com.cocktailmasters.backend.vote.domain.entity.Vote;
 import com.cocktailmasters.backend.vote.domain.entity.VoteItem;
 import com.cocktailmasters.backend.vote.domain.entity.VoteTag;
@@ -33,6 +33,7 @@ public class VoteService {
     public boolean createVote(Long userId, CreateVoteRequest createVoteRequest) {
         // TODO: controller에서 사용자 검사 후, service에서 사용자 객체 받기
         // TODO: request 검사
+        // TODO: 작성자 포인트 감소
         // User user = findUserById(userId);
         List<VoteItem> voteItems = new ArrayList<>();
         List<VoteTag> voteTags = new ArrayList<>();
