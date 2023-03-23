@@ -76,7 +76,7 @@ public class SeasonController {
 
     @PatchMapping
     @Operation(summary = "시즌 정보를 수정(관리자용)",
-        description = "현재 시즌의 정보에 대해 수정, 수정된 정보가 유효하지 않을 경우엔")
+        description = "현재 시즌의 정보에 대해 수정, 일부 필드에 대해서만 수정하는 경우도 가능")
     public ResponseEntity<String> patchSeasonInfo(@Valid @RequestBody SeasonDto season) {
         if(seasonService.modifySeason(season, true))
             return ResponseEntity.ok().build();
