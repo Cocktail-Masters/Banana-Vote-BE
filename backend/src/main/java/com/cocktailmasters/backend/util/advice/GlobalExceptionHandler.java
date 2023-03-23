@@ -3,6 +3,7 @@ package com.cocktailmasters.backend.util.advice;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageConversionException;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
@@ -25,9 +26,9 @@ public class GlobalExceptionHandler {
         return ResponseEntity.badRequest().body("request format is invalid");
     }
 
-    @ExceptionHandler(HttpMessageConversionException.class)
-    public ResponseEntity<String> handleInvalidRequestBody(HttpMessageConversionException ex) {
-        return ResponseEntity.badRequest().body("request body is invalid");
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public ResponseEntity<String> handleJsonParseException(MethodArgumentNotValidException ex) {
+        return ResponseEntity.badRequest().body(ex.getBindingResult().getFieldError().getDefaultMessage());
     }
 
     @ExceptionHandler(AuthException.class)
