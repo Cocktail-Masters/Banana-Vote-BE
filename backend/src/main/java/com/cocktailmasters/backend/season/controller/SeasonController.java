@@ -22,9 +22,10 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 
+@Tag(name = "시즌", description = "시즌과 관련된 기능")
+@RequiredArgsConstructor
 @RestController
 @RequestMapping("/season")
-@Tag(name = "시즌", description = "시즌과 관련된 기능")
 public class SeasonController {
 
     @Autowired
