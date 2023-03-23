@@ -4,7 +4,6 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -13,10 +12,13 @@ import com.cocktailmasters.backend.season.controller.dto.SeasonDto;
 import com.cocktailmasters.backend.season.domain.entity.Season;
 import com.cocktailmasters.backend.season.domain.repository.SeasonRepository;
 
+import lombok.RequiredArgsConstructor;
+
+@RequiredArgsConstructor
 @Service
 public class SeasonService {
-    @Autowired
-    SeasonRepository seasonRepository;
+
+    private final SeasonRepository seasonRepository;
 
     /*
      * get Current Season by server time

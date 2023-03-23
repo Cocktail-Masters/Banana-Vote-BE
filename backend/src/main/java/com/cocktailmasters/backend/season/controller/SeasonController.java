@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -21,6 +20,7 @@ import com.cocktailmasters.backend.season.service.SeasonService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 
 @Tag(name = "시즌", description = "시즌과 관련된 기능")
 @RequiredArgsConstructor
@@ -28,12 +28,11 @@ import jakarta.validation.Valid;
 @RequestMapping("/season")
 public class SeasonController {
 
-    @Autowired
-    SeasonService seasonService;
-
-    @GetMapping
+    private final SeasonService seasonService;
+    
     @Operation(summary = "시즌 정보 조회",
         description = "현재 시즌의 정보(겹치는 시즌이 여러 개 일 경우 먼저 시작한 첫번째 시즌) 또는 지금까지 모든 시즌의 정보 반환")
+    @GetMapping
     public ResponseEntity<List<SeasonDto>> getSeasonInfo(@RequestParam(required = false, name = "current", defaultValue = "false") String isCurrent) {
         if(isCurrent.equals("true")) {
             // only current season
@@ -58,9 +57,9 @@ public class SeasonController {
         }
     }
 
-    @PostMapping
     @Operation(summary = "시즌 정보를 추가(관리자용)",
         description = "현재 시즌의 정보에 대해 추가, 만약 일자가 겹칠 경우엔 에러 발생")
+    @PostMapping
     public ResponseEntity<String> addSeasonInfo(@Valid @RequestBody SeasonDto season) {
         // check invalid date request
         if(season.getEndDate().isBefore(season.getStartDate())) 
@@ -75,9 +74,9 @@ public class SeasonController {
             return ResponseEntity.badRequest().body("conflicted date");
     }
 
-    @PatchMapping
     @Operation(summary = "시즌 정보를 수정(관리자용)",
         description = "현재 시즌의 정보에 대해 수정, 일부 필드에 대해서만 수정하는 경우도 가능")
+    @PatchMapping
     public ResponseEntity<String> patchSeasonInfo(@Valid @RequestBody SeasonDto season) {
         if(seasonService.modifySeason(season, true))
             return ResponseEntity.ok().build();
