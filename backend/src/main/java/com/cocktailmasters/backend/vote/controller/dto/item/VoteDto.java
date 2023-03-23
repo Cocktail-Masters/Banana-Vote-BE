@@ -8,9 +8,8 @@ import java.util.List;
 
 @Getter
 @Builder
-public class FindVoteDetailVoteResponse {
+public class VoteDto {
 
-    private int id;
     private String title;
     private String imageUrl;
     private String content;
