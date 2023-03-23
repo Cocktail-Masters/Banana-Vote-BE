@@ -6,6 +6,8 @@ import com.cocktailmasters.backend.season.domain.entity.Season;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -25,6 +27,7 @@ public class SeasonDto {
     @JsonProperty("end_date")
     private LocalDate endDate;
 
+    @Size(max = 25, message = "description length is max 25")
     private String description;
 
     public SeasonDto(Season season) {
