@@ -32,6 +32,7 @@ public class VoteService {
     @Transactional
     public boolean createVote(Long userId, CreateVoteRequest createVoteRequest) {
         // TODO: controller에서 사용자 검사 후, service에서 사용자 객체 받기
+        // TODO: request 검사
         // User user = findUserById(userId);
         List<VoteItem> voteItems = new ArrayList<>();
         List<VoteTag> voteTags = new ArrayList<>();
