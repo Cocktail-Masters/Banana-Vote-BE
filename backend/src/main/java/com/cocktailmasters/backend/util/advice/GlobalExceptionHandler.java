@@ -3,11 +3,12 @@ package com.cocktailmasters.backend.util.advice;
 import com.cocktailmasters.backend.util.exception.AuthException;
 import com.cocktailmasters.backend.util.exception.NotAdminException;
 import com.cocktailmasters.backend.util.exception.NotFoundUserException;
+import com.fasterxml.jackson.core.JsonParseException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.http.converter.HttpMessageConversionException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
-import org.springframework.web.bind.annotation.ControllerAdvice;
+import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 
 @RestControllerAdvice
