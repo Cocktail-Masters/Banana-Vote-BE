@@ -2,12 +2,13 @@ package com.cocktailmasters.backend.util.advice;
 
 import com.cocktailmasters.backend.util.exception.AuthException;
 import com.cocktailmasters.backend.util.exception.NotAdminException;
+import com.cocktailmasters.backend.util.exception.NotFoundUserException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.RestControllerAdvice;
 
-@ControllerAdvice
+@RestControllerAdvice
 public class GlobalExceptionHandler {
 
     @ExceptionHandler(Exception.class)
@@ -29,5 +30,11 @@ public class GlobalExceptionHandler {
         // need to login
         return ResponseEntity.status(HttpStatus.FORBIDDEN)
                 .body("not admin");
+    }
+
+    @ExceptionHandler(NotFoundUserException.class)
+    public ResponseEntity<String> handleNotFoundUserException(NotAdminException ex) {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                .body("not found");
     }
 }
