@@ -4,8 +4,13 @@ import com.cocktailmasters.backend.account.domain.entity.User;
 import com.cocktailmasters.backend.account.domain.repository.UserRepository;
 import com.cocktailmasters.backend.common.domain.entity.Tag;
 import com.cocktailmasters.backend.common.domain.repository.TagRepository;
+import com.cocktailmasters.backend.util.exception.NotFoundUserException;
 import com.cocktailmasters.backend.vote.controller.dto.CreateVoteRequest;
+import com.cocktailmasters.backend.vote.controller.dto.FindVoteDetailResponse;
 import com.cocktailmasters.backend.vote.controller.dto.item.CreateVoteItemRequest;
+import com.cocktailmasters.backend.vote.controller.dto.item.VoteDto;
+import com.cocktailmasters.backend.vote.controller.dto.item.VoteItemsDto;
+import com.cocktailmasters.backend.vote.controller.dto.item.WriterDto;
 import com.cocktailmasters.backend.vote.domain.entity.Vote;
 import com.cocktailmasters.backend.vote.domain.entity.VoteItem;
 import com.cocktailmasters.backend.vote.domain.entity.VoteTag;
@@ -18,6 +23,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Service
@@ -61,6 +67,51 @@ public class VoteService {
         return true;
     }
 
+    @Transactional
+    public FindVoteDetailResponse findVoteDetail(Long voteId) {
+        Vote vote = findVoteById(voteId);
+        voteRepository.save(vote.builder()
+                .voteHits(vote.getVoteHits() + 1)
+                .build());
+        User writer = vote.getUser();
+        List<VoteItem> voteItems = vote.getVoteItems();
+        return FindVoteDetailResponse.builder()
+                .vote(VoteDto.builder()
+                        .title(vote.getVoteTitle())
+                        .imageUrl(vote.getVoteImageUrl())
+                        .content(vote.getVoteContent())
+                        .isEvent(vote.isEvent())
+                        .isAnonymous(vote.isAnonymous())
+                        .isPublic(vote.isPublic())
+                        .isClosed(vote.isClosed())
+                        .startDate(vote.getCreatedDate())
+                        .endDate(vote.getVoteEndDate())
+                        .hits(vote.getVoteHits())
+                        .votedNumber(vote.getVotedNumber())
+                        .opinionNumber(vote.getOpinionNumber())
+                        .tags(vote.getVoteTags()
+                                .stream()
+                                .map(tag -> tag.getTag().getTagName())
+                                .collect(Collectors.toList()))
+                        .build())
+                .writer(WriterDto.builder()
+                        .id(writer.getId())
+                        .nickname(writer.getNickname())
+                        .badgeImageUrl(writer.getEquippedBadgeImageUrl())
+                        .build())
+                .voteItems(voteItems.stream()
+                        .map(item -> VoteItemsDto.builder()
+                                .itemNumber(item.getVoteItemNumber())
+                                .title(item.getVoteItemTitle())
+                                .iframeLink(item.getIframeLink())
+                                .imageUrl(item.getVoteItemImageUrl())
+                                .totalPoints(item.getTotalPoints())
+                                .votedNumber(item.getVotedNumber())
+                                .build())
+                        .collect(Collectors.toList()))
+                .build();
+    }
+
     private VoteItem createVoteItem(CreateVoteItemRequest createVoteItemRequest) {
         VoteItem voteItem = VoteItem.builder()
                 .voteItemNumber(createVoteItemRequest.getItemNumber())
@@ -93,8 +144,17 @@ public class VoteService {
     }
 
     private User findUserById(Long userId) {
-        return userRepository.findById(userId)
-                .orElseThrow();
+        try {
+            return userRepository.findById(userId)
+                    .orElseThrow(() -> new NotFoundUserException());
+        } catch (NotFoundUserException e) {
+            throw new RuntimeException(e);
+        }
         // TODO: develop pull 후에 예외처리
+    }
+
+    private Vote findVoteById(Long voteId) {
+        return voteRepository.findById(voteId)
+                .orElseThrow();
     }
 }
