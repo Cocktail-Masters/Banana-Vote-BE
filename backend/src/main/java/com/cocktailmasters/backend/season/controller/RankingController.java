@@ -41,6 +41,6 @@ public class RankingController {
             long totalPages = rankingService.getRankingTotalPages(seasonId, pageSize);
             List<UserRanking> userRankings = rankingService.getRankingWithPage(seasonId, page, pageSize);
         
-            return ResponseEntity.ok(new RankingResponse(totalPages, userRankings););
+            return ResponseEntity.ok(new RankingResponse(totalPages, userRankings));
     }
 }
