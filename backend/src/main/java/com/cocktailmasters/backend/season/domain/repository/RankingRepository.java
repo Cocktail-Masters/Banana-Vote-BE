@@ -8,5 +8,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import com.cocktailmasters.backend.season.domain.entity.SeasonRanking;
 
 public interface RankingRepository extends JpaRepository<SeasonRanking, Long> {
+    long countBySeasonId(long seasonId);
     List<SeasonRanking> findBySeasonId(long seasonId, Pageable pageable);
 }
