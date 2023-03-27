@@ -1,7 +1,7 @@
 package com.cocktailmasters.backend.vote;
 
 import com.cocktailmasters.backend.vote.controller.VoteController;
-import com.cocktailmasters.backend.vote.controller.dto.CreateVoteItemRequest;
+import com.cocktailmasters.backend.vote.controller.dto.item.CreateVoteItemRequest;
 import com.cocktailmasters.backend.vote.controller.dto.CreateVoteRequest;
 import com.cocktailmasters.backend.vote.service.VoteService;
 import com.google.gson.Gson;
