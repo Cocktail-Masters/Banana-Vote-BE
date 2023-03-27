@@ -1,8 +1,8 @@
 package com.cocktailmasters.backend.vote.controller.dto;
 
-import com.cocktailmasters.backend.vote.controller.dto.item.FindVoteDetailVoteItemsResponse;
-import com.cocktailmasters.backend.vote.controller.dto.item.FindVoteDetailVoteResponse;
-import com.cocktailmasters.backend.vote.controller.dto.item.FindVoteDetailWriterResponse;
+import com.cocktailmasters.backend.vote.controller.dto.item.VoteItemsDto;
+import com.cocktailmasters.backend.vote.controller.dto.item.VoteDto;
+import com.cocktailmasters.backend.vote.controller.dto.item.WriterDto;
 import lombok.Builder;
 import lombok.Getter;
 
@@ -12,7 +12,7 @@ import java.util.List;
 @Builder
 public class FindVoteDetailResponse {
 
-    private FindVoteDetailVoteResponse vote;
-    private FindVoteDetailWriterResponse writer;
-    private List<FindVoteDetailVoteItemsResponse> voteItems;
+    private VoteDto vote;
+    private WriterDto writer;
+    private List<VoteItemsDto> voteItems;
 }

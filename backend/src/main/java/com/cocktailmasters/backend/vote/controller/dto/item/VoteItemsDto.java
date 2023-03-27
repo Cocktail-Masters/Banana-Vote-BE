@@ -5,12 +5,12 @@ import lombok.Getter;
 
 @Getter
 @Builder
-public class FindVoteDetailVoteItemsResponse {
+public class VoteItemsDto {
 
     private String title;
     private String iframeLink;
-    private String itemNumber;
-    private String ImageUrl;
+    private int itemNumber;
+    private String imageUrl;
     private Long totalPoints;
     private int votedNumber;
 }

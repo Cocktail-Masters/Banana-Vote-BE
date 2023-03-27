@@ -5,7 +5,7 @@ import lombok.Getter;
 
 @Getter
 @Builder
-public class FindVoteDetailWriterResponse {
+public class WriterDto {
 
     private Long id;
     private String nickname;
