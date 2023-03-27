@@ -42,6 +42,8 @@ public class User extends BaseEntity {
     @Builder.Default
     private int banNumber = 0;
 
+    private String equippedBadgeImageUrl;
+
     @Builder.Default
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<Vote> votes = new ArrayList<>();

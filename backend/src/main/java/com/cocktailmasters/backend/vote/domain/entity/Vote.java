@@ -48,6 +48,12 @@ public class Vote extends BaseEntity {
     @Builder.Default
     private boolean isClosed = false;
 
+    @Builder.Default
+    private int votedNumber = 0;
+
+    @Builder.Default
+    private int opinionNumber = 0;
+
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private User user;
 
