@@ -126,6 +126,7 @@ public class VoteService {
                                 .content(opinion.getOpinionContent())
                                 .agreedNumber(opinion.getAgreedNumber())
                                 .disagreedNumber(opinion.getDisagreedNumber())
+                                .createdDate(opinion.getCreatedDate())
                                 .build())
                         .collect(Collectors.toList()))
                 .build();
