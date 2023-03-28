@@ -99,7 +99,7 @@ public class VoteService {
                         .badgeImageUrl(writer.getEquippedBadgeImageUrl())
                         .build())
                 .voteItems(voteItems.stream()
-                        .map(item -> VoteItemsDto.builder()
+                        .map(item -> VoteItemDto.builder()
                                 .itemNumber(item.getVoteItemNumber())
                                 .title(item.getVoteItemTitle())
                                 .iframeLink(item.getIframeLink())

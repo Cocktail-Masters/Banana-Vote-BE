@@ -1,6 +1,6 @@
 package com.cocktailmasters.backend.vote.controller.dto;
 
-import com.cocktailmasters.backend.vote.controller.dto.item.VoteItemsDto;
+import com.cocktailmasters.backend.vote.controller.dto.item.VoteItemDto;
 import com.cocktailmasters.backend.vote.controller.dto.item.VoteDto;
 import com.cocktailmasters.backend.vote.controller.dto.item.WriterDto;
 import lombok.Builder;
@@ -14,5 +14,5 @@ public class FindVoteDetailResponse {
 
     private VoteDto vote;
     private WriterDto writer;
-    private List<VoteItemsDto> voteItems;
+    private List<VoteItemDto> voteItems;
 }

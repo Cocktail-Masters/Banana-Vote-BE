@@ -1,6 +1,6 @@
 package com.cocktailmasters.backend.vote.controller.dto;
 
-import com.cocktailmasters.backend.vote.controller.dto.item.OpinionsDto;
+import com.cocktailmasters.backend.vote.controller.dto.item.OpinionDto;
 import lombok.Builder;
 import lombok.Getter;
 
@@ -10,5 +10,5 @@ import java.util.List;
 @Builder
 public class FindVoteOpinionsResponse {
 
-    List<OpinionsDto> opinions;
+    List<OpinionDto> opinions;
 }

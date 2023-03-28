@@ -5,7 +5,7 @@ import lombok.Getter;
 
 @Getter
 @Builder
-public class VoteItemsDto {
+public class VoteItemDto {
 
     private int itemNumber;
     private String title;
