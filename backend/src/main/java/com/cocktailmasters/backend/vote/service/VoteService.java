@@ -75,6 +75,7 @@ public class VoteService {
         List<VoteItem> voteItems = vote.getVoteItems();
         return FindVoteDetailResponse.builder()
                 .vote(VoteDto.builder()
+                        .id(vote.getId())
                         .title(vote.getVoteTitle())
                         .imageUrl(vote.getVoteImageUrl())
                         .content(vote.getVoteContent())

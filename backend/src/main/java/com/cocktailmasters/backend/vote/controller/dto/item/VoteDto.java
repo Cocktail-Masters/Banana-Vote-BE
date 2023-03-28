@@ -10,6 +10,7 @@ import java.util.List;
 @Builder
 public class VoteDto {
 
+    private Long id;
     private String title;
     private String imageUrl;
     private String content;
