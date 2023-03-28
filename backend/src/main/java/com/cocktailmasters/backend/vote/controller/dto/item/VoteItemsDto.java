@@ -7,9 +7,9 @@ import lombok.Getter;
 @Builder
 public class VoteItemsDto {
 
+    private int itemNumber;
     private String title;
     private String iframeLink;
-    private int itemNumber;
     private String imageUrl;
     private Long totalPoints;
     private int votedNumber;
