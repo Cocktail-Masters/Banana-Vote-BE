@@ -2,6 +2,7 @@ package com.cocktailmasters.backend.vote.controller;
 
 import com.cocktailmasters.backend.vote.controller.dto.CreateVoteRequest;
 import com.cocktailmasters.backend.vote.controller.dto.FindVoteDetailResponse;
+import com.cocktailmasters.backend.vote.controller.dto.FindVoteOpinionsResponse;
 import com.cocktailmasters.backend.vote.service.VoteService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -29,12 +30,21 @@ public class VoteController {
         throw new Exception();
     }
 
-    @Operation(summary = "투표글 상세보기", description = "투표글 상세보기")
+    @Operation(summary = "투표글 상세보기", description = "투표글 상세보기, 투표 조회수 증가")
     @GetMapping("/{vote_id}")
     public ResponseEntity<FindVoteDetailResponse> findVoteDetail(Long userId,
                                                                  @PathVariable("vote_id") Long voteId) {
         //TODO: 사용자 검사
         return ResponseEntity.status(HttpStatus.OK)
                 .body(voteService.findVoteDetail(voteId));
+    }
+
+    @Operation(summary = "투표글 댓글보기", description = "투표글 댓글보기")
+    @GetMapping("/{vote_id}/opinions")
+    public ResponseEntity<FindVoteOpinionsResponse> findVoteOpinions(Long userId,
+                                                                     @PathVariable("vote_id") Long voteId) {
+        //TODO: 사용자 검사
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(voteService.findVoteOpinions(voteId));
     }
 }
