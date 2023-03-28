@@ -8,7 +8,7 @@ import java.util.List;
 
 @Getter
 @Builder
-public class VoteDto {
+public class VoteDetailDto {
 
     private Long id;
     private String title;
