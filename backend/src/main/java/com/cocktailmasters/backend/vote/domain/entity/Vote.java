@@ -57,8 +57,8 @@ public class Vote extends BaseEntity {
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private User user;
 
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    private Opinion opinion;
+    @OneToMany(mappedBy = "vote", cascade = CascadeType.ALL)
+    private List<Opinion> opinions = new ArrayList<>();
 
     @Builder.Default
     @OneToMany(mappedBy = "vote", cascade = CascadeType.ALL)

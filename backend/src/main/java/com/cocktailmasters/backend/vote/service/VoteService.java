@@ -7,10 +7,8 @@ import com.cocktailmasters.backend.common.domain.repository.TagRepository;
 import com.cocktailmasters.backend.util.exception.NotFoundUserException;
 import com.cocktailmasters.backend.vote.controller.dto.CreateVoteRequest;
 import com.cocktailmasters.backend.vote.controller.dto.FindVoteDetailResponse;
-import com.cocktailmasters.backend.vote.controller.dto.item.CreateVoteItemRequest;
-import com.cocktailmasters.backend.vote.controller.dto.item.VoteDto;
-import com.cocktailmasters.backend.vote.controller.dto.item.VoteItemsDto;
-import com.cocktailmasters.backend.vote.controller.dto.item.WriterDto;
+import com.cocktailmasters.backend.vote.controller.dto.FindVoteOpinionsResponse;
+import com.cocktailmasters.backend.vote.controller.dto.item.*;
 import com.cocktailmasters.backend.vote.domain.entity.Vote;
 import com.cocktailmasters.backend.vote.domain.entity.VoteItem;
 import com.cocktailmasters.backend.vote.domain.entity.VoteTag;
@@ -107,6 +105,23 @@ public class VoteService {
                                 .imageUrl(item.getVoteItemImageUrl())
                                 .totalPoints(item.getTotalPoints())
                                 .votedNumber(item.getVotedNumber())
+                                .build())
+                        .collect(Collectors.toList()))
+                .build();
+    }
+
+    @Transactional
+    public FindVoteOpinionsResponse findVoteOpinions(Long voteId) {
+        Vote vote = findVoteById(voteId);
+        return FindVoteOpinionsResponse.builder()
+                .opinions(vote.getOpinions()
+                        .stream()
+                        .map(opinion -> OpinionsDto.builder()
+                                .id(opinion.getId())
+                                .writerId(opinion.getUser().getId())
+                                .content(opinion.getOpinionContent())
+                                .agreedNumber(opinion.getAgreedNumber())
+                                .disagreedNumber(opinion.getDisagreedNumber())
                                 .build())
                         .collect(Collectors.toList()))
                 .build();
