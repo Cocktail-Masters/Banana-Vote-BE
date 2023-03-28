@@ -7,7 +7,7 @@ import java.time.LocalDateTime;
 
 @Getter
 @Builder
-public class OpinionsDto {
+public class OpinionDto {
 
     private Long id;
     private WriterDto writer;

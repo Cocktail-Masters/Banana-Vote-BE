@@ -117,7 +117,7 @@ public class VoteService {
         return FindVoteOpinionsResponse.builder()
                 .opinions(vote.getOpinions()
                         .stream()
-                        .map(opinion -> OpinionsDto.builder()
+                        .map(opinion -> OpinionDto.builder()
                                 .id(opinion.getId())
                                 .writer(WriterDto.builder()
                                         .id(opinion.getUser().getId())
