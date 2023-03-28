@@ -8,7 +8,7 @@ import lombok.Getter;
 public class OpinionsDto {
 
     private Long id;
-    private Long writerId;
+    private WriterDto writer;
     private String content;
     private int agreedNumber;
     private int disagreedNumber;
