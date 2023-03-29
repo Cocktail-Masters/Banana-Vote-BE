@@ -1,7 +1,5 @@
 package com.cocktailmasters.backend.util.advice;
 
-import java.security.InvalidParameterException;
-
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -9,6 +7,7 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
 import com.cocktailmasters.backend.util.exception.AuthException;
+import com.cocktailmasters.backend.util.exception.CustomException;
 import com.cocktailmasters.backend.util.exception.NotAdminException;
 import com.fasterxml.jackson.core.JsonParseException;
 
@@ -32,9 +31,9 @@ public class GlobalExceptionHandler {
         return ResponseEntity.badRequest().body(ex.getBindingResult().getFieldError().getDefaultMessage());
     }
 
-    @ExceptionHandler(InvalidParameterException.class)
-    public ResponseEntity<String> handleInvalidParameterException(InvalidParameterException ex) {
-        return ResponseEntity.badRequest().body(ex.getMessage());
+    @ExceptionHandler(CustomException.class)
+    public ResponseEntity<String> handleInvalidParameterException(CustomException ex) {
+        return ResponseEntity.status(ex.getErrorCode()).body(ex.getMessage());
     }
 
     @ExceptionHandler(AuthException.class)

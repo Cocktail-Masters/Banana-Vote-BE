@@ -1,3 +1,10 @@
 package com.cocktailmasters.backend.util.exception;
 
-public class NotAdminException extends Exception { }
+import org.springframework.http.HttpStatus;
+
+public class NotAdminException extends CustomException {
+
+    public NotAdminException() {
+        super(HttpStatus.FORBIDDEN, "not admin");
+    }
+}
