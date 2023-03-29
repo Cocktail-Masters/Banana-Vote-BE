@@ -39,8 +39,9 @@ public class RankingController {
                 throw new CustomException(HttpStatus.BAD_REQUEST, "bad page or page size request");
 
             if(nickname != null && !nickname.isBlank()) {
-                // TODO : 해당 닉네임을 가진 유저가 존재하는지 확인하는 로직 필요 user Repositoy에서 가져다 쓸 것(?)
                 page = rankingService.getRankingPageNumberByNickname(seasonId, pageSize, nickname);
+                if(page == -1) // nickname not found
+                    return ResponseEntity.noContent().build();
             }
             
             RankingResponse rankingResponse = rankingService.getRankingListWithPage(seasonId, page, pageSize);
