@@ -6,9 +6,7 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
-import com.cocktailmasters.backend.util.exception.AuthException;
 import com.cocktailmasters.backend.util.exception.CustomException;
-import com.cocktailmasters.backend.util.exception.NotAdminException;
 import com.fasterxml.jackson.core.JsonParseException;
 
 @ControllerAdvice
@@ -34,19 +32,5 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(CustomException.class)
     public ResponseEntity<String> handleInvalidParameterException(CustomException ex) {
         return ResponseEntity.status(ex.getErrorCode()).body(ex.getMessage());
-    }
-
-    @ExceptionHandler(AuthException.class)
-    public ResponseEntity<String> handleAuthException(AuthException ex) {
-        // need to login
-        return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-            .body("not authorized");
-    }
-
-    @ExceptionHandler(NotAdminException.class)
-    public ResponseEntity<String> handleNotAdminException(NotAdminException ex) {
-        // need to login
-        return ResponseEntity.status(HttpStatus.FORBIDDEN)
-            .body("not admin");
     }
 }
