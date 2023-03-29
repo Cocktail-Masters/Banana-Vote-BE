@@ -14,15 +14,12 @@ public class UserRanking {
     @JsonProperty("user_id")
     private long userId;
 
-    private long ranking;
-
     private String nickname;
 
     private long score;
 
     public UserRanking(SeasonRanking seasonRanking) {
         this.userId = seasonRanking.getId();
-        this.ranking = seasonRanking.getRanking();
         this.nickname = seasonRanking.getUser().getNickname();
         this.score = seasonRanking.getScore();
     }
