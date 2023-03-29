@@ -62,25 +62,26 @@ public class RankingService {
      * @param seasonId
      * @param pageSize
      * @param nickname 
-     * @return UserRankings page number containing nickname parameter
+     * @return UserRankings page number containing nickname parameter or -1 if user Ranking is invalid
      */
     public int getRankingPageNumberByNickname(long seasonId, int pageSize, String nickname) {
         long userRanking = getUserRanking(seasonId, nickname);
+        if(userRanking == -1) return -1; // nickname not found
 
         return (int) Math.floor((double) userRanking / pageSize);
     }
 
     /**
      * get user ranking with seasonid and nickname
-     * not include nickname check
      * @param seasonId
      * @param nickname
-     * @return user ranking
+     * @return user ranking or -1 if nickname or seasonId is invalid
      */
     public long getUserRanking(long seasonId, String nickname) {
-        long userScore = rankingRepository.findScoreBySeasonIdAndNickname(seasonId, nickname);
-        long userRanking = rankingRepository.getUserRankingByScore(seasonId, userScore);
+        Optional<Long> userScore = rankingRepository.findScoreBySeasonIdAndNickname(seasonId, nickname);
+        if(!userScore.isPresent()) return -1;
 
+        long userRanking = rankingRepository.getUserRankingByScore(seasonId, userScore.get());
         return userRanking;
     }
 
