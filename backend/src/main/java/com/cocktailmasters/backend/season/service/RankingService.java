@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -32,33 +33,68 @@ public class RankingService {
      * @param pageSize
      * @return UserRankings
      */
-    public List<UserRanking> getRankingWithPage(long seasonId, int page, int pageSize) {
-        // invalid season id
-        Optional<Season> season = seasonRepository.findById(seasonId);
-        if(!season.isPresent()) return null;
-    
-        Pageable pageable = PageRequest.of(page, pageSize, Sort.by("score").descending());
-        List<SeasonRanking> rankings = rankingRepository.findBySeasonId(seasonId, pageable);
+    public RankingResponse getRankingListWithPage(long seasonId, int page, int pageSize) {
+        Pageable pageable = PageRequest.of(page, pageSize);
+        Page<SeasonRanking> rankingsWithPage = rankingRepository.findBySeasonIdOrderByScoreDesc(seasonId, pageable);
+        List<SeasonRanking> seasonRankings = rankingsWithPage.getContent(); // with entity
 
         // make list with dto class
         List<UserRanking> userRankings = new ArrayList<>();
-        for(SeasonRanking seasonRanking : rankings)
-            userRankings.add(new UserRanking(seasonRanking));
+        for(int i = 0; i < seasonRankings.size(); i++)
+            userRankings.add(new UserRanking(seasonRankings.get(i), page * pageSize + i));
 
-        return userRankings;
+        return new RankingResponse(rankingsWithPage.getTotalPages(), userRankings);
     }
 
     /**
      * get total page of ranking with specific season
+     * @return total pages
      */
-    public long getRankingTotalPages(long seasonId, int pageSize) {
-        // invalid season id
-        Optional<Season> season = seasonRepository.findById(seasonId);
-        if(!season.isPresent()) return 0;
-
+    public int getRankingTotalPages(long seasonId, int pageSize) {
         long totalCount = rankingRepository.countBySeasonId(seasonId);
-        long totalPages = (long) Math.ceil((double) totalCount / pageSize);
+        int totalPages = (int) Math.ceil((double) totalCount / pageSize);
 
         return totalPages;
+    }
+
+    /**
+     * get raking page number with specific season id and nickname 
+     * @param seasonId
+     * @param pageSize
+     * @param nickname 
+     * @return UserRankings page number containing nickname parameter
+     */
+    public int getRankingPageNumberByNickname(long seasonId, int pageSize, String nickname) {
+        long userRanking = getUserRanking(seasonId, nickname);
+
+        return (int) Math.floor((double) userRanking / pageSize);
+    }
+
+    /**
+     * get user ranking with seasonid and nickname
+     * not include nickname check
+     * @param seasonId
+     * @param nickname
+     * @return user ranking
+     */
+    public long getUserRanking(long seasonId, String nickname) {
+        long userScore = rankingRepository.findScoreBySeasonIdAndNickname(seasonId, nickname);
+        long userRanking = rankingRepository.getUserRankingByScore(seasonId, userScore);
+
+        return userRanking;
+    }
+
+    /**
+     * check season is valid
+     * @param seasonId
+     * @return true or false
+     */
+    public boolean isValidSeason(long seasonId) {
+        // invalid season id
+        Optional<Season> season = seasonRepository.findById(seasonId);
+        if(season.isPresent())
+            return true;
+        else
+            return false;
     }
 }
