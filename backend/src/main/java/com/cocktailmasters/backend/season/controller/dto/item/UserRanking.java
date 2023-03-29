@@ -1,7 +1,6 @@
 package com.cocktailmasters.backend.season.controller.dto.item;
 
 import com.cocktailmasters.backend.season.domain.entity.SeasonRanking;
-import com.fasterxml.jackson.annotation.JsonProperty;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -11,16 +10,15 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class UserRanking {
-    @JsonProperty("user_id")
-    private long userId;
+    private long ranking = -1;
 
     private String nickname;
 
     private long score;
 
-    public UserRanking(SeasonRanking seasonRanking) {
-        this.userId = seasonRanking.getId();
+    public UserRanking(SeasonRanking seasonRanking, long ranking) {
         this.nickname = seasonRanking.getUser().getNickname();
         this.score = seasonRanking.getScore();
+        this.ranking = ranking;
     }
 }
