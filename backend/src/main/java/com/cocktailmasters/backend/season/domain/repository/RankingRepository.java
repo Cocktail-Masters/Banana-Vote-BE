@@ -1,5 +1,7 @@
 package com.cocktailmasters.backend.season.domain.repository;
 
+import java.util.Optional;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.Query;
@@ -10,7 +12,7 @@ import com.cocktailmasters.backend.season.domain.entity.SeasonRanking;
 public interface RankingRepository extends PagingAndSortingRepository<SeasonRanking, Long> {
     long countBySeasonId(long seasonId);
 
-    long findScoreBySeasonIdAndNickname(long seasonId, String nickname);
+    Optional<Long> findScoreBySeasonIdAndNickname(long seasonId, String nickname);
 
     Page<SeasonRanking> findBySeasonIdOrderByScoreDesc(long seasonId, Pageable pageable);
 
