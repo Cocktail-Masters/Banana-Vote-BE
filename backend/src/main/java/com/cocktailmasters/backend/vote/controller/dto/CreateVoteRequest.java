@@ -1,5 +1,6 @@
 package com.cocktailmasters.backend.vote.controller.dto;
 
+import com.cocktailmasters.backend.vote.controller.dto.item.CreateVoteItemRequest;
 import lombok.Builder;
 import lombok.Getter;
 

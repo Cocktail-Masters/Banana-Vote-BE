@@ -4,8 +4,11 @@ import com.cocktailmasters.backend.account.domain.entity.User;
 import com.cocktailmasters.backend.account.domain.repository.UserRepository;
 import com.cocktailmasters.backend.common.domain.entity.Tag;
 import com.cocktailmasters.backend.common.domain.repository.TagRepository;
-import com.cocktailmasters.backend.vote.controller.dto.CreateVoteItemRequest;
+import com.cocktailmasters.backend.util.exception.NotFoundUserException;
 import com.cocktailmasters.backend.vote.controller.dto.CreateVoteRequest;
+import com.cocktailmasters.backend.vote.controller.dto.FindVoteDetailResponse;
+import com.cocktailmasters.backend.vote.controller.dto.FindVoteOpinionsResponse;
+import com.cocktailmasters.backend.vote.controller.dto.item.*;
 import com.cocktailmasters.backend.vote.domain.entity.Vote;
 import com.cocktailmasters.backend.vote.domain.entity.VoteItem;
 import com.cocktailmasters.backend.vote.domain.entity.VoteTag;
@@ -18,6 +21,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Service
@@ -32,6 +36,8 @@ public class VoteService {
     @Transactional
     public boolean createVote(Long userId, CreateVoteRequest createVoteRequest) {
         // TODO: controller에서 사용자 검사 후, service에서 사용자 객체 받기
+        // TODO: request 검사
+        // TODO: 작성자 포인트 감소
         // User user = findUserById(userId);
         List<VoteItem> voteItems = new ArrayList<>();
         List<VoteTag> voteTags = new ArrayList<>();
@@ -57,6 +63,68 @@ public class VoteService {
                 .voteTags(voteTags)
                 .build());
         return true;
+    }
+
+    @Transactional
+    public FindVoteDetailResponse findVoteDetail(Long voteId) {
+        Vote vote = findVoteById(voteId);
+        voteRepository.save(vote.builder()
+                .voteHits(vote.getVoteHits() + 1)
+                .build());
+        User writer = vote.getUser();
+        List<VoteItem> voteItems = vote.getVoteItems();
+        return FindVoteDetailResponse.builder()
+                .vote(VoteDto.builder()
+                        .title(vote.getVoteTitle())
+                        .imageUrl(vote.getVoteImageUrl())
+                        .content(vote.getVoteContent())
+                        .isEvent(vote.isEvent())
+                        .isAnonymous(vote.isAnonymous())
+                        .isPublic(vote.isPublic())
+                        .isClosed(vote.isClosed())
+                        .startDate(vote.getCreatedDate())
+                        .endDate(vote.getVoteEndDate())
+                        .hits(vote.getVoteHits())
+                        .votedNumber(vote.getVotedNumber())
+                        .opinionNumber(vote.getOpinionNumber())
+                        .tags(vote.getVoteTags()
+                                .stream()
+                                .map(tag -> tag.getTag().getTagName())
+                                .collect(Collectors.toList()))
+                        .build())
+                .writer(WriterDto.builder()
+                        .id(writer.getId())
+                        .nickname(writer.getNickname())
+                        .badgeImageUrl(writer.getEquippedBadgeImageUrl())
+                        .build())
+                .voteItems(voteItems.stream()
+                        .map(item -> VoteItemsDto.builder()
+                                .itemNumber(item.getVoteItemNumber())
+                                .title(item.getVoteItemTitle())
+                                .iframeLink(item.getIframeLink())
+                                .imageUrl(item.getVoteItemImageUrl())
+                                .totalPoints(item.getTotalPoints())
+                                .votedNumber(item.getVotedNumber())
+                                .build())
+                        .collect(Collectors.toList()))
+                .build();
+    }
+
+    @Transactional
+    public FindVoteOpinionsResponse findVoteOpinions(Long voteId) {
+        Vote vote = findVoteById(voteId);
+        return FindVoteOpinionsResponse.builder()
+                .opinions(vote.getOpinions()
+                        .stream()
+                        .map(opinion -> OpinionsDto.builder()
+                                .id(opinion.getId())
+                                .writerId(opinion.getUser().getId())
+                                .content(opinion.getOpinionContent())
+                                .agreedNumber(opinion.getAgreedNumber())
+                                .disagreedNumber(opinion.getDisagreedNumber())
+                                .build())
+                        .collect(Collectors.toList()))
+                .build();
     }
 
     private VoteItem createVoteItem(CreateVoteItemRequest createVoteItemRequest) {
@@ -91,8 +159,17 @@ public class VoteService {
     }
 
     private User findUserById(Long userId) {
-        return userRepository.findById(userId)
-                .orElseThrow();
+        try {
+            return userRepository.findById(userId)
+                    .orElseThrow(() -> new NotFoundUserException());
+        } catch (NotFoundUserException e) {
+            throw new RuntimeException(e);
+        }
         // TODO: develop pull 후에 예외처리
+    }
+
+    private Vote findVoteById(Long voteId) {
+        return voteRepository.findById(voteId)
+                .orElseThrow();
     }
 }
