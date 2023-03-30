@@ -1,3 +1,10 @@
 package com.cocktailmasters.backend.util.exception;
 
-public class AuthException extends Exception { }
+import org.springframework.http.HttpStatus;
+
+public class AuthException extends CustomException {
+
+    public AuthException() {
+        super(HttpStatus.UNAUTHORIZED, "not authorized");
+    }
+}

@@ -1,15 +1,14 @@
 package com.cocktailmasters.backend.util.advice;
 
-import com.cocktailmasters.backend.util.exception.AuthException;
-import com.cocktailmasters.backend.util.exception.NotAdminException;
-import com.cocktailmasters.backend.util.exception.NotFoundUserException;
 import com.fasterxml.jackson.core.JsonParseException;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+import com.cocktailmasters.backend.util.exception.CustomException;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
@@ -31,23 +30,8 @@ public class GlobalExceptionHandler {
         return ResponseEntity.badRequest().body(ex.getBindingResult().getFieldError().getDefaultMessage());
     }
 
-    @ExceptionHandler(AuthException.class)
-    public ResponseEntity<String> handleAuthException(AuthException ex) {
-        // need to login
-        return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-                .body("not authorized");
-    }
-
-    @ExceptionHandler(NotAdminException.class)
-    public ResponseEntity<String> handleNotAdminException(NotAdminException ex) {
-        // need to login
-        return ResponseEntity.status(HttpStatus.FORBIDDEN)
-                .body("not admin");
-    }
-
-    @ExceptionHandler(NotFoundUserException.class)
-    public ResponseEntity<String> handleNotFoundUserException(NotAdminException ex) {
-        return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                .body("not found");
+    @ExceptionHandler(CustomException.class)
+    public ResponseEntity<String> handleInvalidParameterException(CustomException ex) {
+        return ResponseEntity.status(ex.getErrorCode()).body(ex.getMessage());
     }
 }
