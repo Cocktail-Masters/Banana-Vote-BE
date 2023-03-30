@@ -36,4 +36,5 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(CustomException.class)
     public ResponseEntity<String> handleInvalidParameterException(CustomException ex) {
         return ResponseEntity.status(ex.getErrorCode()).body(ex.getMessage());
+    }
 }
