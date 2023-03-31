@@ -3,11 +3,12 @@ package com.cocktailmasters.backend.vote.controller;
 import com.cocktailmasters.backend.vote.controller.dto.CreateVoteRequest;
 import com.cocktailmasters.backend.vote.controller.dto.FindVoteDetailResponse;
 import com.cocktailmasters.backend.vote.controller.dto.FindVoteOpinionsResponse;
+import com.cocktailmasters.backend.vote.controller.dto.FindVotesResponse;
 import com.cocktailmasters.backend.vote.service.VoteService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -30,12 +31,25 @@ public class VoteController {
         throw new Exception();
     }
 
+    @Operation(summary = "투표 검색", description = "검색어를 사용하여 투표 검색," +
+            "검색 옵션은 정렬기준, 종료유무, 페이지 인덱스")
+    @GetMapping("/{page_index}/options")
+    public ResponseEntity<FindVotesResponse> findVotes(@PathVariable("page_index") int pageIndex,
+                                                       @RequestParam("keyword") String keyword,
+                                                       @RequestParam(value = "is-tag", defaultValue = "false") boolean isTag,
+                                                       @RequestParam(value = "is-closed", defaultValue = "false") boolean isClosed,
+                                                       @RequestParam(value = "order-by", defaultValue = "1") int orderBy) {
+        PageRequest page = PageRequest.of(pageIndex, 10);
+        return ResponseEntity.ok()
+                .body(voteService.findVotes(keyword, isTag, isClosed, orderBy, page));
+    }
+
     @Operation(summary = "투표글 상세보기", description = "투표글 상세보기, 투표 조회수 증가")
     @GetMapping("/{vote_id}")
     public ResponseEntity<FindVoteDetailResponse> findVoteDetail(Long userId,
                                                                  @PathVariable("vote_id") Long voteId) {
         //TODO: 사용자 검사
-        return ResponseEntity.status(HttpStatus.OK)
+        return ResponseEntity.ok()
                 .body(voteService.findVoteDetail(voteId));
     }
 
@@ -44,7 +58,7 @@ public class VoteController {
     public ResponseEntity<FindVoteOpinionsResponse> findVoteOpinions(Long userId,
                                                                      @PathVariable("vote_id") Long voteId) {
         //TODO: 사용자 검사
-        return ResponseEntity.status(HttpStatus.OK)
+        return ResponseEntity.ok()
                 .body(voteService.findVoteOpinions(voteId));
     }
 }
