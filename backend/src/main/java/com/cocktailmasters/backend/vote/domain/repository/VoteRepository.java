@@ -9,13 +9,13 @@ import org.springframework.data.repository.query.Param;
 
 public interface VoteRepository extends JpaRepository<Vote, Long> {
 
-    String countVotesByTitleQuery = "SELECT count(v.*) " +
+    String countVotesByTitleQuery = "SELECT COUNT(v.*) " +
             "FROM vote v " +
             "WHERE (:keyword IS NULL OR vote_title LIKE CONCAT('%', :keyword, '%')) " +
             "AND (:is_closed IS NULL OR is_closed = :isClosed) " +
             "ORDER BY :orderBy";
 
-    String countVotesByTagQuery = "SELECT count(v.*) " +
+    String countVotesByTagQuery = "SELECT COUNT(v.*) " +
             "FROM vote v " +
             "INNER JOIN vote_tag vt " +
             "ON v.vote_id = vt.vote_id " +
@@ -26,12 +26,12 @@ public interface VoteRepository extends JpaRepository<Vote, Long> {
             "AND (:is_closed IS NULL OR is_closed = :isClosed) " +
             "ORDER BY :orderBy";
 
-    @Query(value = countVotesByTitleQuery)
+    @Query(value = countVotesByTitleQuery, nativeQuery = true)
     long countVotesByTitle(@Param("keyword") String keyword,
                            @Param("isClosed") boolean isClosed,
                            @Param("orderBy") String orderBy);
 
-    @Query(value = countVotesByTagQuery)
+    @Query(value = countVotesByTagQuery, nativeQuery = true)
     long countVotesByTag(@Param("keyword") String keyword,
                          @Param("isClosed") boolean isClosed,
                          @Param("orderBy") String orderBy);
