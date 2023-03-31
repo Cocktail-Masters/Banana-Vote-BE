@@ -1,10 +1,6 @@
 package com.cocktailmasters.backend.vote.controller.dto;
 
-import com.cocktailmasters.backend.account.domain.entity.User;
 import com.cocktailmasters.backend.vote.controller.dto.item.CreateVoteItemRequest;
-import com.cocktailmasters.backend.vote.domain.entity.Vote;
-import com.cocktailmasters.backend.vote.domain.entity.VoteItem;
-import com.cocktailmasters.backend.vote.domain.entity.VoteTag;
 import lombok.Builder;
 import lombok.Getter;
 
@@ -24,22 +20,4 @@ public class CreateVoteRequest {
     private Boolean isAnonymous;
     private List<CreateVoteItemRequest> voteItems;
     private List<String> tags;
-
-    public static Vote toVoteEntity(User user,
-                                    CreateVoteRequest createVoteRequest,
-                                    List<VoteItem> voteItems,
-                                    List<VoteTag> voteTags) {
-        return Vote.builder()
-                .user(user)
-                .voteTitle(createVoteRequest.getVoteTitle())
-                .voteContent(createVoteRequest.getVoteContent())
-                .voteImageUrl(createVoteRequest.getVoteImageUrl())
-                .voteThumbnailUrl(createVoteRequest.getVoteThumbnailUrl())
-                .voteEndDate(createVoteRequest.getVoteEndDate())
-                .isAnonymous(createVoteRequest.getIsAnonymous())
-                .isPublic(createVoteRequest.getIsPublic())
-                .voteItems(voteItems)
-                .voteTags(voteTags)
-                .build();
-    }
 }
