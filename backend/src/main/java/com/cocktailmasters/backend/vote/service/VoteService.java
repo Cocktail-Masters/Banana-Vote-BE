@@ -32,7 +32,8 @@ public class VoteService {
     private final VoteTagRepository voteTagRepository;
 
     @Transactional
-    public boolean createVote(Long userId, CreateVoteRequest createVoteRequest) {
+    public boolean createVote(Long userId,
+                              CreateVoteRequest createVoteRequest) {
         // TODO: controller에서 사용자 검사 후, service에서 사용자 객체 받기
         // TODO: request 검사
         // TODO: 작성자 포인트 감소
@@ -141,19 +142,39 @@ public class VoteService {
                 .build();
     }
 
+    @Transactional
+    public boolean createPrediction(Long userId,
+                                    CreatePredictionRequest createPredictionRequest) {
+        User user = findUserById(userId);
+        user.builder()
+                .points(user.getPoints() - createPredictionRequest.getVote().getPoint())
+                .build();
+        userRepository.save(user);
+        predictionRepository.save(Prediction.builder()
+                .user(user)
+                .voteItem(findVoteItemById(createPredictionRequest.getVote().getVoteItemId()))
+                .point(createPredictionRequest.getVote().getPoint())
+                .build());
+        return true;
+    }
+
     private VoteItem createVoteItem(CreateVoteItemRequest createVoteItemRequest) {
         VoteItem voteItem = createVoteItemRequest.toVoteItemEntity(createVoteItemRequest);
         voteItemRepository.save(voteItem);
         return voteItem;
     }
 
+    private VoteItem findVoteItemById(Long voteItemId) {
+        //TODO: 예외처리
+        return voteItemRepository.findById(voteItemId)
+                .orElseThrow();
+    }
+
     private Tag findTagByTagName(String tagName) {
-        Tag tag = tagRepository.findByTagName(tagName);
-        if (tag == null) {
-            tag = Tag.builder()
-                    .tagName(tagName)
-                    .build();
-        }
+        Tag tag = tagRepository.findByTagName(tagName)
+                .orElse(Tag.builder()
+                        .tagName(tagName)
+                        .build());
         tag.countTagUsedNumber();
         tagRepository.save(tag);
         return tag;
@@ -168,13 +189,13 @@ public class VoteService {
     }
 
     private User findUserById(Long userId) {
+        // TODO: 예외처리
         try {
             return userRepository.findById(userId)
                     .orElseThrow(() -> new NotFoundUserException());
         } catch (NotFoundUserException e) {
             throw new RuntimeException(e);
         }
-        // TODO: develop pull 후에 예외처리
     }
 
     private Vote findVoteById(Long voteId) {
