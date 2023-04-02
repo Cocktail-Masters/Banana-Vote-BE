@@ -65,7 +65,7 @@ public class VoteController {
                                                                                @PathVariable("vote_id") Long voteId) {
         //TODO: 사용자 검사 및 예외처리
         return ResponseEntity.ok()
-                .body(voteService.findVoteParticipationResponse(userId, voteId));
+                .body(voteService.findVoteParticipation(userId, voteId));
     }
 
     @Operation(summary = "투표하기", description = "투표하기, 예측 생성")

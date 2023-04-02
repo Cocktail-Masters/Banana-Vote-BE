@@ -122,7 +122,7 @@ public class VoteService {
     }
 
     @Transactional
-    public FindVoteParticipationResponse findVoteParticipationResponse(Long userId,
+    public FindVoteParticipationResponse findVoteParticipation(Long userId,
                                                                        Long voteId) {
         Prediction prediction;
         List<VoteItem> voteItems = findVoteById(voteId).getVoteItems();
