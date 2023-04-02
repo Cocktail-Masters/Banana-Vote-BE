@@ -5,19 +5,10 @@ import com.cocktailmasters.backend.account.domain.repository.UserRepository;
 import com.cocktailmasters.backend.common.domain.entity.Tag;
 import com.cocktailmasters.backend.common.domain.repository.TagRepository;
 import com.cocktailmasters.backend.util.exception.NotFoundUserException;
-import com.cocktailmasters.backend.vote.controller.dto.CreateVoteRequest;
-import com.cocktailmasters.backend.vote.controller.dto.FindVoteDetailResponse;
-import com.cocktailmasters.backend.vote.controller.dto.FindVoteOpinionsResponse;
-import com.cocktailmasters.backend.vote.controller.dto.FindVotesResponse;
+import com.cocktailmasters.backend.vote.controller.dto.*;
 import com.cocktailmasters.backend.vote.controller.dto.item.*;
-import com.cocktailmasters.backend.vote.domain.entity.OrderBy;
-import com.cocktailmasters.backend.vote.domain.entity.Vote;
-import com.cocktailmasters.backend.vote.domain.entity.VoteItem;
-import com.cocktailmasters.backend.vote.domain.entity.VoteTag;
-import com.cocktailmasters.backend.vote.domain.repository.OpinionRepository;
-import com.cocktailmasters.backend.vote.domain.repository.VoteItemRepository;
-import com.cocktailmasters.backend.vote.domain.repository.VoteRepository;
-import com.cocktailmasters.backend.vote.domain.repository.VoteTagRepository;
+import com.cocktailmasters.backend.vote.domain.entity.*;
+import com.cocktailmasters.backend.vote.domain.repository.*;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -33,6 +24,7 @@ import java.util.stream.Collectors;
 public class VoteService {
 
     private final OpinionRepository opinionRepository;
+    private final PredictionRepository predictionRepository;
     private final TagRepository tagRepository;
     private final UserRepository userRepository;
     private final VoteRepository voteRepository;
@@ -40,7 +32,8 @@ public class VoteService {
     private final VoteTagRepository voteTagRepository;
 
     @Transactional
-    public boolean createVote(Long userId, CreateVoteRequest createVoteRequest) {
+    public boolean createVote(Long userId,
+                              CreateVoteRequest createVoteRequest) {
         // TODO: controller에서 사용자 검사 후, service에서 사용자 객체 받기
         // TODO: request 검사
         // TODO: 작성자 포인트 감소
@@ -128,22 +121,47 @@ public class VoteService {
                 .build();
     }
 
+    @Transactional
+    public FindVoteParticipationResponse findVoteParticipationResponse(Long userId,
+                                                                       Long voteId) {
+        Prediction prediction;
+        List<VoteItem> voteItems = findVoteById(voteId).getVoteItems();
+        for (VoteItem voteItem : voteItems) {
+            prediction = predictionRepository.findFirstByUserIdVoteItemId(userId, voteItem.getId());
+            if (prediction != null) {
+                return FindVoteParticipationResponse.builder()
+                        .isParticipation(true)
+                        .voteItemId(voteItem.getId())
+                        .voteNumber(voteItem.getVoteItemNumber())
+                        .point(prediction.getPoint())
+                        .build();
+            }
+        }
+        return FindVoteParticipationResponse.builder()
+                .isParticipation(false)
+                .build();
+    }
+
+    @Transactional
+    public boolean createPrediction(Long userId,
+                                    CreatePredictionRequest createPredictionRequest) {
+        User user = findUserById(userId);
+        user.builder()
+                .points(user.getPoints() - createPredictionRequest.getVote().getPoint())
+                .build();
+        userRepository.save(user);
+        predictionRepository.save(Prediction.builder()
+                .user(user)
+                .voteItem(findVoteItemById(createPredictionRequest.getVote().getVoteItemId()))
+                .point(createPredictionRequest.getVote().getPoint())
+                .build());
+        return true;
+    }
+
     private VoteItem createVoteItem(CreateVoteItemRequest createVoteItemRequest) {
         VoteItem voteItem = createVoteItemRequest.toVoteItemEntity(createVoteItemRequest);
         voteItemRepository.save(voteItem);
         return voteItem;
-    }
-
-    private Tag findTagByTagName(String tagName) {
-        Tag tag = tagRepository.findByTagName(tagName);
-        if (tag == null) {
-            tag = Tag.builder()
-                    .tagName(tagName)
-                    .build();
-        }
-        tag.countTagUsedNumber();
-        tagRepository.save(tag);
-        return tag;
     }
 
     private VoteTag createVoteTag(Tag tag) {
@@ -155,17 +173,33 @@ public class VoteService {
     }
 
     private User findUserById(Long userId) {
+        // TODO: 예외처리
         try {
             return userRepository.findById(userId)
                     .orElseThrow(() -> new NotFoundUserException());
         } catch (NotFoundUserException e) {
             throw new RuntimeException(e);
         }
-        // TODO: develop pull 후에 예외처리
     }
 
     private Vote findVoteById(Long voteId) {
         return voteRepository.findById(voteId)
                 .orElseThrow();
+    }
+
+    private VoteItem findVoteItemById(Long voteItemId) {
+        //TODO: 예외처리
+        return voteItemRepository.findById(voteItemId)
+                .orElseThrow();
+    }
+
+    private Tag findTagByTagName(String tagName) {
+        Tag tag = tagRepository.findByTagName(tagName)
+                .orElse(Tag.builder()
+                        .tagName(tagName)
+                        .build());
+        tag.countTagUsedNumber();
+        tagRepository.save(tag);
+        return tag;
     }
 }
