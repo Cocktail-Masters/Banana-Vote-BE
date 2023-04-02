@@ -158,7 +158,7 @@ public class VoteService {
         return true;
     }
 
-    private VoteItem createVoteItem(CreateVoteItemRequest createVoteItemRequest) {
+    private VoteItem createVoteItem(VoteItemCreateDto createVoteItemRequest) {
         VoteItem voteItem = createVoteItemRequest.toVoteItemEntity(createVoteItemRequest);
         voteItemRepository.save(voteItem);
         return voteItem;
