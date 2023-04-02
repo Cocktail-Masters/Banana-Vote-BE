@@ -6,14 +6,14 @@ import lombok.Getter;
 
 @Getter
 @Builder
-public class CreateVoteItemRequest {
+public class VoteItemCreateDto {
 
     private int itemNumber;
     private String title;
     private String imageUrl;
     private String iframeLink;
 
-    public static VoteItem toVoteItemEntity(CreateVoteItemRequest createVoteItemRequest) {
+    public static VoteItem toVoteItemEntity(VoteItemCreateDto createVoteItemRequest) {
         return VoteItem.builder()
                 .voteItemNumber(createVoteItemRequest.getItemNumber())
                 .voteItemTitle(createVoteItemRequest.getTitle())

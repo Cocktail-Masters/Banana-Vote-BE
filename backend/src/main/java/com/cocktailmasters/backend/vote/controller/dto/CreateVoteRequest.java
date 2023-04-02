@@ -1,7 +1,7 @@
 package com.cocktailmasters.backend.vote.controller.dto;
 
 import com.cocktailmasters.backend.account.domain.entity.User;
-import com.cocktailmasters.backend.vote.controller.dto.item.CreateVoteItemRequest;
+import com.cocktailmasters.backend.vote.controller.dto.item.VoteItemCreateDto;
 import com.cocktailmasters.backend.vote.domain.entity.Vote;
 import com.cocktailmasters.backend.vote.domain.entity.VoteItem;
 import com.cocktailmasters.backend.vote.domain.entity.VoteTag;
@@ -22,7 +22,7 @@ public class CreateVoteRequest {
     private LocalDateTime voteEndDate;
     private Boolean isPublic;
     private Boolean isAnonymous;
-    private List<CreateVoteItemRequest> voteItems;
+    private List<VoteItemCreateDto> voteItems;
     private List<String> tags;
     
     public static Vote toVoteEntity(User user,
