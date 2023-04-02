@@ -123,11 +123,12 @@ public class VoteService {
 
     @Transactional
     public FindVoteParticipationResponse findVoteParticipation(Long userId,
-                                                                       Long voteId) {
+                                                               Long voteId) {
         Prediction prediction;
         List<VoteItem> voteItems = findVoteById(voteId).getVoteItems();
         for (VoteItem voteItem : voteItems) {
-            prediction = predictionRepository.findFirstByUserIdVoteItemId(userId, voteItem.getId());
+            prediction = predictionRepository.findByUserIdVoteItemId(userId, voteItem.getId())
+                    .orElse(null);
             if (prediction != null) {
                 return FindVoteParticipationResponse.builder()
                         .isParticipation(true)
@@ -155,6 +156,25 @@ public class VoteService {
                 .voteItem(findVoteItemById(createPredictionRequest.getVote().getVoteItemId()))
                 .point(createPredictionRequest.getVote().getPoint())
                 .build());
+        return true;
+    }
+
+    @Transactional
+    public boolean updatePrediction(Long userId,
+                                    UpdatePredictionRequest updatePredictionRequest) {
+        User user = findUserById(userId);
+        //TODO: 투표한 적이 없을 경우 예외처리
+        Prediction prediction = predictionRepository.findByUserIdVoteItemId(userId,
+                        updatePredictionRequest.getPrediction().getVoteItemId())
+                .orElseThrow();
+        user.builder()
+                .points(user.getPoints() - updatePredictionRequest.getPrediction().getPoint())
+                .build();
+        prediction.builder()
+                .point(updatePredictionRequest.getPrediction().getPoint())
+                .build();
+        userRepository.save(user);
+        predictionRepository.save(prediction);
         return true;
     }
 
