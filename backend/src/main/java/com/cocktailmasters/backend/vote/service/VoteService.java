@@ -164,22 +164,6 @@ public class VoteService {
         return voteItem;
     }
 
-    private VoteItem findVoteItemById(Long voteItemId) {
-        //TODO: 예외처리
-        return voteItemRepository.findById(voteItemId)
-                .orElseThrow();
-    }
-
-    private Tag findTagByTagName(String tagName) {
-        Tag tag = tagRepository.findByTagName(tagName)
-                .orElse(Tag.builder()
-                        .tagName(tagName)
-                        .build());
-        tag.countTagUsedNumber();
-        tagRepository.save(tag);
-        return tag;
-    }
-
     private VoteTag createVoteTag(Tag tag) {
         VoteTag voteTag = VoteTag.builder()
                 .tag(tag)
@@ -201,5 +185,21 @@ public class VoteService {
     private Vote findVoteById(Long voteId) {
         return voteRepository.findById(voteId)
                 .orElseThrow();
+    }
+
+    private VoteItem findVoteItemById(Long voteItemId) {
+        //TODO: 예외처리
+        return voteItemRepository.findById(voteItemId)
+                .orElseThrow();
+    }
+
+    private Tag findTagByTagName(String tagName) {
+        Tag tag = tagRepository.findByTagName(tagName)
+                .orElse(Tag.builder()
+                        .tagName(tagName)
+                        .build());
+        tag.countTagUsedNumber();
+        tagRepository.save(tag);
+        return tag;
     }
 }
