@@ -178,6 +178,17 @@ public class VoteService {
         return true;
     }
 
+    @Transactional
+    public boolean deleteVote(Long userId,
+                              Long voteId) {
+        Vote vote = findVoteById(voteId);
+        if (vote.getUser().getId() == userId) {
+            voteRepository.delete(vote);
+            return true;
+        }
+        return false;
+    }
+
     private VoteItem createVoteItem(VoteItemCreateDto createVoteItemRequest) {
         VoteItem voteItem = createVoteItemRequest.toVoteItemEntity(createVoteItemRequest);
         voteItemRepository.save(voteItem);
