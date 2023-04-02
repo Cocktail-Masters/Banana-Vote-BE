@@ -1,9 +1,6 @@
 package com.cocktailmasters.backend.vote.controller;
 
-import com.cocktailmasters.backend.vote.controller.dto.CreateVoteRequest;
-import com.cocktailmasters.backend.vote.controller.dto.FindVoteDetailResponse;
-import com.cocktailmasters.backend.vote.controller.dto.FindVoteOpinionsResponse;
-import com.cocktailmasters.backend.vote.controller.dto.FindVotesResponse;
+import com.cocktailmasters.backend.vote.controller.dto.*;
 import com.cocktailmasters.backend.vote.service.VoteService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -44,7 +41,7 @@ public class VoteController {
                 .body(voteService.findVotes(keyword, isTag, isClosed, orderBy, page));
     }
 
-    @Operation(summary = "투표글 상세보기", description = "투표글 상세보기, 투표 조회수 증가")
+    @Operation(summary = "투표글 상세 보기", description = "투표글 상세 보기, 투표 조회수 증가")
     @GetMapping("/{vote_id}")
     public ResponseEntity<FindVoteDetailResponse> findVoteDetail(Long userId,
                                                                  @PathVariable("vote_id") Long voteId) {
@@ -53,12 +50,21 @@ public class VoteController {
                 .body(voteService.findVoteDetail(voteId));
     }
 
-    @Operation(summary = "투표글 댓글보기", description = "투표글 댓글보기")
+    @Operation(summary = "투표글 댓글 보기", description = "투표글 댓글 보기")
     @GetMapping("/{vote_id}/opinions")
     public ResponseEntity<FindVoteOpinionsResponse> findVoteOpinions(Long userId,
                                                                      @PathVariable("vote_id") Long voteId) {
         //TODO: 사용자 검사
         return ResponseEntity.ok()
                 .body(voteService.findVoteOpinions(voteId));
+    }
+
+    @Operation(summary = "투표 유무 확인", description = "투표 유무 확인")
+    @GetMapping("check/{vote_id}")
+    public ResponseEntity<FindVoteParticipationResponse> findVoteParticipation(Long userId,
+                                                                               @PathVariable("vote_id") Long voteId) {
+        //TODO: 사용자 검사
+        return ResponseEntity.ok()
+                .body(voteService.findVoteParticipationResponse(userId, voteId));
     }
 }

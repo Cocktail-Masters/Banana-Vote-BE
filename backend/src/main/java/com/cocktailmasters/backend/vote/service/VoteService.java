@@ -5,19 +5,10 @@ import com.cocktailmasters.backend.account.domain.repository.UserRepository;
 import com.cocktailmasters.backend.common.domain.entity.Tag;
 import com.cocktailmasters.backend.common.domain.repository.TagRepository;
 import com.cocktailmasters.backend.util.exception.NotFoundUserException;
-import com.cocktailmasters.backend.vote.controller.dto.CreateVoteRequest;
-import com.cocktailmasters.backend.vote.controller.dto.FindVoteDetailResponse;
-import com.cocktailmasters.backend.vote.controller.dto.FindVoteOpinionsResponse;
-import com.cocktailmasters.backend.vote.controller.dto.FindVotesResponse;
+import com.cocktailmasters.backend.vote.controller.dto.*;
 import com.cocktailmasters.backend.vote.controller.dto.item.*;
-import com.cocktailmasters.backend.vote.domain.entity.OrderBy;
-import com.cocktailmasters.backend.vote.domain.entity.Vote;
-import com.cocktailmasters.backend.vote.domain.entity.VoteItem;
-import com.cocktailmasters.backend.vote.domain.entity.VoteTag;
-import com.cocktailmasters.backend.vote.domain.repository.OpinionRepository;
-import com.cocktailmasters.backend.vote.domain.repository.VoteItemRepository;
-import com.cocktailmasters.backend.vote.domain.repository.VoteRepository;
-import com.cocktailmasters.backend.vote.domain.repository.VoteTagRepository;
+import com.cocktailmasters.backend.vote.domain.entity.*;
+import com.cocktailmasters.backend.vote.domain.repository.*;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -33,6 +24,7 @@ import java.util.stream.Collectors;
 public class VoteService {
 
     private final OpinionRepository opinionRepository;
+    private final PredictionRepository predictionRepository;
     private final TagRepository tagRepository;
     private final UserRepository userRepository;
     private final VoteRepository voteRepository;
@@ -125,6 +117,27 @@ public class VoteService {
                         .stream()
                         .map(opinion -> OpinionDto.createOpinionDto(opinion))
                         .collect(Collectors.toList()))
+                .build();
+    }
+
+    @Transactional
+    public FindVoteParticipationResponse findVoteParticipationResponse(Long userId,
+                                                                       Long voteId) {
+        Prediction prediction;
+        List<VoteItem> voteItems = findVoteById(voteId).getVoteItems();
+        for (VoteItem voteItem : voteItems) {
+            prediction = predictionRepository.findFirstByUserIdVoteItemId(userId, voteItem.getId());
+            if (prediction != null) {
+                return FindVoteParticipationResponse.builder()
+                        .isParticipation(true)
+                        .voteItemId(voteItem.getId())
+                        .voteNumber(voteItem.getVoteItemNumber())
+                        .point(prediction.getPoint())
+                        .build();
+            }
+        }
+        return FindVoteParticipationResponse.builder()
+                .isParticipation(false)
                 .build();
     }
 
