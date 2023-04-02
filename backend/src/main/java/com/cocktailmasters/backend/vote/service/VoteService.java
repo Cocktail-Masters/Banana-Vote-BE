@@ -8,15 +8,20 @@ import com.cocktailmasters.backend.util.exception.NotFoundUserException;
 import com.cocktailmasters.backend.vote.controller.dto.CreateVoteRequest;
 import com.cocktailmasters.backend.vote.controller.dto.FindVoteDetailResponse;
 import com.cocktailmasters.backend.vote.controller.dto.FindVoteOpinionsResponse;
+import com.cocktailmasters.backend.vote.controller.dto.FindVotesResponse;
 import com.cocktailmasters.backend.vote.controller.dto.item.*;
+import com.cocktailmasters.backend.vote.domain.entity.OrderBy;
 import com.cocktailmasters.backend.vote.domain.entity.Vote;
 import com.cocktailmasters.backend.vote.domain.entity.VoteItem;
 import com.cocktailmasters.backend.vote.domain.entity.VoteTag;
+import com.cocktailmasters.backend.vote.domain.repository.OpinionRepository;
 import com.cocktailmasters.backend.vote.domain.repository.VoteItemRepository;
 import com.cocktailmasters.backend.vote.domain.repository.VoteRepository;
 import com.cocktailmasters.backend.vote.domain.repository.VoteTagRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -27,6 +32,7 @@ import java.util.stream.Collectors;
 @Service
 public class VoteService {
 
+    private final OpinionRepository opinionRepository;
     private final TagRepository tagRepository;
     private final UserRepository userRepository;
     private final VoteRepository voteRepository;
@@ -38,7 +44,7 @@ public class VoteService {
         // TODO: controller에서 사용자 검사 후, service에서 사용자 객체 받기
         // TODO: request 검사
         // TODO: 작성자 포인트 감소
-        // User user = findUserById(userId);
+        User user = findUserById(userId);
         List<VoteItem> voteItems = new ArrayList<>();
         List<VoteTag> voteTags = new ArrayList<>();
         createVoteRequest.getVoteItems()
@@ -50,19 +56,49 @@ public class VoteService {
                     Tag tag = findTagByTagName(tagName);
                     voteTags.add(createVoteTag(tag));
                 });
-        voteRepository.save(Vote.builder()
-                // .user(user)
-                .voteTitle(createVoteRequest.getVoteTitle())
-                .voteContent(createVoteRequest.getVoteContent())
-                .voteImageUrl(createVoteRequest.getVoteImageUrl())
-                .voteThumbnailUrl(createVoteRequest.getVoteThumbnailUrl())
-                .voteEndDate(createVoteRequest.getVoteEndDate())
-                .isAnonymous(createVoteRequest.getIsAnonymous())
-                .isPublic(createVoteRequest.getIsPublic())
-                .voteItems(voteItems)
-                .voteTags(voteTags)
-                .build());
+        voteRepository.save(CreateVoteRequest.toVoteEntity(user, createVoteRequest, voteItems, voteTags));
         return true;
+    }
+
+    @Transactional
+    public FindVotesResponse findVotes(String keyword,
+                                       boolean isTag,
+                                       boolean isClosed,
+                                       int orderBy,
+                                       Pageable pageable) {
+        Page<Vote> votes;
+        long totalCount;
+        if (isTag) {
+            votes = voteRepository.findVotesByTagAndOption(keyword,
+                    (isClosed ? true : null),
+                    OrderBy.valueOfNumber(orderBy),
+                    pageable);
+            totalCount = voteRepository.countVotesByTag(keyword,
+                    (isClosed ? true : null),
+                    OrderBy.valueOfNumber(orderBy));
+        } else {
+            votes = voteRepository.findVotesByTitleAndOption(keyword,
+                    (isClosed ? true : null),
+                    OrderBy.valueOfNumber(orderBy),
+                    pageable);
+            totalCount = voteRepository.countVotesByTitle(keyword,
+                    (isClosed ? true : null),
+                    OrderBy.valueOfNumber(orderBy));
+        }
+        return FindVotesResponse.builder()
+                .totalCount(totalCount)
+                .votes(votes.stream()
+                        .map(vote -> VoteDto.builder()
+                                .vote(VoteDetailDto.createVoteDetailDto(vote))
+                                .writer(WriterDto.createWriterDto(vote.getUser()))
+                                .voteItems(vote.getVoteItems().stream()
+                                        .map(voteItem -> VoteItemDto.createVoteItemDto(voteItem))
+                                        .collect(Collectors.toList()))
+                                .bestOpinion(OpinionDto.createOpinionDto(opinionRepository.findFirstByVoteIdOrderByAgreedNumberDesc(vote.getId())
+                                        .orElse(null)))
+                                .build())
+                        .collect(Collectors.toList()))
+                .build();
     }
 
     @Transactional
@@ -72,40 +108,11 @@ public class VoteService {
                 .voteHits(vote.getVoteHits() + 1)
                 .build());
         User writer = vote.getUser();
-        List<VoteItem> voteItems = vote.getVoteItems();
         return FindVoteDetailResponse.builder()
-                .vote(VoteDto.builder()
-                        .title(vote.getVoteTitle())
-                        .imageUrl(vote.getVoteImageUrl())
-                        .content(vote.getVoteContent())
-                        .isEvent(vote.isEvent())
-                        .isAnonymous(vote.isAnonymous())
-                        .isPublic(vote.isPublic())
-                        .isClosed(vote.isClosed())
-                        .startDate(vote.getCreatedDate())
-                        .endDate(vote.getVoteEndDate())
-                        .hits(vote.getVoteHits())
-                        .votedNumber(vote.getVotedNumber())
-                        .opinionNumber(vote.getOpinionNumber())
-                        .tags(vote.getVoteTags()
-                                .stream()
-                                .map(tag -> tag.getTag().getTagName())
-                                .collect(Collectors.toList()))
-                        .build())
-                .writer(WriterDto.builder()
-                        .id(writer.getId())
-                        .nickname(writer.getNickname())
-                        .badgeImageUrl(writer.getEquippedBadgeImageUrl())
-                        .build())
-                .voteItems(voteItems.stream()
-                        .map(item -> VoteItemsDto.builder()
-                                .itemNumber(item.getVoteItemNumber())
-                                .title(item.getVoteItemTitle())
-                                .iframeLink(item.getIframeLink())
-                                .imageUrl(item.getVoteItemImageUrl())
-                                .totalPoints(item.getTotalPoints())
-                                .votedNumber(item.getVotedNumber())
-                                .build())
+                .vote(VoteDetailDto.createVoteDetailDto(vote))
+                .writer(WriterDto.createWriterDto(writer))
+                .voteItems(vote.getVoteItems().stream()
+                        .map(voteItem -> VoteItemDto.createVoteItemDto(voteItem))
                         .collect(Collectors.toList()))
                 .build();
     }
@@ -116,24 +123,13 @@ public class VoteService {
         return FindVoteOpinionsResponse.builder()
                 .opinions(vote.getOpinions()
                         .stream()
-                        .map(opinion -> OpinionsDto.builder()
-                                .id(opinion.getId())
-                                .writerId(opinion.getUser().getId())
-                                .content(opinion.getOpinionContent())
-                                .agreedNumber(opinion.getAgreedNumber())
-                                .disagreedNumber(opinion.getDisagreedNumber())
-                                .build())
+                        .map(opinion -> OpinionDto.createOpinionDto(opinion))
                         .collect(Collectors.toList()))
                 .build();
     }
 
     private VoteItem createVoteItem(CreateVoteItemRequest createVoteItemRequest) {
-        VoteItem voteItem = VoteItem.builder()
-                .voteItemNumber(createVoteItemRequest.getItemNumber())
-                .voteItemTitle(createVoteItemRequest.getTitle())
-                .voteItemImageUrl(createVoteItemRequest.getImageUrl())
-                .iframeLink(createVoteItemRequest.getIframeLink())
-                .build();
+        VoteItem voteItem = createVoteItemRequest.toVoteItemEntity(createVoteItemRequest);
         voteItemRepository.save(voteItem);
         return voteItem;
     }
