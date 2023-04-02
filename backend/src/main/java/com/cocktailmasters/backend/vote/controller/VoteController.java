@@ -89,4 +89,15 @@ public class VoteController {
         }
         throw new Exception();
     }
+
+    @Operation(summary = "투표 삭제", description = "본인이 생성한 투표만 삭제 가능")
+    @DeleteMapping("/{vote_id}")
+    public ResponseEntity<String> deleteVote(Long userId,
+                                             @PathVariable("vote_id") Long voteId) throws Exception {
+        //TODO: 사용자 검사 및 예외처리
+        if (voteService.deleteVote(userId, voteId)) {
+            return ResponseEntity.created(null).build();
+        }
+        throw new Exception();
+    }
 }
