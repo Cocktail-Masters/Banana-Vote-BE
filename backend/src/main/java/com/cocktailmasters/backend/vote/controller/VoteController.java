@@ -108,4 +108,12 @@ public class VoteController {
         return ResponseEntity.ok()
                 .body(voteService.findPopularVotes());
     }
+
+    @Operation(summary = "관심 있을만한 최신 투표 리스트 조회", description = "관심 있을만한 최신 투표 리스트를 최소 5개 반환")
+    @GetMapping("/interest")
+    public ResponseEntity<FindInterestVotesResponse> findInterestVotes(Long userId) {
+        //TODO: 사용자 검사 및 예외처리
+        return ResponseEntity.ok()
+                .body(voteService.findInterestVotes(userId));
+    }
 }

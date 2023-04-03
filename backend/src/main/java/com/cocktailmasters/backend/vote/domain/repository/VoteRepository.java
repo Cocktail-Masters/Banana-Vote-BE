@@ -68,4 +68,18 @@ public interface VoteRepository extends JpaRepository<Vote, Long> {
                                        Pageable pageable);
 
     List<Vote> findTop5ByIsActiveTrueAndIsClosedFalseOrderByVotedNumberDesc();
+
+    @Query(value = "SELECT v.* " +
+            "FROM vote v " +
+            "INNER JOIN vote_tag vt " +
+            "ON v.vote_id = vt.vote_id " +
+            "WHERE vt.tag_id IN " +
+            "(SELECT tag_id " +
+            "FROM tag " +
+            "WHERE tag_name (:keyword IS NULL OR tag_name LIKE CONCAT('%', :keyword, '%')) " +
+            "AND is_closed = false " +
+            "ORDER BY created_date " +
+            "limit 5",
+            nativeQuery = true)
+    List<Vote> findVoteByUserTag(@Param("keyword") String keyword);
 }

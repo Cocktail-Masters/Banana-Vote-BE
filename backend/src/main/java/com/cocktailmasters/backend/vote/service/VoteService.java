@@ -1,6 +1,7 @@
 package com.cocktailmasters.backend.vote.service;
 
 import com.cocktailmasters.backend.account.domain.entity.User;
+import com.cocktailmasters.backend.account.domain.entity.UserTag;
 import com.cocktailmasters.backend.account.domain.repository.UserRepository;
 import com.cocktailmasters.backend.common.domain.entity.Tag;
 import com.cocktailmasters.backend.common.domain.repository.TagRepository;
@@ -193,6 +194,22 @@ public class VoteService {
     public FindPopularVotesResponse findPopularVotes() {
         List<Vote> votes = voteRepository.findTop5ByIsActiveTrueAndIsClosedFalseOrderByVotedNumberDesc();
         return FindPopularVotesResponse.builder()
+                .votes(votes.stream()
+                        .map(vote -> SimpleVoteDto.createSimpleVoteDto(vote))
+                        .collect(Collectors.toList()))
+                .build();
+    }
+
+    @Transactional
+    public FindInterestVotesResponse findInterestVotes(Long userId) {
+        List<UserTag> userTags = findUserById(userId).getUserTags();
+        // TODO: 관심 태그 없을 시 예외처리
+        if (userTags.isEmpty()) return FindInterestVotesResponse.builder().build();
+        List<Vote> votes = new ArrayList<>();
+        for (UserTag userTag : userTags) {
+            votes.addAll(voteRepository.findVoteByUserTag(userTag.getTag().getTagName()));
+        }
+        return FindInterestVotesResponse.builder()
                 .votes(votes.stream()
                         .map(vote -> SimpleVoteDto.createSimpleVoteDto(vote))
                         .collect(Collectors.toList()))
