@@ -189,6 +189,16 @@ public class VoteService {
         return false;
     }
 
+    @Transactional
+    public FindPopularVotesResponse findPopularVotes() {
+        List<Vote> votes = voteRepository.findTop5ByIsActiveTrueAndIsClosedFalseOrderByVotedNumberDesc();
+        return FindPopularVotesResponse.builder()
+                .votes(votes.stream()
+                        .map(vote -> SimpleVoteDto.createSimpleVoteDto(vote))
+                        .collect(Collectors.toList()))
+                .build();
+    }
+
     private VoteItem createVoteItem(VoteItemCreateDto createVoteItemRequest) {
         VoteItem voteItem = createVoteItemRequest.toVoteItemEntity(createVoteItemRequest);
         voteItemRepository.save(voteItem);
