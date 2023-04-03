@@ -7,6 +7,8 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
+import java.util.List;
+
 public interface VoteRepository extends JpaRepository<Vote, Long> {
 
     String countVotesByTitleQuery = "SELECT COUNT(v.*) " +
@@ -64,4 +66,6 @@ public interface VoteRepository extends JpaRepository<Vote, Long> {
                                        @Param("isClosed") boolean isClosed,
                                        @Param("orderBy") String orderBy,
                                        Pageable pageable);
+
+    List<Vote> findTop5ByIsActiveTrueAndIsClosedFalseOrderByVotedNumberDesc();
 }
