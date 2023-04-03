@@ -127,7 +127,7 @@ public class VoteService {
         Prediction prediction;
         List<VoteItem> voteItems = findVoteById(voteId).getVoteItems();
         for (VoteItem voteItem : voteItems) {
-            prediction = predictionRepository.findByUserIdVoteItemId(userId, voteItem.getId())
+            prediction = predictionRepository.findByUserIdAndVoteItemId(userId, voteItem.getId())
                     .orElse(null);
             if (prediction != null) {
                 return FindVoteParticipationResponse.builder()
@@ -164,7 +164,7 @@ public class VoteService {
                                     UpdatePredictionRequest updatePredictionRequest) {
         User user = findUserById(userId);
         //TODO: 투표한 적이 없을 경우 예외처리
-        Prediction prediction = predictionRepository.findByUserIdVoteItemId(userId,
+        Prediction prediction = predictionRepository.findByUserIdAndVoteItemId(userId,
                         updatePredictionRequest.getPrediction().getVoteItemId())
                 .orElseThrow();
         user.builder()
@@ -187,6 +187,16 @@ public class VoteService {
             return true;
         }
         return false;
+    }
+
+    @Transactional
+    public FindPopularVotesResponse findPopularVotes() {
+        List<Vote> votes = voteRepository.findTop5ByIsActiveTrueAndIsClosedFalseOrderByVotedNumberDesc();
+        return FindPopularVotesResponse.builder()
+                .votes(votes.stream()
+                        .map(vote -> SimpleVoteDto.createSimpleVoteDto(vote))
+                        .collect(Collectors.toList()))
+                .build();
     }
 
     private VoteItem createVoteItem(VoteItemCreateDto createVoteItemRequest) {

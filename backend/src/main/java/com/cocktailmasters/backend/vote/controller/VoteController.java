@@ -29,7 +29,7 @@ public class VoteController {
     }
 
     @Operation(summary = "투표 검색", description = "검색어를 사용하여 투표 검색," +
-            "검색 옵션은 정렬기준, 종료유무, 페이지 인덱스")
+            "검색 옵션은 정렬기준, 종료유무, 페이지 인덱스, 10개 반환")
     @GetMapping("/{page_index}/options")
     public ResponseEntity<FindVotesResponse> findVotes(@PathVariable("page_index") int pageIndex,
                                                        @RequestParam("keyword") String keyword,
@@ -99,5 +99,13 @@ public class VoteController {
             return ResponseEntity.created(null).build();
         }
         throw new Exception();
+    }
+
+    @Operation(summary = "진행중인 인기 투표 리스트 조회", description = "진행중인 인기 투표 리스트를 5개 반환")
+    @GetMapping("/popular")
+    public ResponseEntity<FindPopularVotesResponse> findPopularVotes() {
+        //TODO: 예외처리
+        return ResponseEntity.ok()
+                .body(voteService.findPopularVotes());
     }
 }
