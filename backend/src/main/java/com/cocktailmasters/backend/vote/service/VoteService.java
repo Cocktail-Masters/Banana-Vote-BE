@@ -5,18 +5,14 @@ import com.cocktailmasters.backend.account.domain.repository.UserRepository;
 import com.cocktailmasters.backend.common.domain.entity.Tag;
 import com.cocktailmasters.backend.common.domain.repository.TagRepository;
 import com.cocktailmasters.backend.util.exception.NotFoundUserException;
-import com.cocktailmasters.backend.vote.controller.dto.CreateVoteRequest;
-import com.cocktailmasters.backend.vote.controller.dto.FindVoteDetailResponse;
-import com.cocktailmasters.backend.vote.controller.dto.FindVoteOpinionsResponse;
+import com.cocktailmasters.backend.vote.controller.dto.*;
 import com.cocktailmasters.backend.vote.controller.dto.item.*;
-import com.cocktailmasters.backend.vote.domain.entity.Vote;
-import com.cocktailmasters.backend.vote.domain.entity.VoteItem;
-import com.cocktailmasters.backend.vote.domain.entity.VoteTag;
-import com.cocktailmasters.backend.vote.domain.repository.VoteItemRepository;
-import com.cocktailmasters.backend.vote.domain.repository.VoteRepository;
-import com.cocktailmasters.backend.vote.domain.repository.VoteTagRepository;
+import com.cocktailmasters.backend.vote.domain.entity.*;
+import com.cocktailmasters.backend.vote.domain.repository.*;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -27,6 +23,8 @@ import java.util.stream.Collectors;
 @Service
 public class VoteService {
 
+    private final OpinionRepository opinionRepository;
+    private final PredictionRepository predictionRepository;
     private final TagRepository tagRepository;
     private final UserRepository userRepository;
     private final VoteRepository voteRepository;
@@ -34,11 +32,12 @@ public class VoteService {
     private final VoteTagRepository voteTagRepository;
 
     @Transactional
-    public boolean createVote(Long userId, CreateVoteRequest createVoteRequest) {
+    public boolean createVote(Long userId,
+                              CreateVoteRequest createVoteRequest) {
         // TODO: controller에서 사용자 검사 후, service에서 사용자 객체 받기
         // TODO: request 검사
         // TODO: 작성자 포인트 감소
-        // User user = findUserById(userId);
+        User user = findUserById(userId);
         List<VoteItem> voteItems = new ArrayList<>();
         List<VoteTag> voteTags = new ArrayList<>();
         createVoteRequest.getVoteItems()
@@ -50,19 +49,49 @@ public class VoteService {
                     Tag tag = findTagByTagName(tagName);
                     voteTags.add(createVoteTag(tag));
                 });
-        voteRepository.save(Vote.builder()
-                // .user(user)
-                .voteTitle(createVoteRequest.getVoteTitle())
-                .voteContent(createVoteRequest.getVoteContent())
-                .voteImageUrl(createVoteRequest.getVoteImageUrl())
-                .voteThumbnailUrl(createVoteRequest.getVoteThumbnailUrl())
-                .voteEndDate(createVoteRequest.getVoteEndDate())
-                .isAnonymous(createVoteRequest.getIsAnonymous())
-                .isPublic(createVoteRequest.getIsPublic())
-                .voteItems(voteItems)
-                .voteTags(voteTags)
-                .build());
+        voteRepository.save(CreateVoteRequest.toVoteEntity(user, createVoteRequest, voteItems, voteTags));
         return true;
+    }
+
+    @Transactional
+    public FindVotesResponse findVotes(String keyword,
+                                       boolean isTag,
+                                       boolean isClosed,
+                                       int orderBy,
+                                       Pageable pageable) {
+        Page<Vote> votes;
+        long totalCount;
+        if (isTag) {
+            votes = voteRepository.findVotesByTagAndOption(keyword,
+                    (isClosed ? true : null),
+                    OrderBy.valueOfNumber(orderBy),
+                    pageable);
+            totalCount = voteRepository.countVotesByTag(keyword,
+                    (isClosed ? true : null),
+                    OrderBy.valueOfNumber(orderBy));
+        } else {
+            votes = voteRepository.findVotesByTitleAndOption(keyword,
+                    (isClosed ? true : null),
+                    OrderBy.valueOfNumber(orderBy),
+                    pageable);
+            totalCount = voteRepository.countVotesByTitle(keyword,
+                    (isClosed ? true : null),
+                    OrderBy.valueOfNumber(orderBy));
+        }
+        return FindVotesResponse.builder()
+                .totalCount(totalCount)
+                .votes(votes.stream()
+                        .map(vote -> VoteDto.builder()
+                                .vote(VoteDetailDto.createVoteDetailDto(vote))
+                                .writer(WriterDto.createWriterDto(vote.getUser()))
+                                .voteItems(vote.getVoteItems().stream()
+                                        .map(voteItem -> VoteItemDto.createVoteItemDto(voteItem))
+                                        .collect(Collectors.toList()))
+                                .bestOpinion(OpinionDto.createOpinionDto(opinionRepository.findFirstByVoteIdOrderByAgreedNumberDesc(vote.getId())
+                                        .orElse(null)))
+                                .build())
+                        .collect(Collectors.toList()))
+                .build();
     }
 
     @Transactional
@@ -72,40 +101,11 @@ public class VoteService {
                 .voteHits(vote.getVoteHits() + 1)
                 .build());
         User writer = vote.getUser();
-        List<VoteItem> voteItems = vote.getVoteItems();
         return FindVoteDetailResponse.builder()
-                .vote(VoteDto.builder()
-                        .title(vote.getVoteTitle())
-                        .imageUrl(vote.getVoteImageUrl())
-                        .content(vote.getVoteContent())
-                        .isEvent(vote.isEvent())
-                        .isAnonymous(vote.isAnonymous())
-                        .isPublic(vote.isPublic())
-                        .isClosed(vote.isClosed())
-                        .startDate(vote.getCreatedDate())
-                        .endDate(vote.getVoteEndDate())
-                        .hits(vote.getVoteHits())
-                        .votedNumber(vote.getVotedNumber())
-                        .opinionNumber(vote.getOpinionNumber())
-                        .tags(vote.getVoteTags()
-                                .stream()
-                                .map(tag -> tag.getTag().getTagName())
-                                .collect(Collectors.toList()))
-                        .build())
-                .writer(WriterDto.builder()
-                        .id(writer.getId())
-                        .nickname(writer.getNickname())
-                        .badgeImageUrl(writer.getEquippedBadgeImageUrl())
-                        .build())
-                .voteItems(voteItems.stream()
-                        .map(item -> VoteItemsDto.builder()
-                                .itemNumber(item.getVoteItemNumber())
-                                .title(item.getVoteItemTitle())
-                                .iframeLink(item.getIframeLink())
-                                .imageUrl(item.getVoteItemImageUrl())
-                                .totalPoints(item.getTotalPoints())
-                                .votedNumber(item.getVotedNumber())
-                                .build())
+                .vote(VoteDetailDto.createVoteDetailDto(vote))
+                .writer(WriterDto.createWriterDto(writer))
+                .voteItems(vote.getVoteItems().stream()
+                        .map(voteItem -> VoteItemDto.createVoteItemDto(voteItem))
                         .collect(Collectors.toList()))
                 .build();
     }
@@ -116,38 +116,83 @@ public class VoteService {
         return FindVoteOpinionsResponse.builder()
                 .opinions(vote.getOpinions()
                         .stream()
-                        .map(opinion -> OpinionsDto.builder()
-                                .id(opinion.getId())
-                                .writerId(opinion.getUser().getId())
-                                .content(opinion.getOpinionContent())
-                                .agreedNumber(opinion.getAgreedNumber())
-                                .disagreedNumber(opinion.getDisagreedNumber())
-                                .build())
+                        .map(opinion -> OpinionDto.createOpinionDto(opinion))
                         .collect(Collectors.toList()))
                 .build();
     }
 
-    private VoteItem createVoteItem(CreateVoteItemRequest createVoteItemRequest) {
-        VoteItem voteItem = VoteItem.builder()
-                .voteItemNumber(createVoteItemRequest.getItemNumber())
-                .voteItemTitle(createVoteItemRequest.getTitle())
-                .voteItemImageUrl(createVoteItemRequest.getImageUrl())
-                .iframeLink(createVoteItemRequest.getIframeLink())
+    @Transactional
+    public FindVoteParticipationResponse findVoteParticipation(Long userId,
+                                                               Long voteId) {
+        Prediction prediction;
+        List<VoteItem> voteItems = findVoteById(voteId).getVoteItems();
+        for (VoteItem voteItem : voteItems) {
+            prediction = predictionRepository.findByUserIdVoteItemId(userId, voteItem.getId())
+                    .orElse(null);
+            if (prediction != null) {
+                return FindVoteParticipationResponse.builder()
+                        .isParticipation(true)
+                        .voteItemId(voteItem.getId())
+                        .voteNumber(voteItem.getVoteItemNumber())
+                        .point(prediction.getPoint())
+                        .build();
+            }
+        }
+        return FindVoteParticipationResponse.builder()
+                .isParticipation(false)
                 .build();
-        voteItemRepository.save(voteItem);
-        return voteItem;
     }
 
-    private Tag findTagByTagName(String tagName) {
-        Tag tag = tagRepository.findByTagName(tagName);
-        if (tag == null) {
-            tag = Tag.builder()
-                    .tagName(tagName)
-                    .build();
+    @Transactional
+    public boolean createPrediction(Long userId,
+                                    CreatePredictionRequest createPredictionRequest) {
+        User user = findUserById(userId);
+        user.builder()
+                .points(user.getPoints() - createPredictionRequest.getVote().getPoint())
+                .build();
+        userRepository.save(user);
+        predictionRepository.save(Prediction.builder()
+                .user(user)
+                .voteItem(findVoteItemById(createPredictionRequest.getVote().getVoteItemId()))
+                .point(createPredictionRequest.getVote().getPoint())
+                .build());
+        return true;
+    }
+
+    @Transactional
+    public boolean updatePrediction(Long userId,
+                                    UpdatePredictionRequest updatePredictionRequest) {
+        User user = findUserById(userId);
+        //TODO: 투표한 적이 없을 경우 예외처리
+        Prediction prediction = predictionRepository.findByUserIdVoteItemId(userId,
+                        updatePredictionRequest.getPrediction().getVoteItemId())
+                .orElseThrow();
+        user.builder()
+                .points(user.getPoints() - updatePredictionRequest.getPrediction().getPoint())
+                .build();
+        prediction.builder()
+                .point(updatePredictionRequest.getPrediction().getPoint())
+                .build();
+        userRepository.save(user);
+        predictionRepository.save(prediction);
+        return true;
+    }
+
+    @Transactional
+    public boolean deleteVote(Long userId,
+                              Long voteId) {
+        Vote vote = findVoteById(voteId);
+        if (vote.getUser().getId() == userId) {
+            voteRepository.delete(vote);
+            return true;
         }
-        tag.countTagUsedNumber();
-        tagRepository.save(tag);
-        return tag;
+        return false;
+    }
+
+    private VoteItem createVoteItem(VoteItemCreateDto createVoteItemRequest) {
+        VoteItem voteItem = createVoteItemRequest.toVoteItemEntity(createVoteItemRequest);
+        voteItemRepository.save(voteItem);
+        return voteItem;
     }
 
     private VoteTag createVoteTag(Tag tag) {
@@ -159,17 +204,33 @@ public class VoteService {
     }
 
     private User findUserById(Long userId) {
+        // TODO: 예외처리
         try {
             return userRepository.findById(userId)
                     .orElseThrow(() -> new NotFoundUserException());
         } catch (NotFoundUserException e) {
             throw new RuntimeException(e);
         }
-        // TODO: develop pull 후에 예외처리
     }
 
     private Vote findVoteById(Long voteId) {
         return voteRepository.findById(voteId)
                 .orElseThrow();
+    }
+
+    private VoteItem findVoteItemById(Long voteItemId) {
+        //TODO: 예외처리
+        return voteItemRepository.findById(voteItemId)
+                .orElseThrow();
+    }
+
+    private Tag findTagByTagName(String tagName) {
+        Tag tag = tagRepository.findByTagName(tagName)
+                .orElse(Tag.builder()
+                        .tagName(tagName)
+                        .build());
+        tag.countTagUsedNumber();
+        tagRepository.save(tag);
+        return tag;
     }
 }

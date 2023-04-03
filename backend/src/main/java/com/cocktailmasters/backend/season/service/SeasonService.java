@@ -38,6 +38,26 @@ public class SeasonService {
     }
 
     /**
+     * Latest ended season
+     * @return the latest season info if any season is gone return null
+     */
+    public Season getLatestSeason() {
+        LocalDate current = LocalDate.now();
+
+        for(Season season : seasonRepository.findAll(Sort.by(Sort.Direction.DESC, "seasonEndDate"))) {
+            LocalDate startDate = season.getSeasonStartDate();
+            LocalDate endDate = season.getSeasonEndDate();
+
+            // between start and end
+            if(!startDate.isAfter(current) && !endDate.isBefore(current)) return season;
+            // latest season
+            if(endDate.isBefore(current)) return season;
+        }
+
+        return Season.builder().id(-1L).build();
+    }
+
+    /**
      * get information of all season
      */
     public List<Season> getSeasons() {
