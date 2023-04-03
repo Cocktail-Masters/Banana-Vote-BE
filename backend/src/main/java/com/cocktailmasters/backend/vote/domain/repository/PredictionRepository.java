@@ -7,5 +7,5 @@ import java.util.Optional;
 
 public interface PredictionRepository extends JpaRepository<Prediction, Long> {
 
-    Optional<Prediction> findByUserIdVoteItemId(Long userId, Long voteItemId);
+    Optional<Prediction> findByUserIdAndVoteItemId(Long userId, Long voteItemId);
 }

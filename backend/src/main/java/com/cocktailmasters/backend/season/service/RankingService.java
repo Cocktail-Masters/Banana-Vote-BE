@@ -9,6 +9,8 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import com.cocktailmasters.backend.account.domain.entity.User;
+import com.cocktailmasters.backend.account.domain.repository.UserRepository;
 import com.cocktailmasters.backend.season.controller.dto.RankingResponse;
 import com.cocktailmasters.backend.season.controller.dto.item.UserRanking;
 import com.cocktailmasters.backend.season.domain.entity.Season;
@@ -24,6 +26,7 @@ public class RankingService {
     
     private final RankingRepository rankingRepository;
     private final SeasonRepository seasonRepository;
+    private final UserRepository userRepository;
 
     /**
      * get raking list with specific season id and page 
@@ -77,7 +80,10 @@ public class RankingService {
      * @return user ranking or -1 if nickname or seasonId is invalid
      */
     public long getUserRanking(long seasonId, String nickname) {
-        Optional<Long> userScore = rankingRepository.findScoreBySeasonIdAndNickname(seasonId, nickname);
+        Optional<User> user = userRepository.findByNickname(nickname);
+        if(!user.isPresent()) return -1; // not found user
+
+        Optional<Long> userScore = rankingRepository.findScoreBySeasonIdAndUser(seasonId, user.get());
         if(!userScore.isPresent()) return -1;
 
         long userRanking = rankingRepository.getUserRankingByScore(seasonId, userScore.get());
