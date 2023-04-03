@@ -7,12 +7,13 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.PagingAndSortingRepository;
 
+import com.cocktailmasters.backend.account.domain.entity.User;
 import com.cocktailmasters.backend.season.domain.entity.SeasonRanking;
 
 public interface RankingRepository extends PagingAndSortingRepository<SeasonRanking, Long> {
     long countBySeasonId(long seasonId);
 
-    Optional<Long> findScoreBySeasonIdAndNickname(long seasonId, String nickname);
+    Optional<Long> findScoreBySeasonIdAndUser(long seasonId, User user);
 
     Page<SeasonRanking> findBySeasonIdOrderByScoreDesc(long seasonId, Pageable pageable);
 
