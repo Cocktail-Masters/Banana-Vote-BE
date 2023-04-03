@@ -95,4 +95,8 @@ public class User extends BaseEntity {
     @Builder.Default
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<Report> reports = new ArrayList<>();
+
+    public void usePoints(Long points) {
+        this.points -= points;
+    }
 }
