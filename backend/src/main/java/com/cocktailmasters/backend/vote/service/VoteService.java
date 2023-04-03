@@ -135,7 +135,7 @@ public class VoteService {
                         .isParticipation(true)
                         .voteItemId(voteItem.getId())
                         .voteNumber(voteItem.getVoteItemNumber())
-                        .point(prediction.getPoint())
+                        .point(prediction.getPredictionPoints())
                         .build();
             }
         }
@@ -146,36 +146,48 @@ public class VoteService {
 
     @Transactional
     public boolean createPrediction(Long userId,
-                                    CreatePredictionRequest createPredictionRequest) {
+                                    CreatePredictionRequest createPredictionRequest) throws Exception {
+        PredictionDto predictionDto = createPredictionRequest.getVote();
+        //TODO: 포인트가 모자랄 시 예외 처리 적용
+        //TODO: 포인트 사용 시 로그 생성
         User user = findUserById(userId);
-        user.builder()
-                .points(user.getPoints() - createPredictionRequest.getVote().getPoint())
-                .build();
+        user.usePoints(predictionDto.getPoints());
         userRepository.save(user);
+        VoteItem voteItem = findVoteItemById(predictionDto.getVoteItemId());
+        voteItem.updateVotedNumber();
+        voteItem.updateTotalPoints(predictionDto.getPoints());
+        voteItem.updateBestPoints(predictionDto.getPoints());
+        voteItemRepository.save(voteItem);
+        Vote vote = voteItem.getVote();
+        vote.updateVotedNumber();
+        voteRepository.save(vote);
         predictionRepository.save(Prediction.builder()
                 .user(user)
                 .voteItem(findVoteItemById(createPredictionRequest.getVote().getVoteItemId()))
-                .point(createPredictionRequest.getVote().getPoint())
+                .predictionPoints(createPredictionRequest.getVote().getPoints())
                 .build());
         return true;
     }
 
     @Transactional
     public boolean updatePrediction(Long userId,
-                                    UpdatePredictionRequest updatePredictionRequest) {
+                                    UpdatePredictionRequest updatePredictionRequest) throws Exception {
+        PredictionDto predictionDto = updatePredictionRequest.getPrediction();
+        //TODO: 포인트가 모자랄 시 예외 처리 적용
+        //TODO: 포인트 사용 시 로그 생성
         User user = findUserById(userId);
-        //TODO: 투표한 적이 없을 경우 예외처리
-        Prediction prediction = predictionRepository.findByUserIdAndVoteItemId(userId,
-                        updatePredictionRequest.getPrediction().getVoteItemId())
-                .orElseThrow();
-        user.builder()
-                .points(user.getPoints() - updatePredictionRequest.getPrediction().getPoint())
-                .build();
-        prediction.builder()
-                .point(updatePredictionRequest.getPrediction().getPoint())
-                .build();
+        user.usePoints(predictionDto.getPoints());
         userRepository.save(user);
-        predictionRepository.save(prediction);
+        VoteItem voteItem = findVoteItemById(predictionDto.getVoteItemId());
+        voteItem.updateTotalPoints(predictionDto.getPoints());
+        voteItem.updateBestPoints(predictionDto.getPoints());
+        voteItemRepository.save(voteItem);
+        //TODO: 투표한 적이 없을 경우 예외처리
+        Prediction prediction = predictionRepository.findByUserIdAndVoteItemId(userId, predictionDto.getVoteItemId())
+                .orElseThrow();
+        predictionRepository.save(prediction.builder()
+                .predictionPoints(updatePredictionRequest.getPrediction().getPoints())
+                .build());
         return true;
     }
 
@@ -212,6 +224,17 @@ public class VoteService {
         return FindInterestVotesResponse.builder()
                 .votes(votes.stream()
                         .map(vote -> SimpleVoteDto.createSimpleVoteDto(vote))
+                        .collect(Collectors.toList()))
+                .build();
+    }
+
+    @Transactional
+    public FindPredictionsResponse findPredictions(Long voteId) {
+        Vote vote = findVoteById(voteId);
+        return FindPredictionsResponse.builder()
+                .predictions(vote.getVoteItems()
+                        .stream()
+                        .map(voteItem -> PredictionItemDto.createPredictionItemDto(voteItem))
                         .collect(Collectors.toList()))
                 .build();
     }

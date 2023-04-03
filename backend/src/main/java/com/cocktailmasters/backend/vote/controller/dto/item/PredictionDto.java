@@ -8,5 +8,5 @@ import lombok.Getter;
 public class PredictionDto {
 
     private Long voteItemId;
-    private Long point;
+    private Long points;
 }

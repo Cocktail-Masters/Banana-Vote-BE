@@ -71,4 +71,8 @@ public class Vote extends BaseEntity {
     @Builder.Default
     @OneToMany(mappedBy = "vote", cascade = CascadeType.ALL)
     private List<Picket> pickets = new ArrayList<>();
+
+    public void updateVotedNumber() {
+        this.votedNumber++;
+    }
 }

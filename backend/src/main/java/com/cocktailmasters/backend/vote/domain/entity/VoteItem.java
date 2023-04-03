@@ -30,6 +30,9 @@ public class VoteItem extends BaseEntity {
     private Long totalPoints = 0L;
 
     @Builder.Default
+    private Long bestPoints = 0L;
+
+    @Builder.Default
     private int votedNumber = 0;
 
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
@@ -38,4 +41,16 @@ public class VoteItem extends BaseEntity {
     @Builder.Default
     @OneToMany(mappedBy = "voteItem", cascade = CascadeType.ALL)
     private List<Prediction> predictions = new ArrayList<>();
+
+    public void updateVotedNumber() {
+        this.votedNumber++;
+    }
+
+    public void updateTotalPoints(Long points) {
+        this.totalPoints += points;
+    }
+
+    public void updateBestPoints(Long points) {
+        if (this.bestPoints < points) this.bestPoints = points;
+    }
 }

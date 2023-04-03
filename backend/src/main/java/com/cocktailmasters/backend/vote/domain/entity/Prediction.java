@@ -15,7 +15,7 @@ import lombok.experimental.SuperBuilder;
 public class Prediction extends BaseEntity {
 
     @Builder.Default
-    private Long point = 0L;
+    private Long predictionPoints = 0L;
 
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private User user;
