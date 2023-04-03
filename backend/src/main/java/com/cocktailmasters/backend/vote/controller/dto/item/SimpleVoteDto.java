@@ -1,5 +1,6 @@
 package com.cocktailmasters.backend.vote.controller.dto.item;
 
+import com.cocktailmasters.backend.vote.domain.entity.Vote;
 import lombok.Builder;
 import lombok.Getter;
 
@@ -11,4 +12,13 @@ public class SimpleVoteDto {
     private String title;
     private Long hits;
     private int voted_number;
+
+    public static SimpleVoteDto createSimpleVoteDto(Vote vote) {
+        return SimpleVoteDto.builder().
+                id(vote.getId())
+                .title(vote.getVoteTitle())
+                .hits(vote.getVoteHits())
+                .voted_number(vote.getVotedNumber())
+                .build();
+    }
 }
