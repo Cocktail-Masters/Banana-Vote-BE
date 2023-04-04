@@ -38,4 +38,10 @@ public class PointController {
         else
             return ResponseEntity.ok().body(pointLogResponses);
     }
+
+    
+    public ResponseEntity<Long> getPoint() {
+        // TODO : 관리자 확인 로직
+
+    }
 }
