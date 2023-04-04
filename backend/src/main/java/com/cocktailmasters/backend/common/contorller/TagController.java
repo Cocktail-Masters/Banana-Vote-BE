@@ -1,6 +1,8 @@
 package com.cocktailmasters.backend.common.contorller;
 
 import com.cocktailmasters.backend.common.contorller.dto.CreateTagsRequest;
+import com.cocktailmasters.backend.common.service.TagService;
+import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -15,4 +17,16 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/tags")
 public class TagController {
 
+    private final TagService tagService;
+
+    @Operation(summary = "DB에 태그 추가", description = "DB를 태그들 추가, 없는 태그 추가, 있는 태그 무시")
+    @PostMapping("")
+    public ResponseEntity<String> createTags(CreateTagsRequest createTagsRequest) throws Exception {
+        //TODO: 관리자 검증
+        if (tagService.createTags(createTagsRequest)) {
+            return ResponseEntity.created(null).build();
+        }
+        //TODO: 예외처리
+        throw new Exception();
+    }
 }
