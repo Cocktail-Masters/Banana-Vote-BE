@@ -5,7 +5,6 @@ import com.cocktailmasters.backend.common.domain.repository.TagRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-
 @RequiredArgsConstructor
 @Service
 public class TagService {
