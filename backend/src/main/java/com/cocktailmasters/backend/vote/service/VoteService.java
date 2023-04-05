@@ -53,7 +53,7 @@ public class VoteService {
                     tagRepository.save(tag);
                     voteTags.add(createVoteTag(tag));
                 });
-        voteRepository.save(CreateVoteRequest.toVoteEntity(user, createVoteRequest, voteItems, voteTags));
+        voteRepository.save(createVoteRequest.toVoteEntity(user, voteItems, voteTags));
         return true;
     }
 
