@@ -1,17 +1,24 @@
 package com.cocktailmasters.backend.point.controller;
 
 import java.util.List;
+import java.util.Optional;
 
+import org.springframework.boot.autoconfigure.security.SecurityProperties.User;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.cocktailmasters.backend.account.domain.repository.UserRepository;
 import com.cocktailmasters.backend.point.controller.dto.PointLogResponse;
 import com.cocktailmasters.backend.point.service.PointLogService;
+import com.cocktailmasters.backend.point.service.PointService;
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.parameters.RequestBody;
 import io.swagger.v3.oas.annotations.tags.Tag;
 
 import lombok.RequiredArgsConstructor;
@@ -23,6 +30,7 @@ import lombok.RequiredArgsConstructor;
 public class PointController {
     
     private final PointLogService pointLogService;
+    private final PointService pointService;
 
     @Operation(summary = "포인트 로그 조회",
         description = "포인트 로그 조회(로그인 필요)")
@@ -39,9 +47,32 @@ public class PointController {
             return ResponseEntity.ok().body(pointLogResponses);
     }
 
-    
-    public ResponseEntity<Long> getPoint() {
-        // TODO : 관리자 확인 로직
+    @Operation(summary = "포인트 조회(관리자용)",
+        description = "다른 사람의 포인트 조회")
+    @GetMapping("/{nickname}")
+    public ResponseEntity<Long> getPoint(@PathVariable String nickname) {
+        // TODO : admin check logic
 
+        long userPoint = pointService.getPoint(nickname);
+
+        if(userPoint == -1)
+            return ResponseEntity.noContent().build();
+        else
+            return ResponseEntity.ok().body(userPoint);
+    }
+
+    @Operation(summary = "포인트 수정(관리자용)",
+        description = "다른 사람의 포인트 수정, ")
+    @PatchMapping("/{nickname}")
+    public ResponseEntity<String> modifyPoint(@PathVariable String nickname, @RequestBody Integer points) {
+        // TODO : admin check logic
+
+        if(points == null)
+            return ResponseEntity.badRequest().build();
+
+        if(pointService.addPoint(points, "modified by admin", nickname))
+            return ResponseEntity.ok().build();
+        else
+            return ResponseEntity.noContent().build();
     }
 }
