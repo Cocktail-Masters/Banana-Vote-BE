@@ -1,9 +1,7 @@
 package com.cocktailmasters.backend.point.controller;
 
 import java.util.List;
-import java.util.Optional;
 
-import org.springframework.boot.autoconfigure.security.SecurityProperties.User;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -61,15 +59,15 @@ public class PointController {
             return ResponseEntity.ok().body(userPoint);
     }
 
-    @Operation(summary = "포인트 증가 및 감소(관리자용)",
-        description = "다른 사람의 포인트 수정, ")
+    @Operation(summary = "포인트 수정(관리자용)",
+        description = "다른 사람의 포인트 수정")
     @PatchMapping("/{userId}")
     public ResponseEntity<String> modifyPoint(@PathVariable long userId, @RequestBody PointRequest points) {
         // TODO : admin check logic
 
         if(points == null) return ResponseEntity.badRequest().build();
 
-        if(pointService.addPoint(points.getPoints(), "modified by admin", userId))
+        if(pointService.modifyPoint(points.getPoints(), userId))
             return ResponseEntity.ok().build();
         else
             return ResponseEntity.noContent().build();
