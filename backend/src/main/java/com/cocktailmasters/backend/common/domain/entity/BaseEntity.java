@@ -35,6 +35,10 @@ public abstract class BaseEntity {
     @Builder.Default
     private boolean isActive = true;
 
+    protected  void updateLastModifiedDate() {
+        lastModifiedDate = LocalDateTime.now();
+    }
+
     protected void delete() {
         isActive = false;
         deletedDate = LocalDateTime.now();
