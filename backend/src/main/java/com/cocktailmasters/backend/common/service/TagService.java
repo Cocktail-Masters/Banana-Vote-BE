@@ -1,9 +1,14 @@
 package com.cocktailmasters.backend.common.service;
 
 import com.cocktailmasters.backend.common.contorller.dto.CreateTagsRequest;
+import com.cocktailmasters.backend.common.contorller.dto.FindTop10TagsResponse;
+import com.cocktailmasters.backend.common.contorller.dto.item.TagDto;
 import com.cocktailmasters.backend.common.domain.repository.TagRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+
+import java.time.LocalDate;
+import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Service
@@ -20,5 +25,16 @@ public class TagService {
         }
         tagRepository.saveAll(createTagsRequest.toTagEntity());
         return true;
+    }
+
+    public FindTop10TagsResponse findTop10Tags() {
+        LocalDate startDate = LocalDate.now().minusDays(7);
+        LocalDate endDate = LocalDate.now();
+        return FindTop10TagsResponse.builder()
+                .tags(tagRepository.findTop10ByLastModifiedDateBetweenOrderByTagUsedNumber(startDate, endDate)
+                        .stream()
+                        .map(tag -> TagDto.createTagDto(tag))
+                        .collect(Collectors.toList()))
+                .build();
     }
 }
