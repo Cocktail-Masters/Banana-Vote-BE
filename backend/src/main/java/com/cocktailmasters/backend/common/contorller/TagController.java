@@ -7,10 +7,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @Tag(name = "tag", description = "태그 관리")
 @RequiredArgsConstructor
@@ -36,5 +33,15 @@ public class TagController {
     public ResponseEntity<FindTop10TagsResponse> findTop10Tags() {
         return ResponseEntity.ok()
                 .body(tagService.findTop10Tags());
+    }
+
+    @Operation(summary = "태그 삭제", description = "태그 삭제")
+    @DeleteMapping("/{tag_id}")
+    public ResponseEntity<String> deleteTag(@PathVariable("tag_id") Long tagId) throws Exception {
+        if (tagService.deleteTag(tagId)) {
+            return ResponseEntity.created(null).build();
+        }
+        //TODO: 예외처리
+        throw new Exception();
     }
 }
