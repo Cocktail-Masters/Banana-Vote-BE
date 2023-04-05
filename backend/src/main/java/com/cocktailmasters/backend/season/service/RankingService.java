@@ -16,7 +16,6 @@ import com.cocktailmasters.backend.season.controller.dto.RankingResponse;
 import com.cocktailmasters.backend.season.controller.dto.item.UserRanking;
 import com.cocktailmasters.backend.season.domain.entity.Season;
 import com.cocktailmasters.backend.season.domain.entity.SeasonRanking;
-import com.cocktailmasters.backend.season.domain.entity.SeasonRanking.SeasonRankingBuilder;
 import com.cocktailmasters.backend.season.domain.repository.RankingRepository;
 import com.cocktailmasters.backend.season.domain.repository.SeasonRepository;
 
