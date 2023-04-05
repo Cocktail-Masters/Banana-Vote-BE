@@ -1,6 +1,6 @@
 package com.cocktailmasters.backend.vote.controller;
 
-import com.cocktailmasters.backend.vote.controller.dto.*;
+import com.cocktailmasters.backend.vote.controller.dto.vote.*;
 import com.cocktailmasters.backend.vote.service.VoteService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
