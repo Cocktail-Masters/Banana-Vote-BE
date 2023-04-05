@@ -12,8 +12,8 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.cocktailmasters.backend.account.domain.repository.UserRepository;
 import com.cocktailmasters.backend.point.controller.dto.PointLogResponse;
+import com.cocktailmasters.backend.point.controller.dto.PointRequest;
 import com.cocktailmasters.backend.point.service.PointLogService;
 import com.cocktailmasters.backend.point.service.PointService;
 
@@ -49,11 +49,11 @@ public class PointController {
 
     @Operation(summary = "포인트 조회(관리자용)",
         description = "다른 사람의 포인트 조회")
-    @GetMapping("/{nickname}")
-    public ResponseEntity<Long> getPoint(@PathVariable String nickname) {
+    @GetMapping("/{userId}")
+    public ResponseEntity<Long> getPoint(@PathVariable long userId) {
         // TODO : admin check logic
 
-        long userPoint = pointService.getPoint(nickname);
+        long userPoint = pointService.getPoint(userId);
 
         if(userPoint == -1)
             return ResponseEntity.noContent().build();
@@ -63,14 +63,14 @@ public class PointController {
 
     @Operation(summary = "포인트 수정(관리자용)",
         description = "다른 사람의 포인트 수정, ")
-    @PatchMapping("/{nickname}")
-    public ResponseEntity<String> modifyPoint(@PathVariable String nickname, @RequestBody Integer points) {
+    @PatchMapping("/{userId}")
+    public ResponseEntity<String> modifyPoint(@PathVariable long userId, @RequestBody PointRequest points) {
         // TODO : admin check logic
 
         if(points == null)
             return ResponseEntity.badRequest().build();
 
-        if(pointService.addPoint(points, "modified by admin", nickname))
+        if(pointService.addPoint(points.getPoints(), "modified by admin", userId))
             return ResponseEntity.ok().build();
         else
             return ResponseEntity.noContent().build();
