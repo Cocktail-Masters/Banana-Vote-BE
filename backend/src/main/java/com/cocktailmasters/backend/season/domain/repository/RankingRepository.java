@@ -14,12 +14,12 @@ public interface RankingRepository extends JpaRepository<SeasonRanking, Long> {
     long countBySeasonId(long seasonId);
 
     @Query("SELECT score FROM SeasonRanking r WHERE r.season.id = :seasonId AND r.user.id = :userId")
-    long findScoreBySeasonIdAndUser(@Param("seasonId") long seasonId, @Param("userId") long userId);
+    Long findScoreBySeasonIdAndUser(@Param("seasonId") long seasonId, @Param("userId") long userId);
 
     Page<SeasonRanking> findBySeasonIdOrderByScoreDesc(long seasonId, Pageable pageable);
 
     @Query("SELECT COUNT(r) FROM SeasonRanking r WHERE r.season.id = :seasonId AND r.score > :score")
-    long countUserRankingByScore(@Param("seasonId") long seasonId, @Param("score") long score);
+    Long countUserRankingByScore(@Param("seasonId") long seasonId, @Param("score") long score);
 
     Optional<SeasonRanking> findBySeasonIdAndUserId(long seasonId, long userId);
 }
