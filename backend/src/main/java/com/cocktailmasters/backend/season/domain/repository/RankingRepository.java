@@ -4,14 +4,13 @@ import java.util.Optional;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.CrudRepository;
-import org.springframework.data.repository.PagingAndSortingRepository;
 
 import com.cocktailmasters.backend.account.domain.entity.User;
 import com.cocktailmasters.backend.season.domain.entity.SeasonRanking;
 
-public interface RankingRepository extends PagingAndSortingRepository<SeasonRanking, Long>, CrudRepository<SeasonRanking, Long> {
+public interface RankingRepository extends JpaRepository<SeasonRanking, Long> {
     long countBySeasonId(long seasonId);
 
     Optional<Long> findScoreBySeasonIdAndUser(long seasonId, User user);
