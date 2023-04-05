@@ -61,26 +61,26 @@ public class VoteService {
     public FindVotesResponse findVotes(String keyword,
                                        boolean isTag,
                                        boolean isClosed,
-                                       int orderBy,
+                                       int sortBy,
                                        Pageable pageable) {
         Page<Vote> votes;
         long totalCount;
         if (isTag) {
             votes = voteRepository.findVotesByTagAndOption(keyword,
                     (isClosed ? true : null),
-                    OrderBy.valueOfNumber(orderBy),
+                    SortBy.valueOfNumber(sortBy),
                     pageable);
             totalCount = voteRepository.countVotesByTag(keyword,
                     (isClosed ? true : null),
-                    OrderBy.valueOfNumber(orderBy));
+                    SortBy.valueOfNumber(sortBy));
         } else {
             votes = voteRepository.findVotesByTitleAndOption(keyword,
                     (isClosed ? true : null),
-                    OrderBy.valueOfNumber(orderBy),
+                    SortBy.valueOfNumber(sortBy),
                     pageable);
             totalCount = voteRepository.countVotesByTitle(keyword,
                     (isClosed ? true : null),
-                    OrderBy.valueOfNumber(orderBy));
+                    SortBy.valueOfNumber(sortBy));
         }
         return FindVotesResponse.builder()
                 .totalCount(totalCount)
