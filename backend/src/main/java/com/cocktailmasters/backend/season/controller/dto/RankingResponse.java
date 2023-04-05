@@ -16,6 +16,9 @@ public class RankingResponse {
     @JsonProperty("total_page")
     private long totalPage;
 
+    @JsonProperty("now_page")
+    private long nowPage;
+
     @JsonProperty("ranking_list")
     List<UserRanking> rankingList;
 }
