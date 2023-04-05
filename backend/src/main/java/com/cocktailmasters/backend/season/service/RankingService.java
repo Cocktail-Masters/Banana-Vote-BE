@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -48,7 +49,7 @@ public class RankingService {
         for(int i = 0; i < seasonRankings.size(); i++)
             userRankings.add(new UserRanking(seasonRankings.get(i), page * pageSize + i));
 
-        return new RankingResponse(rankingsWithPage.getTotalPages(), userRankings);
+        return new RankingResponse(rankingsWithPage.getTotalPages(), page, userRankings);
     }
 
     /**
@@ -86,10 +87,14 @@ public class RankingService {
         Optional<User> user = userRepository.findByNickname(nickname);
         if(!user.isPresent()) return -1; // not found user
 
-        Optional<Long> userScore = rankingRepository.findScoreBySeasonIdAndUser(seasonId, user.get());
-        if(!userScore.isPresent()) return -1;
-
-        long userRanking = rankingRepository.getUserRankingByScore(seasonId, userScore.get());
+        long userRanking = -1;
+        try {
+            long userScore = rankingRepository.findScoreBySeasonIdAndUser(seasonId, user.get().getId());
+            userRanking = rankingRepository.countUserRankingByScore(seasonId, userScore);
+        } catch(EmptyResultDataAccessException ex) {
+            userRanking = -1;
+        }
+        
         return userRanking;
     }
 
