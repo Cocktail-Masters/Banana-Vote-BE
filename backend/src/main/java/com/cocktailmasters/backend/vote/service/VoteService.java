@@ -48,6 +48,9 @@ public class VoteService {
         createVoteRequest.getTags().
                 forEach(tagName -> {
                     Tag tag = findTagByTagName(tagName);
+                    tag.countTagUsedNumber();
+                    tag.updateLastModifiedDate();
+                    tagRepository.save(tag);
                     voteTags.add(createVoteTag(tag));
                 });
         voteRepository.save(CreateVoteRequest.toVoteEntity(user, createVoteRequest, voteItems, voteTags));
@@ -279,8 +282,6 @@ public class VoteService {
                 .orElse(Tag.builder()
                         .tagName(tagName)
                         .build());
-        tag.countTagUsedNumber();
-        tagRepository.save(tag);
         return tag;
     }
 }
