@@ -43,6 +43,27 @@ public class PointService {
     }
 
     /**
+     * add point to user with log only used by admin
+     * @param value increase or decrease value of mount
+     * @param description
+     * @param user
+     * @return true for success or false
+     */
+    @Transactional
+    public boolean modifyPoint(long value, long userId) {
+        Optional<User> user = userRepository.findById(userId);
+        if(!user.isPresent()) return false;
+
+        long prev_point = user.get().getPoints();
+        int res = userRepository.updateUserPointById(user.get().getId(), value);
+        if(res == 0) return false;
+
+        pointLogService.addPointLog(prev_point - value, "modified by admin", user.get()); // add log
+
+        return true;
+    }
+
+    /**
      * get Point amount by nickname
      * @param nickname
      * @return -1 or points
