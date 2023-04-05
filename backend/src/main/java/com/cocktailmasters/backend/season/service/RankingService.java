@@ -8,6 +8,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.cocktailmasters.backend.account.domain.entity.User;
 import com.cocktailmasters.backend.account.domain.repository.UserRepository;
@@ -27,6 +28,8 @@ public class RankingService {
     private final RankingRepository rankingRepository;
     private final SeasonRepository seasonRepository;
     private final UserRepository userRepository;
+
+    private final SeasonService seasonService;
 
     /**
      * get raking list with specific season id and page 
@@ -102,5 +105,37 @@ public class RankingService {
             return true;
         else
             return false;
+    }
+
+    /**
+     * add score to current season
+     * @param amount must be positive number
+     * @return true of false by success
+     */
+    @Transactional
+    public boolean addCurrentSeasonScore(long amount, User user) {
+        if(amount < 0) return false;
+
+        // check current season
+        Season currentSeason = seasonService.getCurrentSeason();
+        if(currentSeason == null) return false;
+
+        Optional<SeasonRanking> seasonRanking = rankingRepository.findBySeasonIdAndUserId(currentSeason.getId(), user.getId());
+
+        SeasonRanking modifiedSeasonRanking = null;
+        if(seasonRanking.isPresent()) {
+            modifiedSeasonRanking = seasonRanking.get();
+            modifiedSeasonRanking.setScore(modifiedSeasonRanking.getScore() + amount);
+        } else {
+            // newly add user score column
+            modifiedSeasonRanking = SeasonRanking.builder()
+                .score(amount)
+                .season(currentSeason)
+                .user(user)
+                .build();
+        }
+
+        rankingRepository.save(modifiedSeasonRanking);
+        return true;
     }
 }

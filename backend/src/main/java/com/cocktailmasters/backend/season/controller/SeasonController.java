@@ -57,10 +57,12 @@ public class SeasonController {
         }
     }
 
-    @Operation(summary = "시즌 정보를 추가(관리자용)",
+    @Operation(summary = "시즌 정보를 추가(관리자용) - id는 신경 안써도 됨",
         description = "현재 시즌의 정보에 대해 추가, 만약 일자가 겹칠 경우엔 에러 발생")
     @PostMapping
     public ResponseEntity<String> addSeasonInfo(@Valid @RequestBody SeasonDto season) {
+        // TODO : add admin check logic
+
         // check invalid date request
         if(season.getEndDate().isBefore(season.getStartDate())) 
             return ResponseEntity.badRequest().body("invalid start and end date");
@@ -78,6 +80,8 @@ public class SeasonController {
         description = "현재 시즌의 정보에 대해 수정, 일부 필드에 대해서만 수정하는 경우도 가능")
     @PatchMapping
     public ResponseEntity<String> patchSeasonInfo(@Valid @RequestBody SeasonDto season) {
+        // TODO : add admin check logic
+
         if(seasonService.modifySeason(season, true))
             return ResponseEntity.ok().build();
         else

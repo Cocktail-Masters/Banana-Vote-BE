@@ -13,6 +13,7 @@ import lombok.experimental.SuperBuilder;
 @AttributeOverride(name = "id", column = @Column(name = "season_ranking_id"))
 @Entity
 public class SeasonRanking extends BaseEntity {
+    @Setter
     @Builder.Default
     private Long score = 0L;
 

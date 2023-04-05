@@ -15,9 +15,11 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<String> handleExcpetion(Exception ex) {
+        ex.printStackTrace();
+
         // Exception
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                .body("Server error!!!");
+                .body(ex.getMessage());
     }
 
     @ExceptionHandler(JsonParseException.class)
