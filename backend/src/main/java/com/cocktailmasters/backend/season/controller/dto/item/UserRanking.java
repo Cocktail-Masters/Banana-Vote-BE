@@ -10,6 +10,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class UserRanking {
+    private long userId;
+
     private long ranking = -1;
 
     private String nickname;
@@ -17,6 +19,7 @@ public class UserRanking {
     private long score;
 
     public UserRanking(SeasonRanking seasonRanking, long ranking) {
+        this.userId = seasonRanking.getUser().getId();
         this.nickname = seasonRanking.getUser().getNickname();
         this.score = seasonRanking.getScore();
         this.ranking = ranking;
