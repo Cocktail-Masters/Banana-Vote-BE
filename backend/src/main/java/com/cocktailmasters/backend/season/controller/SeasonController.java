@@ -57,7 +57,7 @@ public class SeasonController {
         }
     }
 
-    @Operation(summary = "시즌 정보를 추가(관리자용)",
+    @Operation(summary = "시즌 정보를 추가(관리자용) - id는 신경 안써도 됨",
         description = "현재 시즌의 정보에 대해 추가, 만약 일자가 겹칠 경우엔 에러 발생")
     @PostMapping
     public ResponseEntity<String> addSeasonInfo(@Valid @RequestBody SeasonDto season) {
