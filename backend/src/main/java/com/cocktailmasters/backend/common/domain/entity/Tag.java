@@ -35,4 +35,9 @@ public class Tag extends BaseEntity {
     public void countTagUsedNumber() {
         this.tagUsedNumber++;
     }
+
+    @Override
+    public void updateLastModifiedDate() {
+        super.updateLastModifiedDate();
+    }
 }
