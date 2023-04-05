@@ -12,7 +12,6 @@ import com.cocktailmasters.backend.account.domain.repository.UserRepository;
 import com.cocktailmasters.backend.point.controller.dto.PointLogResponse;
 import com.cocktailmasters.backend.point.domain.entity.PointLog;
 import com.cocktailmasters.backend.point.domain.repository.PointLogRepository;
-import com.cocktailmasters.backend.season.service.RankingService;
 
 import lombok.RequiredArgsConstructor;
 
@@ -22,8 +21,6 @@ public class PointLogService {
     
     private final PointLogRepository pointLogRepository;
     private final UserRepository userRepository;
-
-    private final RankingService rankingService;
 
     /**
      * get Point Logs by user Id
@@ -39,29 +36,6 @@ public class PointLogService {
 
         return pointLogResponses;
     }
-
-    /**
-     * add point to user with log
-     * if season is on, it will modify season score too
-     * @param amount increase or decrease value of mount
-     * @param description
-     * @param userId
-     * @return true for success or false
-     */
-    @Transactional
-    public boolean modifyPoint(long amount, String description, long userId) {
-        Optional<User> userInfo = userRepository.findById(userId);
-        if(!userInfo.isPresent()) return false;
-
-        int res = userRepository.updateUserPointById(userId, userInfo.get().getPoints() + amount);
-        if(res == 0) return false;
-
-        addPointLog(amount, description, userInfo.get());
-        if(amount > 0) rankingService.addCurrentSeasonScore(amount, userInfo.get());
-
-        return true;
-    }
-
 
     /**
      * add point log with User object
