@@ -1,4 +1,4 @@
-package com.cocktailmasters.backend.vote.controller.dto;
+package com.cocktailmasters.backend.vote.controller.dto.vote;
 
 import lombok.Builder;
 import lombok.Getter;

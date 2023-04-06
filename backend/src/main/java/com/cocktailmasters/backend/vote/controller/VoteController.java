@@ -1,6 +1,6 @@
 package com.cocktailmasters.backend.vote.controller;
 
-import com.cocktailmasters.backend.vote.controller.dto.*;
+import com.cocktailmasters.backend.vote.controller.dto.vote.*;
 import com.cocktailmasters.backend.vote.service.VoteService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -20,7 +20,7 @@ public class VoteController {
     @Operation(summary = "투표 생성", description = "새로운 투표 생성")
     @PostMapping("")
     public ResponseEntity<String> createVote(Long userId,
-                                             CreateVoteRequest createVoteRequest) throws Exception {
+                                             @RequestBody CreateVoteRequest createVoteRequest) throws Exception {
         //TODO: 사용자 검사 및 예외처리
         if (voteService.createVote(userId, createVoteRequest)) {
             return ResponseEntity.created(null).build();
@@ -71,7 +71,7 @@ public class VoteController {
     @Operation(summary = "투표하기", description = "투표하기, 예측 생성")
     @PostMapping("/vote")
     public ResponseEntity<String> createPrediction(Long userId,
-                                                   CreatePredictionRequest createPredictionRequest) throws Exception {
+                                                   @RequestBody CreatePredictionRequest createPredictionRequest) throws Exception {
         //TODO: 사용자 검사 및 예외처리
         if (voteService.createPrediction(userId, createPredictionRequest)) {
             return ResponseEntity.created(null).build();
@@ -82,7 +82,7 @@ public class VoteController {
     @Operation(summary = "투표 예측", description = "기존에 투표만 한 투표에 포인트 예측")
     @PatchMapping("/prediction")
     public ResponseEntity<String> updatePrediction(Long userId,
-                                                   UpdatePredictionRequest updatePredictionRequest) throws Exception {
+                                                   @RequestBody UpdatePredictionRequest updatePredictionRequest) throws Exception {
         //TODO: 사용자 검사 및 예외처리
         if (voteService.updatePrediction(userId, updatePredictionRequest)) {
             return ResponseEntity.created(null).build();

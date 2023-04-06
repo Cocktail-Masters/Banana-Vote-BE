@@ -19,7 +19,7 @@ public class TagController {
 
     @Operation(summary = "DB에 태그 추가", description = "DB를 태그들 추가, 없는 태그 추가, 있는 태그 무시")
     @PostMapping("")
-    public ResponseEntity<String> createTags(CreateTagsRequest createTagsRequest) throws Exception {
+    public ResponseEntity<String> createTags(@RequestBody CreateTagsRequest createTagsRequest) throws Exception {
         //TODO: 관리자 검증
         if (tagService.createTags(createTagsRequest)) {
             return ResponseEntity.created(null).build();

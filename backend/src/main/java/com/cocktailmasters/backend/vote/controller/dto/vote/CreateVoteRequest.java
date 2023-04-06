@@ -1,4 +1,4 @@
-package com.cocktailmasters.backend.vote.controller.dto;
+package com.cocktailmasters.backend.vote.controller.dto.vote;
 
 import com.cocktailmasters.backend.account.domain.entity.User;
 import com.cocktailmasters.backend.vote.controller.dto.item.VoteItemCreateDto;
@@ -24,20 +24,19 @@ public class CreateVoteRequest {
     private Boolean isAnonymous;
     private List<VoteItemCreateDto> voteItems;
     private List<String> tags;
-    
-    public static Vote toVoteEntity(User user,
-                                    CreateVoteRequest createVoteRequest,
-                                    List<VoteItem> voteItems,
-                                    List<VoteTag> voteTags) {
+
+    public Vote toVoteEntity(User user,
+                             List<VoteItem> voteItems,
+                             List<VoteTag> voteTags) {
         return Vote.builder()
                 .user(user)
-                .voteTitle(createVoteRequest.getVoteTitle())
-                .voteContent(createVoteRequest.getVoteContent())
-                .voteImageUrl(createVoteRequest.getVoteImageUrl())
-                .voteThumbnailUrl(createVoteRequest.getVoteThumbnailUrl())
-                .voteEndDate(createVoteRequest.getVoteEndDate())
-                .isAnonymous(createVoteRequest.getIsAnonymous())
-                .isPublic(createVoteRequest.getIsPublic())
+                .voteTitle(voteTitle)
+                .voteContent(voteContent)
+                .voteImageUrl(voteImageUrl)
+                .voteThumbnailUrl(voteThumbnailUrl)
+                .voteEndDate(voteEndDate)
+                .isAnonymous(isAnonymous)
+                .isPublic(isPublic)
                 .voteItems(voteItems)
                 .voteTags(voteTags)
                 .build();

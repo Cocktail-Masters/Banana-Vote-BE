@@ -6,8 +6,8 @@ import com.cocktailmasters.backend.account.domain.repository.UserRepository;
 import com.cocktailmasters.backend.common.domain.entity.Tag;
 import com.cocktailmasters.backend.common.domain.repository.TagRepository;
 import com.cocktailmasters.backend.util.exception.NotFoundUserException;
-import com.cocktailmasters.backend.vote.controller.dto.*;
 import com.cocktailmasters.backend.vote.controller.dto.item.*;
+import com.cocktailmasters.backend.vote.controller.dto.vote.*;
 import com.cocktailmasters.backend.vote.domain.entity.*;
 import com.cocktailmasters.backend.vote.domain.repository.*;
 import jakarta.transaction.Transactional;
@@ -53,7 +53,7 @@ public class VoteService {
                     tagRepository.save(tag);
                     voteTags.add(createVoteTag(tag));
                 });
-        voteRepository.save(CreateVoteRequest.toVoteEntity(user, createVoteRequest, voteItems, voteTags));
+        voteRepository.save(createVoteRequest.toVoteEntity(user, voteItems, voteTags));
         return true;
     }
 
