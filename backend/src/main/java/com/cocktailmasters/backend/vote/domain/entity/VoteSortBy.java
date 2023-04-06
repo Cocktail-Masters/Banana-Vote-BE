@@ -8,7 +8,7 @@ import java.util.Map;
 
 @Getter
 @AllArgsConstructor
-public enum SortBy {
+public enum VoteSortBy {
 
     LATEST(1, "created_date", "최신순"),
     POPULARITY(2, "voted_number", "참여순"),
@@ -19,10 +19,10 @@ public enum SortBy {
     private final String value;
     private final String title;
 
-    private static final Map<Integer, SortBy> BY_NUMBER = new HashMap<>();
+    private static final Map<Integer, VoteSortBy> BY_NUMBER = new HashMap<>();
 
     static {
-        for (SortBy e : values()) {
+        for (VoteSortBy e : values()) {
             BY_NUMBER.put(e.number, e);
         }
     }
