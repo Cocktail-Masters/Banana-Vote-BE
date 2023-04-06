@@ -43,5 +43,4 @@ public class OpinionController {
         return ResponseEntity.ok()
                 .body(opinionService.findOpinions(voteId, sortBy, page));
     }
-
 }
