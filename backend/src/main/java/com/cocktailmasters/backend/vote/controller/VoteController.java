@@ -50,15 +50,6 @@ public class VoteController {
                 .body(voteService.findVoteDetail(voteId));
     }
 
-    @Operation(summary = "투표글 댓글 보기", description = "투표글 댓글 보기")
-    @GetMapping("/{vote_id}/opinions")
-    public ResponseEntity<FindVoteOpinionsResponse> findVoteOpinions(Long userId,
-                                                                     @PathVariable("vote_id") Long voteId) {
-        //TODO: 사용자 검사 및 예외처리
-        return ResponseEntity.ok()
-                .body(voteService.findVoteOpinions(voteId));
-    }
-
     @Operation(summary = "투표 유무 확인", description = "투표 유무 확인")
     @GetMapping("/check/{vote_id}")
     public ResponseEntity<FindVoteParticipationResponse> findVoteParticipation(Long userId,
