@@ -7,6 +7,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
+import java.util.List;
 import java.util.Optional;
 
 public interface OpinionRepository extends JpaRepository<Opinion, Long> {
@@ -28,4 +29,9 @@ public interface OpinionRepository extends JpaRepository<Opinion, Long> {
     Page<Opinion> findOpinionsByVoteIdAndOption(@Param("vote_id") Long voteId,
                                                 @Param("sort_by") String sortBy,
                                                 Pageable pageable);
+
+    @Query(value = countOpinionsQuery, nativeQuery = true)
+    int countOpinionsByVoteId(@Param("vote_id") Long voteId);
+
+    List<Opinion> findTop3ByVoteIdAndAgreedNumberGreaterThanAndAgreedNumberDesc(Long voteId, int agreedNumber);
 }
