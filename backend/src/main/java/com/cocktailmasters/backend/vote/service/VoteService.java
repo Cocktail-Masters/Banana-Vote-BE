@@ -68,19 +68,17 @@ public class VoteService {
         if (isTag) {
             votes = voteRepository.findVotesByTagAndOption(keyword,
                     (isClosed ? true : null),
-                    SortBy.valueOfNumber(sortBy),
+                    VoteSortBy.valueOfNumber(sortBy),
                     pageable);
             totalCount = voteRepository.countVotesByTag(keyword,
-                    (isClosed ? true : null),
-                    SortBy.valueOfNumber(sortBy));
+                    (isClosed ? true : null));
         } else {
             votes = voteRepository.findVotesByTitleAndOption(keyword,
                     (isClosed ? true : null),
-                    SortBy.valueOfNumber(sortBy),
+                    VoteSortBy.valueOfNumber(sortBy),
                     pageable);
             totalCount = voteRepository.countVotesByTitle(keyword,
-                    (isClosed ? true : null),
-                    SortBy.valueOfNumber(sortBy));
+                    (isClosed ? true : null));
         }
         return FindVotesResponse.builder()
                 .totalCount(totalCount)
@@ -110,17 +108,6 @@ public class VoteService {
                 .writer(WriterDto.createWriterDto(writer))
                 .voteItems(vote.getVoteItems().stream()
                         .map(voteItem -> VoteItemDto.createVoteItemDto(voteItem))
-                        .collect(Collectors.toList()))
-                .build();
-    }
-
-    @Transactional
-    public FindVoteOpinionsResponse findVoteOpinions(Long voteId) {
-        Vote vote = findVoteById(voteId);
-        return FindVoteOpinionsResponse.builder()
-                .opinions(vote.getOpinions()
-                        .stream()
-                        .map(opinion -> OpinionDto.createOpinionDto(opinion))
                         .collect(Collectors.toList()))
                 .build();
     }
