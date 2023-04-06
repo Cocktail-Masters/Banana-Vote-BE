@@ -11,6 +11,6 @@ import java.util.List;
 public class FindOpinionsResponse {
 
     List<OpinionDto> opinions;
-    List<Integer> bestIds;
+    List<Long> bestIds;
     int totalCount;
 }
