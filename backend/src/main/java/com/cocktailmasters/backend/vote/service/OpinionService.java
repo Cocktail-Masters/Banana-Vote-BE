@@ -40,7 +40,7 @@ public class OpinionService {
         Page<Opinion> opinions = opinionRepository.findOpinionsByVoteIdAndOption(voteId,
                 OpinionSortBy.valueOfNumber(sortBy),
                 pageable);
-        List<Opinion> bestOpinions = opinionRepository.findTop3ByVoteIdAndAgreedNumberGreaterThanAndAgreedNumberDesc(voteId, 9);
+        List<Opinion> bestOpinions = opinionRepository.findTop3ByVoteIdAndAgreedNumberGreaterThanOrderByAgreedNumberDesc(voteId, 9);
         return FindOpinionsResponse.builder()
                 .opinions(opinions.stream()
                         .map(opinion -> OpinionDto.createOpinionDto(opinion))
