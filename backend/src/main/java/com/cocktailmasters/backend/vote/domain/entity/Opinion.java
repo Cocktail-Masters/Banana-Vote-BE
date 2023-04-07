@@ -7,6 +7,9 @@ import jakarta.validation.constraints.NotNull;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Getter
 @SuperBuilder
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -26,6 +29,10 @@ public class Opinion extends BaseEntity {
 
     @Builder.Default
     private int opinionReportedNumber = 0;
+
+    @Builder.Default
+    @OneToMany(mappedBy = "opinion", cascade = CascadeType.ALL)
+    private List<Agreement> agreements = new ArrayList<>();
 
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private User user;
