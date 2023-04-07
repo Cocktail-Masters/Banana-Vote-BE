@@ -85,9 +85,11 @@ public class PicketController {
         description = "해당 피켓 삭제, position은 필수 옵션")
     public ResponseEntity<String> removePicket(@PathVariable long voteId,
         @RequestParam(required = true) int position) {
-        // TODO : 관리자 확인 로직
-        long userId = 1;
+        // TODO : 관리자 and 로그인 확인 로직
 
-        return null;
+        if(picketService.deletePicket(voteId, position))
+            return ResponseEntity.ok().build();
+        else
+            return ResponseEntity.badRequest().build();
     }
 }

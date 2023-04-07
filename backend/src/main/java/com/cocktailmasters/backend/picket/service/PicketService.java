@@ -109,7 +109,7 @@ public class PicketService {
     }
 
     /**
-     * 
+     * modify picket image
      * @param voteId
      * @param userid
      * @param picketRequest
@@ -117,9 +117,6 @@ public class PicketService {
      */
     @Transactional
     public boolean changePicketImage(long voteId, long userId, PicketRequest picketRequest) {
-        Optional<Vote> vote = voteRepository.findById(voteId);
-        if(!vote.isPresent()) return false;
-
         String modifiedUrl = picketRequest.getPicketImageUrl();
         int position = picketRequest.getPosition();
 
@@ -128,6 +125,21 @@ public class PicketService {
 
         picket.get().changeImage(modifiedUrl);
         picketRepository.save(picket.get());
+        return true;
+    }
+
+    /**
+     * delete picket
+     * @param voteId
+     * @param position
+     * @return true or false
+     */
+    @Transactional
+    public boolean deletePicket(long voteId, int position) {
+        Optional<Picket> picket = picketRepository.findByVoteIdAndPosition(voteId, position);
+        if(!picket.isPresent()) return false;
+
+        picketRepository.delete(picket.get());
         return true;
     }
 }
