@@ -77,7 +77,7 @@ public class SeasonController {
     }
 
     @Operation(summary = "시즌 정보를 수정(관리자용)",
-        description = "현재 시즌의 정보에 대해 수정, 일부 필드에 대해서만 수정하는 경우도 가능")
+        description = "시즌의 정보에 대해 수정, 일부 필드에 대해서만 수정하는 경우도 가능")
     @PatchMapping
     public ResponseEntity<String> patchSeasonInfo(@Valid @RequestBody SeasonDto season) {
         // TODO : add admin check logic

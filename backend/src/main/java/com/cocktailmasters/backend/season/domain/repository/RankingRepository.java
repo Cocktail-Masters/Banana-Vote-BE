@@ -6,19 +6,20 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
-import com.cocktailmasters.backend.account.domain.entity.User;
 import com.cocktailmasters.backend.season.domain.entity.SeasonRanking;
 
 public interface RankingRepository extends JpaRepository<SeasonRanking, Long> {
     long countBySeasonId(long seasonId);
 
-    Optional<Long> findScoreBySeasonIdAndUser(long seasonId, User user);
+    @Query("SELECT score FROM SeasonRanking r WHERE r.season.id = :seasonId AND r.user.id = :userId")
+    Long findScoreBySeasonIdAndUser(@Param("seasonId") long seasonId, @Param("userId") long userId);
 
     Page<SeasonRanking> findBySeasonIdOrderByScoreDesc(long seasonId, Pageable pageable);
 
-    @Query(value = "SELECT COUNT(*) + 1 FROM season_ranking WHERE season_id = :seasonId AND score > :score", nativeQuery = true)
-    long getUserRankingByScore(long seasonId, long score);
+    @Query("SELECT COUNT(r) FROM SeasonRanking r WHERE r.season.id = :seasonId AND r.score > :score")
+    Long countUserRankingByScore(@Param("seasonId") long seasonId, @Param("score") long score);
 
     Optional<SeasonRanking> findBySeasonIdAndUserId(long seasonId, long userId);
 }

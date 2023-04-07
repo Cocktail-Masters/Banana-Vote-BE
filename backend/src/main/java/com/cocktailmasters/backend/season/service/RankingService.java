@@ -48,7 +48,7 @@ public class RankingService {
         for(int i = 0; i < seasonRankings.size(); i++)
             userRankings.add(new UserRanking(seasonRankings.get(i), page * pageSize + i));
 
-        return new RankingResponse(rankingsWithPage.getTotalPages(), userRankings);
+        return new RankingResponse(rankingsWithPage.getTotalPages(), page, userRankings);
     }
 
     /**
@@ -86,11 +86,49 @@ public class RankingService {
         Optional<User> user = userRepository.findByNickname(nickname);
         if(!user.isPresent()) return -1; // not found user
 
-        Optional<Long> userScore = rankingRepository.findScoreBySeasonIdAndUser(seasonId, user.get());
-        if(!userScore.isPresent()) return -1;
+        Long userScore = rankingRepository.findScoreBySeasonIdAndUser(seasonId, user.get().getId());
+        if(userScore == null) return -1;
+        
+        Long userRanking = rankingRepository.countUserRankingByScore(seasonId, userScore);
+        if(userRanking == null)
+            return -1;
+        else
+            return userRanking;
+    }
 
-        long userRanking = rankingRepository.getUserRankingByScore(seasonId, userScore.get());
-        return userRanking;
+    /**
+     * get user ranking of current season
+     * @param userId
+     * @return user ranking or -1 if current season is off
+     */
+    public long getCurrentSeasonUserRanking(long userId) {
+        Season currentSeason = seasonService.getCurrentSeason();
+        if(currentSeason == null) return -1;
+
+        Long userScore = rankingRepository.findScoreBySeasonIdAndUser(currentSeason.getId(), userId);
+        if(userScore == null) return -1;
+
+        Long userRanking = rankingRepository.countUserRankingByScore(currentSeason.getId(), userScore);
+        if(userRanking == null)
+            return -1;
+        else
+            return userRanking;
+    }
+
+    /**
+     * get user score of current season
+     * @param userId
+     * @return score or -1 if not in season
+     */
+    public long getCurrentSeasonUserScore(long userId) {
+        Season currentSeason = seasonService.getCurrentSeason();
+        if(currentSeason == null) return -1;
+
+        Long userScore = rankingRepository.findScoreBySeasonIdAndUser(currentSeason.getId(), userId);
+        if(userScore == null)
+            return -1;
+        else
+            return userScore;
     }
 
     /**
