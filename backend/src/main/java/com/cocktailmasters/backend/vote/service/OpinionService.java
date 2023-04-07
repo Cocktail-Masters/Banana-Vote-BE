@@ -52,6 +52,12 @@ public class OpinionService {
                 .build();
     }
 
+    @Transactional
+    public boolean deleteOpinion(Long userId, Long opinionId) {
+        opinionRepository.findByIdAndUserId(opinionId, userId);
+        return true;
+    }
+
     private User findUserById(Long userId) {
         //TODO: 예외처리
         return userRepository.findById(userId)
