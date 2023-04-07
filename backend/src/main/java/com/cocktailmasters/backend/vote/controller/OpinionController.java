@@ -43,4 +43,15 @@ public class OpinionController {
         return ResponseEntity.ok()
                 .body(opinionService.findOpinions(voteId, sortBy, page));
     }
+
+    @Operation(summary = "의견 삭제", description = "사용자가 작성한 의견 삭제")
+    @DeleteMapping("/{opinion_id}")
+    public ResponseEntity<String> deleteOpinion(@PathVariable("opinion_id") Long opinionId) {
+        // TODO: 사용자 검사 필요
+        Long userId = 1L;
+        if (opinionService.deleteOpinion(opinionId, userId)) {
+            return ResponseEntity.created(null).build();
+        }
+        return ResponseEntity.badRequest().build();
+    }
 }

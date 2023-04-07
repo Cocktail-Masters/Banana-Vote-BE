@@ -34,4 +34,6 @@ public interface OpinionRepository extends JpaRepository<Opinion, Long> {
     int countOpinionsByVoteId(@Param("vote_id") Long voteId);
 
     List<Opinion> findTop3ByVoteIdAndAgreedNumberGreaterThanOrderByAgreedNumberDesc(Long voteId, int agreedNumber);
+
+    Optional<Opinion> findByIdAndUserId(Long opinionId, Long userId);
 }
