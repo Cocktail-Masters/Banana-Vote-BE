@@ -4,6 +4,7 @@ import com.cocktailmasters.backend.achievement.domain.entity.UserAchievement;
 import com.cocktailmasters.backend.common.domain.entity.BaseEntity;
 import com.cocktailmasters.backend.goods.domain.entity.UserBadge;
 import com.cocktailmasters.backend.goods.domain.entity.UserGoods;
+import com.cocktailmasters.backend.picket.domain.entity.Picket;
 import com.cocktailmasters.backend.point.domain.entity.PointLog;
 import com.cocktailmasters.backend.report.domain.entity.BanLog;
 import com.cocktailmasters.backend.report.domain.entity.Report;
