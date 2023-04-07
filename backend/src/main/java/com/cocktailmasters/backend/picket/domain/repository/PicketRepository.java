@@ -11,5 +11,7 @@ public interface PicketRepository extends JpaRepository<Picket, Long> {
     
     List<Picket> findAllByVoteId(long voteId);
 
-    Optional<Picket> findByVoteIdAndPosition(long voteId, long position);
+    Optional<Picket> findByVoteIdAndPosition(long voteId, int position);
+
+    Optional<Picket> findByVoteIdAndUserIdAndPosition(long voteId, long userId, int position);
 }
