@@ -73,19 +73,21 @@ public class PicketService {
     @Transactional
     public long buyPicket(long voteId, long userId, PicketRequest picketRequest) {
         Optional<Vote> vote = voteRepository.findById(voteId);
-        if(!vote.isPresent())
-            return -1;
+        if(!vote.isPresent()) return -1;
 
         int position = picketRequest.getPosition();
         long curPrice = picketRequest.getCurPrice();
         long paidPrice = picketRequest.getPaidPrice();
         String imageUrl = picketRequest.getPicketImageUrl();
 
+        Optional<Picket> picket = picketRepository.findByVoteIdAndPosition(voteId, position);
+        // check user Id
+        if(picket.isPresent() && picket.get().getUser().getId() == userId) return -1;
+
         // apply point
         if(!pointService.addPoint(paidPrice * -1, vote.get().getVoteTitle() + " 투표 " + position + "번째 피켓 구매", userId))
             return -1;
 
-        Optional<Picket> picket = picketRepository.findByVoteIdAndPosition(voteId, position);
         if(picket.isPresent()) {
             // price conflicted
             if(picket.get().getPrice() != curPrice)
@@ -104,5 +106,28 @@ public class PicketService {
         }
 
         return paidPrice;
+    }
+
+    /**
+     * 
+     * @param voteId
+     * @param userid
+     * @param picketRequest
+     * @return true or false
+     */
+    @Transactional
+    public boolean modifyPickect(long voteId, long userId, PicketRequest picketRequest) {
+        Optional<Vote> vote = voteRepository.findById(voteId);
+        if(!vote.isPresent()) return false;
+
+        String modifiedUrl = picketRequest.getPicketImageUrl();
+        int position = picketRequest.getPosition();
+
+        Optional<Picket> picket = picketRepository.findByVoteIdAndUserIdAndPosition(voteId, userId, position);
+        if(!picket.isPresent()) return false;
+
+        picket.get().changeImage(modifiedUrl);
+        picketRepository.save(picket.get());
+        return true;
     }
 }
