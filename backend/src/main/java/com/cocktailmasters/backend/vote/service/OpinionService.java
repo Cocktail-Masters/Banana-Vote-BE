@@ -17,6 +17,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
@@ -54,8 +55,12 @@ public class OpinionService {
 
     @Transactional
     public boolean deleteOpinion(Long userId, Long opinionId) {
-        opinionRepository.findByIdAndUserId(opinionId, userId);
-        return true;
+        Optional<Opinion> opinion = opinionRepository.findByIdAndUserId(opinionId, userId);
+        if (opinion.isPresent()) {
+            opinionRepository.delete(opinion.get());
+            return true;
+        }
+        return false;
     }
 
     private User findUserById(Long userId) {
