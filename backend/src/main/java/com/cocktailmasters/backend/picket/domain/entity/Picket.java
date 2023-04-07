@@ -37,4 +37,8 @@ public class Picket extends BaseEntity {
         this.picketImageUrl = url;
         this.price = price;
     }
+
+    public void changeImage(String url) {
+        this.picketImageUrl = url;
+    }
 }
