@@ -70,12 +70,12 @@ public class PicketController {
     @Operation(summary = "내가 산 피켓 정보 수정",
         description = "피켓 정보를 수정, 자신의 피켓이아닌 경우 에러 코드 반환")
     @PatchMapping("/{voteId}")
-    public ResponseEntity<String> modifyPickect(@PathVariable long voteId,
+    public ResponseEntity<String> modifyPicket(@PathVariable long voteId,
             @RequestBody PicketRequest picketRequest) {
         // TODO : 로그인 확인 로직
         long userId = 1;
 
-        if(picketService.modifyPickect(userId, userId, picketRequest))
+        if(picketService.changePicketImage(userId, userId, picketRequest))
             return ResponseEntity.ok().build();
         else
             return ResponseEntity.badRequest().build();

@@ -116,7 +116,7 @@ public class PicketService {
      * @return true or false
      */
     @Transactional
-    public boolean modifyPickect(long voteId, long userId, PicketRequest picketRequest) {
+    public boolean changePicketImage(long voteId, long userId, PicketRequest picketRequest) {
         Optional<Vote> vote = voteRepository.findById(voteId);
         if(!vote.isPresent()) return false;
 
