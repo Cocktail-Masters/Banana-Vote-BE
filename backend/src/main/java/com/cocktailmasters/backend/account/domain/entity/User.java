@@ -54,6 +54,10 @@ public class User extends BaseEntity {
 
     @Builder.Default
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    private List<Agreement> agreements = new ArrayList<>();
+
+    @Builder.Default
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<Prediction> predictions = new ArrayList<>();
 
     @Builder.Default
@@ -98,7 +102,7 @@ public class User extends BaseEntity {
 
     public void usePoints(Long points) throws Exception {
         //TODO: 예외처리
-        if(this.points < points) {
+        if (this.points < points) {
             throw new Exception();
         }
         this.points -= points;
