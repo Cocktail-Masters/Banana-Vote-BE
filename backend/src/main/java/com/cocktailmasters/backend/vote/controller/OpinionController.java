@@ -54,4 +54,15 @@ public class OpinionController {
         }
         return ResponseEntity.badRequest().build();
     }
+
+    @Operation(summary = "의견 추천 or 비추천", description = "의견 추천 or 비추천")
+    @PatchMapping("/{opinion_id}")
+    public ResponseEntity<String> agreeOpinion(@PathVariable("opinion_id") Long opinionId) {
+        // TODO: 사용자 검사 필요
+        Long userId = 1L;
+        if (opinionService.deleteOpinion(opinionId, userId)) {
+            return ResponseEntity.created(null).build();
+        }
+        return ResponseEntity.badRequest().build();
+    }
 }
