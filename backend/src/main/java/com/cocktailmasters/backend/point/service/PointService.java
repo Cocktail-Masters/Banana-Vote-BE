@@ -31,11 +31,11 @@ public class PointService {
     @Transactional
     public boolean addPoint(long amount, String description, long userId) {
         Optional<User> user = userRepository.findById(userId);
-        if(!user.isPresent()) return false;
+        if(!user.isPresent() || user.get().getPoints() + amount < 0) return false;
 
-        int res = userRepository.updateUserPointById(user.get().getId(), user.get().getPoints() + amount);
-        if(res == 0) return false;
-
+        // update point
+        if(userRepository.updateUserPointById(user.get().getId(), user.get().getPoints() + amount) == 0) return false;
+        
         pointLogService.addPointLog(amount, description, user.get()); // add log
         if(amount > 0) rankingService.addCurrentSeasonScore(amount, user.get());  // score update
 
