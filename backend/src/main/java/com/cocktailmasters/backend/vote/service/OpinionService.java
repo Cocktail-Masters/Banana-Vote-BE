@@ -63,6 +63,12 @@ public class OpinionService {
         return false;
     }
 
+    @Transactional
+    public boolean agreeOpinion(Long userId, Long opinionId) {
+
+        return true;
+    }
+
     private User findUserById(Long userId) {
         //TODO: 예외처리
         return userRepository.findById(userId)
@@ -73,6 +79,5 @@ public class OpinionService {
         //TODO: 예외처리
         return voteRepository.findById(voteId)
                 .orElseThrow();
-
     }
 }
