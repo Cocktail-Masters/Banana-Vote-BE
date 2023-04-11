@@ -2,6 +2,7 @@ package com.cocktailmasters.backend.vote.controller;
 
 import com.cocktailmasters.backend.vote.controller.dto.opinion.CreateAgreementRequest;
 import com.cocktailmasters.backend.vote.controller.dto.opinion.CreateOpinionRequest;
+import com.cocktailmasters.backend.vote.controller.dto.opinion.FindOpinionNumberResponse;
 import com.cocktailmasters.backend.vote.controller.dto.opinion.FindOpinionsResponse;
 import com.cocktailmasters.backend.vote.service.OpinionService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -45,6 +46,13 @@ public class OpinionController {
         PageRequest page = PageRequest.of(pageIndex, 10);
         return ResponseEntity.ok()
                 .body(opinionService.findOpinions(userId, voteId, sortBy, page));
+    }
+
+    @Operation(summary = "게시글 의견 개수 보기", description = "게시글의 의견 개수 보기")
+    @GetMapping("/{vote_id}/count")
+    public ResponseEntity<FindOpinionNumberResponse> findOpinionNumber(@PathVariable("vote_id") Long voteId) {
+        return ResponseEntity.ok()
+                .body(opinionService.findOpinionNumber(voteId));
     }
 
     @Operation(summary = "의견 삭제", description = "사용자가 작성한 의견 삭제")
