@@ -5,6 +5,7 @@ import com.cocktailmasters.backend.account.domain.repository.UserRepository;
 import com.cocktailmasters.backend.vote.controller.dto.item.OpinionDto;
 import com.cocktailmasters.backend.vote.controller.dto.opinion.CreateAgreementRequest;
 import com.cocktailmasters.backend.vote.controller.dto.opinion.CreateOpinionRequest;
+import com.cocktailmasters.backend.vote.controller.dto.opinion.FindOpinionNumberResponse;
 import com.cocktailmasters.backend.vote.controller.dto.opinion.FindOpinionsResponse;
 import com.cocktailmasters.backend.vote.domain.entity.Opinion;
 import com.cocktailmasters.backend.vote.domain.entity.OpinionSortBy;
@@ -56,7 +57,14 @@ public class OpinionService {
                 .bestIds(bestOpinions.stream()
                         .map(opinion -> opinion.getId())
                         .collect(Collectors.toList()))
-                .opinionNumber(opinionRepository.countOpinionsByVoteId(voteId))
+                .opinionNumber(findOpinionNumberByVoteId(voteId))
+                .build();
+    }
+
+    @Transactional
+    public FindOpinionNumberResponse findOpinionNumber(Long voteId) {
+        return FindOpinionNumberResponse.builder()
+                .opinionNumber(findOpinionNumberByVoteId(voteId))
                 .build();
     }
 
@@ -96,6 +104,10 @@ public class OpinionService {
         //TODO: 예외처리
         return opinionRepository.findById(opinionId)
                 .orElseThrow();
+    }
+
+    private int findOpinionNumberByVoteId(Long voteId) {
+        return opinionRepository.countOpinionsByVoteId(voteId);
     }
 
     private Vote findVoteById(Long voteId) {
