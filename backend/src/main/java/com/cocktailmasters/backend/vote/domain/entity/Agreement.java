@@ -19,7 +19,7 @@ import lombok.experimental.SuperBuilder;
 public class Agreement extends BaseEntity {
 
     @NotNull
-    private boolean is_agree;
+    private Boolean isAgree;
 
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private User user;
