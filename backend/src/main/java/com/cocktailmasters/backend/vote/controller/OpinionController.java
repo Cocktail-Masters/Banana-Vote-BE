@@ -1,5 +1,6 @@
 package com.cocktailmasters.backend.vote.controller;
 
+import com.cocktailmasters.backend.vote.controller.dto.opinion.CreateAgreementRequest;
 import com.cocktailmasters.backend.vote.controller.dto.opinion.CreateOpinionRequest;
 import com.cocktailmasters.backend.vote.controller.dto.opinion.FindOpinionsResponse;
 import com.cocktailmasters.backend.vote.service.OpinionService;
@@ -50,6 +51,18 @@ public class OpinionController {
         // TODO: 사용자 검사 필요
         Long userId = 1L;
         if (opinionService.deleteOpinion(opinionId, userId)) {
+            return ResponseEntity.created(null).build();
+        }
+        return ResponseEntity.badRequest().build();
+    }
+
+    @Operation(summary = "의견 추천 or 비추천", description = "의견 추천 or 비추천")
+    @PatchMapping("/{opinion_id}")
+    public ResponseEntity<String> createAgreement(@PathVariable("opinion_id") Long opinionId,
+                                                  @Valid @RequestBody CreateAgreementRequest createAgreementRequest) {
+        // TODO: 사용자 검사 필요
+        Long userId = 1L;
+        if (opinionService.createAgreement(opinionId, userId, createAgreementRequest)) {
             return ResponseEntity.created(null).build();
         }
         return ResponseEntity.badRequest().build();

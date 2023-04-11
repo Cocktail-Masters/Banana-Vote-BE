@@ -3,11 +3,13 @@ package com.cocktailmasters.backend.vote.service;
 import com.cocktailmasters.backend.account.domain.entity.User;
 import com.cocktailmasters.backend.account.domain.repository.UserRepository;
 import com.cocktailmasters.backend.vote.controller.dto.item.OpinionDto;
+import com.cocktailmasters.backend.vote.controller.dto.opinion.CreateAgreementRequest;
 import com.cocktailmasters.backend.vote.controller.dto.opinion.CreateOpinionRequest;
 import com.cocktailmasters.backend.vote.controller.dto.opinion.FindOpinionsResponse;
 import com.cocktailmasters.backend.vote.domain.entity.Opinion;
 import com.cocktailmasters.backend.vote.domain.entity.OpinionSortBy;
 import com.cocktailmasters.backend.vote.domain.entity.Vote;
+import com.cocktailmasters.backend.vote.domain.repository.AgreementRepository;
 import com.cocktailmasters.backend.vote.domain.repository.OpinionRepository;
 import com.cocktailmasters.backend.vote.domain.repository.VoteRepository;
 import jakarta.transaction.Transactional;
@@ -24,6 +26,7 @@ import java.util.stream.Collectors;
 @Service
 public class OpinionService {
 
+    private final AgreementRepository agreementRepository;
     private final OpinionRepository opinionRepository;
     private final UserRepository userRepository;
     private final VoteRepository voteRepository;
@@ -63,9 +66,24 @@ public class OpinionService {
         return false;
     }
 
+    @Transactional
+    public boolean createAgreement(Long userId, Long opinionId, CreateAgreementRequest createAgreementRequest) {
+        if (agreementRepository.findByUserIdAndOpinionId(userId, opinionId).isEmpty()) {
+            agreementRepository.save(createAgreementRequest.toAgreementEntity(findUserById(userId), findOpinionById(opinionId)));
+            return true;
+        }
+        return false;
+    }
+
     private User findUserById(Long userId) {
         //TODO: 예외처리
         return userRepository.findById(userId)
+                .orElseThrow();
+    }
+
+    private Opinion findOpinionById(Long opinionId) {
+        //TODO: 예외처리
+        return opinionRepository.findById(opinionId)
                 .orElseThrow();
     }
 
@@ -73,6 +91,5 @@ public class OpinionService {
         //TODO: 예외처리
         return voteRepository.findById(voteId)
                 .orElseThrow();
-
     }
 }
