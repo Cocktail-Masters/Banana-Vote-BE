@@ -69,7 +69,14 @@ public class OpinionService {
     @Transactional
     public boolean createAgreement(Long userId, Long opinionId, CreateAgreementRequest createAgreementRequest) {
         if (agreementRepository.findByUserIdAndOpinionId(userId, opinionId).isEmpty()) {
-            agreementRepository.save(createAgreementRequest.toAgreementEntity(findUserById(userId), findOpinionById(opinionId)));
+            Opinion opinion = findOpinionById(opinionId);
+            agreementRepository.save(createAgreementRequest.toAgreementEntity(findUserById(userId), opinion));
+            if (createAgreementRequest.getIsAgree()) {
+                opinion.agreeOpinion();
+            } else {
+                opinion.disagreeOpinion();
+            }
+            opinionRepository.save(opinion);
             return true;
         }
         return false;
