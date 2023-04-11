@@ -56,7 +56,7 @@ public class OpinionService {
                 .bestIds(bestOpinions.stream()
                         .map(opinion -> opinion.getId())
                         .collect(Collectors.toList()))
-                .totalCount(opinionRepository.countOpinionsByVoteId(voteId))
+                .opinionNumber(opinionRepository.countOpinionsByVoteId(voteId))
                 .build();
     }
 
