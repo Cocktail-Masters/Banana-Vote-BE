@@ -39,4 +39,12 @@ public class Opinion extends BaseEntity {
 
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private Vote vote;
+
+    public void agreeOpinion() {
+        this.agreedNumber++;
+    }
+
+    public void disagreeOpinion() {
+        this.disagreedNumber++;
+    }
 }

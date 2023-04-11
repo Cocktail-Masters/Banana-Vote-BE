@@ -36,9 +36,11 @@ public class VoteController {
                                                        @RequestParam(value = "is-tag", defaultValue = "false") boolean isTag,
                                                        @RequestParam(value = "is-closed", defaultValue = "false") boolean isClosed,
                                                        @RequestParam(value = "sort-by", defaultValue = "1") int sortBy) {
+        // TODO: 사용자 검사 필요
+        Long userId = 1L;
         PageRequest page = PageRequest.of(pageIndex, 10);
         return ResponseEntity.ok()
-                .body(voteService.findVotes(keyword, isTag, isClosed, sortBy, page));
+                .body(voteService.findVotes(userId, keyword, isTag, isClosed, sortBy, page));
     }
 
     @Operation(summary = "투표글 상세 보기", description = "투표글 상세 보기, 투표 조회수 증가")

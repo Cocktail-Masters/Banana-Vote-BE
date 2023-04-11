@@ -12,12 +12,13 @@ public class OpinionDto {
 
     private Long id;
     private WriterDto writer;
+    private Boolean isAgree;
     private String content;
     private int agreedNumber;
     private int disagreedNumber;
     private LocalDateTime createdDate;
 
-    public static OpinionDto createOpinionDto(Opinion opinion) {
+    public static OpinionDto createOpinionDto(Opinion opinion, Boolean isAgree) {
         return OpinionDto.builder()
                 .id(opinion.getId())
                 .writer(WriterDto.builder()
@@ -25,6 +26,7 @@ public class OpinionDto {
                         .nickname(opinion.getUser().getNickname())
                         .badgeImageUrl(opinion.getUser().getEquippedBadgeImageUrl())
                         .build())
+                .isAgree(isAgree)
                 .content(opinion.getOpinionContent())
                 .agreedNumber(opinion.getAgreedNumber())
                 .disagreedNumber(opinion.getDisagreedNumber())

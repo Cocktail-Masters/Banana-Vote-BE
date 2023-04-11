@@ -38,21 +38,25 @@ public class OpinionService {
     }
 
     @Transactional
-    public FindOpinionsResponse findOpinions(Long voteId,
-                                             int sortBy,
-                                             Pageable pageable) {
+    public FindOpinionsResponse findOpinions(Long userId, Long voteId, int sortBy, Pageable pageable) {
         Page<Opinion> opinions = opinionRepository.findOpinionsByVoteIdAndOption(voteId,
                 OpinionSortBy.valueOfNumber(sortBy),
                 pageable);
         List<Opinion> bestOpinions = opinionRepository.findTop3ByVoteIdAndAgreedNumberGreaterThanOrderByAgreedNumberDesc(voteId, 9);
         return FindOpinionsResponse.builder()
                 .opinions(opinions.stream()
-                        .map(opinion -> OpinionDto.createOpinionDto(opinion))
-                        .collect(Collectors.toList()))
+                        .map(opinion -> {
+                            if (userId != null) {
+                                return OpinionDto.createOpinionDto(opinion, agreementRepository.findByUserIdAndOpinionId(userId, opinion.getId())
+                                        .get()
+                                        .getIsAgree());
+                            }
+                            return OpinionDto.createOpinionDto(opinion, null);
+                        }).collect(Collectors.toList()))
                 .bestIds(bestOpinions.stream()
                         .map(opinion -> opinion.getId())
                         .collect(Collectors.toList()))
-                .totalCount(opinionRepository.countOpinionsByVoteId(voteId))
+                .opinionNumber(opinionRepository.countOpinionsByVoteId(voteId))
                 .build();
     }
 
@@ -69,7 +73,14 @@ public class OpinionService {
     @Transactional
     public boolean createAgreement(Long userId, Long opinionId, CreateAgreementRequest createAgreementRequest) {
         if (agreementRepository.findByUserIdAndOpinionId(userId, opinionId).isEmpty()) {
-            agreementRepository.save(createAgreementRequest.toAgreementEntity(findUserById(userId), findOpinionById(opinionId)));
+            Opinion opinion = findOpinionById(opinionId);
+            agreementRepository.save(createAgreementRequest.toAgreementEntity(findUserById(userId), opinion));
+            if (createAgreementRequest.getIsAgree()) {
+                opinion.agreeOpinion();
+            } else {
+                opinion.disagreeOpinion();
+            }
+            opinionRepository.save(opinion);
             return true;
         }
         return false;

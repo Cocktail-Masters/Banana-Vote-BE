@@ -40,9 +40,11 @@ public class OpinionController {
     public ResponseEntity<FindOpinionsResponse> findOpinions(@PathVariable("vote_id") Long voteId,
                                                              @PathVariable("page_index") int pageIndex,
                                                              @RequestParam(value = "sort-by", defaultValue = "1") int sortBy) {
+        // TODO: 사용자 검사 필요, 로그인 안 한 상태도 고려
+        Long userId = 1L;
         PageRequest page = PageRequest.of(pageIndex, 10);
         return ResponseEntity.ok()
-                .body(opinionService.findOpinions(voteId, sortBy, page));
+                .body(opinionService.findOpinions(userId, voteId, sortBy, page));
     }
 
     @Operation(summary = "의견 삭제", description = "사용자가 작성한 의견 삭제")

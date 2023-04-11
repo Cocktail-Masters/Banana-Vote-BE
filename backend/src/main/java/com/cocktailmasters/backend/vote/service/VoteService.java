@@ -31,6 +31,7 @@ public class VoteService {
     private final VoteRepository voteRepository;
     private final VoteItemRepository voteItemRepository;
     private final VoteTagRepository voteTagRepository;
+    private final AgreementRepository agreementRepository;
 
     @Transactional
     public boolean createVote(Long userId,
@@ -58,7 +59,8 @@ public class VoteService {
     }
 
     @Transactional
-    public FindVotesResponse findVotes(String keyword,
+    public FindVotesResponse findVotes(Long userId,
+                                       String keyword,
                                        boolean isTag,
                                        boolean isClosed,
                                        int sortBy,
@@ -83,15 +85,20 @@ public class VoteService {
         return FindVotesResponse.builder()
                 .totalCount(totalCount)
                 .votes(votes.stream()
-                        .map(vote -> VoteDto.builder()
-                                .vote(VoteDetailDto.createVoteDetailDto(vote))
-                                .writer(WriterDto.createWriterDto(vote.getUser()))
-                                .voteItems(vote.getVoteItems().stream()
-                                        .map(voteItem -> VoteItemDto.createVoteItemDto(voteItem))
-                                        .collect(Collectors.toList()))
-                                .bestOpinion(OpinionDto.createOpinionDto(opinionRepository.findFirstByVoteIdOrderByAgreedNumberDesc(vote.getId())
-                                        .orElse(null)))
-                                .build())
+                        .map(vote -> {
+                            Opinion opinion = opinionRepository.findFirstByVoteIdOrderByAgreedNumberDesc(vote.getId())
+                                    .orElse(null);
+                            Agreement agreement = agreementRepository.findByUserIdAndOpinionId(userId, opinion.getId())
+                                    .orElse(null);
+                            return VoteDto.builder()
+                                    .vote(VoteDetailDto.createVoteDetailDto(vote))
+                                    .writer(WriterDto.createWriterDto(vote.getUser()))
+                                    .voteItems(vote.getVoteItems().stream()
+                                            .map(voteItem -> VoteItemDto.createVoteItemDto(voteItem))
+                                            .collect(Collectors.toList()))
+                                    .bestOpinion(OpinionDto.createOpinionDto(opinion, agreement.getIsAgree()))
+                                    .build();
+                        })
                         .collect(Collectors.toList()))
                 .build();
     }

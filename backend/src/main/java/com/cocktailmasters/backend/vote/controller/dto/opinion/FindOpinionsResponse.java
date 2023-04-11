@@ -12,5 +12,5 @@ public class FindOpinionsResponse {
 
     List<OpinionDto> opinions;
     List<Long> bestIds;
-    int totalCount;
+    int opinionNumber;
 }
