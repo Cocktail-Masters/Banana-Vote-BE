@@ -51,5 +51,8 @@ public class Goods extends BaseEntity {
     @OneToMany(mappedBy = "goods", cascade = CascadeType.ALL)
     private List<UserGoods> userGoods = new ArrayList<>();
 
-    
+    public void soldGoods(long quantity) {
+        goodsRemainingQuantity -= quantity;
+        goodsSoldNumber += quantity;
+    }
 }
