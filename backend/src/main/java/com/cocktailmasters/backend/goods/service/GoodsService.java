@@ -1,18 +1,24 @@
 package com.cocktailmasters.backend.goods.service;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.cocktailmasters.backend.goods.controller.dto.GoodsResponse;
 import com.cocktailmasters.backend.goods.controller.dto.item.GoodsItemDto;
 import com.cocktailmasters.backend.goods.domain.GoodsType;
 import com.cocktailmasters.backend.goods.domain.entity.Goods;
 import com.cocktailmasters.backend.goods.domain.repository.GoodsRepository;
+import com.cocktailmasters.backend.point.service.PointService;
+import com.cocktailmasters.backend.util.exception.CustomException;
 
 import lombok.RequiredArgsConstructor;
 
@@ -21,6 +27,8 @@ import lombok.RequiredArgsConstructor;
 public class GoodsService {
     
     private final GoodsRepository goodsRepository;
+
+    private final PointService pointService;
 
     /**
      * get all types
@@ -93,5 +101,38 @@ public class GoodsService {
             totalCount = goodsRepository.countByGoodsType(type);
 
         return (int) Math.ceil((double) totalCount / pageSize);
+    }
+
+    /**
+     * buy goods and apply quantity with point
+     * @param userId
+     * @param quantity
+     * @param goodsId
+     * @return true or false if there is no correct goods id
+     * @throws CustomException (lack of quantity, lack of point, out of date)
+     */
+    @Transactional
+    public boolean buyGoods(long userId, long quantity, long goodsId) throws CustomException {
+        Optional<Goods> goods = goodsRepository.findById(goodsId);
+        if(!goods.isPresent()) return false;
+
+        // check selling date
+        LocalDate currentDate = LocalDate.now();
+        if(currentDate.isAfter(goods.get().getSaleEndDate()))
+            throw new CustomException(HttpStatus.CONFLICT, "out of date");
+        // check quantity
+        if(goods.get().getGoodsRemainingQuantity() >= 0 && goods.get().getGoodsRemainingQuantity() - quantity < 0)
+            throw new CustomException(HttpStatus.CONFLICT, "lack of quantity");
+
+        // apply point
+        String logMessage = goods.get().getGoodsName() + " 구매";
+        if(!pointService.addPoint(goods.get().getGoodsPrice() * -1 * quantity, logMessage, userId))
+            throw new CustomException(HttpStatus.CONFLICT, "lack of point");
+        
+        // apply quanity and sold count
+        goods.get().soldGoods(quantity);
+        goodsRepository.save(goods.get());
+
+        return true;
     }
 }
