@@ -8,7 +8,6 @@ spring:
     url: jdbc:mysql://localhost:3306/bananavote?serverTimezone=UTC&characterEncoding=UTF-8
     username:
     password:
-
   jpa:
     properties:
       hibernate:
@@ -16,7 +15,6 @@ spring:
     hibernate:
       ddl-auto: update
     show-sql: 'false'
-
   security:
     oauth2:
       client:
@@ -38,3 +36,11 @@ spring:
             token-uri: https://kauth.kakao.com/oauth/token
             user-info-uri: https://kapi.kakao.com/v2/user/me
             user-name-attribute: id
+
+jwt:
+  token:
+    secret-key:
+  access-token:
+    expire-length: 1800000
+  refresh-token:
+    expire-length: 1209600000
