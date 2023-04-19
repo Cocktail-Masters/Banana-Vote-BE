@@ -1,6 +1,7 @@
 package com.cocktailmasters.backend.account.domain.entity;
 
 import com.cocktailmasters.backend.achievement.domain.entity.UserAchievement;
+import com.cocktailmasters.backend.authentication.domain.oauth.OAuthProvider;
 import com.cocktailmasters.backend.common.domain.entity.BaseEntity;
 import com.cocktailmasters.backend.goods.domain.entity.UserBadge;
 import com.cocktailmasters.backend.goods.domain.entity.UserGoods;
