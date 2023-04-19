@@ -27,6 +27,8 @@ import java.util.List;
 @Entity
 public class User extends BaseEntity {
 
+    private OAuthProvider oAuthProvider;
+
     @NotNull
     private String nickname;
 
