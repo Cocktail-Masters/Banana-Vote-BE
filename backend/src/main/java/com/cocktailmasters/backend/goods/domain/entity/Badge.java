@@ -6,7 +6,7 @@ import jakarta.validation.constraints.NotNull;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -30,7 +30,7 @@ public class Badge extends BaseEntity {
 
     private String badgePrice;
     private boolean isSelling;
-    private LocalDateTime badgeEndDate;
+    private LocalDate badgeEndDate;
 
     @Builder.Default
     private Long badgeSoldNumber = 0L;
