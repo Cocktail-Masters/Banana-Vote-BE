@@ -28,7 +28,7 @@ public class Badge extends BaseEntity {
     private String badgeDescription;
 
 
-    private String badgePrice;
+    private Long badgePrice;
     private boolean isSelling;
     private LocalDate badgeEndDate;
 
