@@ -4,4 +4,4 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import com.cocktailmasters.backend.goods.domain.entity.Badge;
 
-public interface BadgesRepository extends JpaRepository<Badge, Long> { }
+public interface BadgeRepository extends JpaRepository<Badge, Long> { }
