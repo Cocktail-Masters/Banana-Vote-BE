@@ -1,5 +1,7 @@
 package com.cocktailmasters.backend.goods.controller.dto;
 
+import java.time.LocalDate;
+
 import com.cocktailmasters.backend.goods.domain.entity.Badge;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
@@ -27,6 +29,9 @@ public class BadgeResponse {
     @JsonProperty("is_selling")
     private boolean isSelling;
 
+    @JsonProperty("end_date")
+    private LocalDate endDate;
+
     public static BadgeResponse createBadgeReponse(Badge badge) {
         return BadgeResponse.builder()
                 .id(badge.getId())
@@ -36,6 +41,7 @@ public class BadgeResponse {
                 .price(badge.getBadgePrice())
                 .soldCount(badge.getBadgeSoldNumber())
                 .isSelling(badge.isSelling())
+                .endDate(badge.getBadgeEndDate())
                 .build();
     }
 }
