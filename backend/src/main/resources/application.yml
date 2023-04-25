@@ -37,6 +37,19 @@ spring:
             user-info-uri: https://kapi.kakao.com/v2/user/me
             user-name-attribute: id
 
+oauth:
+  kakao:
+    client-id:
+    url:
+      auth: https://kauth.kakao.com
+      api: https://kapi.kakao.com
+  naver:
+    secret:
+    client-id:
+    url:
+      auth: https://nid.naver.com
+      api: https://openapi.naver.com
+
 jwt:
   token:
     secret-key:
