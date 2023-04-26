@@ -31,6 +31,9 @@ public class User extends BaseEntity {
     private OAuthProvider oAuthProvider;
 
     @NotNull
+    private String email;
+
+    @NotNull
     private String nickname;
 
     private String gender;
