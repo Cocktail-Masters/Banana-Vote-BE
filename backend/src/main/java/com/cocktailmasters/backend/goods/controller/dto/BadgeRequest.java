@@ -2,6 +2,8 @@ package com.cocktailmasters.backend.goods.controller.dto;
 
 import java.time.LocalDate;
 
+import org.springframework.cglib.core.Local;
+
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import jakarta.validation.constraints.NotBlank;
@@ -31,8 +33,9 @@ public class BadgeRequest {
     @JsonProperty("is_selling")
     private boolean isSelling = true;
 
+    @Builder.Default
     @JsonProperty("end_date")
-    private LocalDate badgeEndDate;
+    private LocalDate badgeEndDate = LocalDate.of(2100, 12, 31);
 
     @Builder.Default
     private long price = 0L;
