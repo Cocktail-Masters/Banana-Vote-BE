@@ -1,7 +1,7 @@
-package com.cocktailmasters.backend.account.controller;
+package com.cocktailmasters.backend.account.user.controller;
 
-import com.cocktailmasters.backend.account.controller.dto.SignUpRequest;
-import com.cocktailmasters.backend.account.service.UserService;
+import com.cocktailmasters.backend.account.user.controller.dto.SignUpRequest;
+import com.cocktailmasters.backend.account.user.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;

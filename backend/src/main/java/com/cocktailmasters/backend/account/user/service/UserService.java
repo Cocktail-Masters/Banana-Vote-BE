@@ -1,8 +1,8 @@
-package com.cocktailmasters.backend.account.service;
+package com.cocktailmasters.backend.account.user.service;
 
-import com.cocktailmasters.backend.account.controller.dto.SignUpRequest;
-import com.cocktailmasters.backend.account.domain.entity.User;
-import com.cocktailmasters.backend.account.domain.repository.UserRepository;
+import com.cocktailmasters.backend.account.user.controller.dto.SignUpRequest;
+import com.cocktailmasters.backend.account.user.domain.entity.User;
+import com.cocktailmasters.backend.account.user.domain.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;

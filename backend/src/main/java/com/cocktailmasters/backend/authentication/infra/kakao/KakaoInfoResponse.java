@@ -1,7 +1,7 @@
 package com.cocktailmasters.backend.authentication.infra.kakao;
 
 import com.cocktailmasters.backend.authentication.domain.oauth.OAuthInfoResponse;
-import com.cocktailmasters.backend.account.domain.entity.OAuthProvider;
+import com.cocktailmasters.backend.account.user.domain.entity.OAuthProvider;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;

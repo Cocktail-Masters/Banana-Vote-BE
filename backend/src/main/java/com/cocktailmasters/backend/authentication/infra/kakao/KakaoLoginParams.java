@@ -1,7 +1,7 @@
 package com.cocktailmasters.backend.authentication.infra.kakao;
 
 import com.cocktailmasters.backend.authentication.domain.oauth.OAuthLoginParams;
-import com.cocktailmasters.backend.account.domain.entity.OAuthProvider;
+import com.cocktailmasters.backend.account.user.domain.entity.OAuthProvider;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.springframework.util.LinkedMultiValueMap;

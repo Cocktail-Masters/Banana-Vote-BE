@@ -1,7 +1,7 @@
 package com.cocktailmasters.backend.vote.service;
 
-import com.cocktailmasters.backend.account.domain.entity.User;
-import com.cocktailmasters.backend.account.domain.repository.UserRepository;
+import com.cocktailmasters.backend.account.user.domain.entity.User;
+import com.cocktailmasters.backend.account.user.domain.repository.UserRepository;
 import com.cocktailmasters.backend.vote.controller.dto.item.OpinionDto;
 import com.cocktailmasters.backend.vote.controller.dto.opinion.CreateAgreementRequest;
 import com.cocktailmasters.backend.vote.controller.dto.opinion.CreateOpinionRequest;

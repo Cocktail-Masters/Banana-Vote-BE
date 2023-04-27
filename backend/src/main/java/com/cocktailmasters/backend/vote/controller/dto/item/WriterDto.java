@@ -1,6 +1,6 @@
 package com.cocktailmasters.backend.vote.controller.dto.item;
 
-import com.cocktailmasters.backend.account.domain.entity.User;
+import com.cocktailmasters.backend.account.user.domain.entity.User;
 import lombok.Builder;
 import lombok.Getter;
 

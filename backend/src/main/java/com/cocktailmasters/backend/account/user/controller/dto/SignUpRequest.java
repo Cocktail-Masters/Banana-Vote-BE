@@ -1,7 +1,7 @@
-package com.cocktailmasters.backend.account.controller.dto;
+package com.cocktailmasters.backend.account.user.controller.dto;
 
-import com.cocktailmasters.backend.account.domain.entity.Gender;
-import com.cocktailmasters.backend.account.domain.entity.User;
+import com.cocktailmasters.backend.account.user.domain.entity.Gender;
+import com.cocktailmasters.backend.account.user.domain.entity.User;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;

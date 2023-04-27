@@ -1,6 +1,6 @@
-package com.cocktailmasters.backend.account.domain.repository;
+package com.cocktailmasters.backend.account.user.domain.repository;
 
-import com.cocktailmasters.backend.account.domain.entity.User;
+import com.cocktailmasters.backend.account.user.domain.entity.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;

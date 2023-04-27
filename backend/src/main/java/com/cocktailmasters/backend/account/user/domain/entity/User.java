@@ -1,4 +1,4 @@
-package com.cocktailmasters.backend.account.domain.entity;
+package com.cocktailmasters.backend.account.user.domain.entity;
 
 import com.cocktailmasters.backend.achievement.domain.entity.UserAchievement;
 import com.cocktailmasters.backend.common.domain.entity.BaseEntity;

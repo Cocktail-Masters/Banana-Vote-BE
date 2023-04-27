@@ -1,6 +1,6 @@
 package com.cocktailmasters.backend.authentication.domain.oauth;
 
-import com.cocktailmasters.backend.account.domain.entity.OAuthProvider;
+import com.cocktailmasters.backend.account.user.domain.entity.OAuthProvider;
 import org.springframework.stereotype.Component;
 
 import java.util.List;

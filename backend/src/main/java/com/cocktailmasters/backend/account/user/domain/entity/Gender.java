@@ -1,4 +1,4 @@
-package com.cocktailmasters.backend.account.domain.entity;
+package com.cocktailmasters.backend.account.user.domain.entity;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;

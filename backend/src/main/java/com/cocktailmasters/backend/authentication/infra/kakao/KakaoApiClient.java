@@ -3,7 +3,7 @@ package com.cocktailmasters.backend.authentication.infra.kakao;
 import com.cocktailmasters.backend.authentication.domain.oauth.OAuthApiClient;
 import com.cocktailmasters.backend.authentication.domain.oauth.OAuthInfoResponse;
 import com.cocktailmasters.backend.authentication.domain.oauth.OAuthLoginParams;
-import com.cocktailmasters.backend.account.domain.entity.OAuthProvider;
+import com.cocktailmasters.backend.account.user.domain.entity.OAuthProvider;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;

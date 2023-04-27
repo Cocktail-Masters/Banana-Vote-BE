@@ -1,8 +1,8 @@
 package com.cocktailmasters.backend.vote.service;
 
-import com.cocktailmasters.backend.account.domain.entity.User;
-import com.cocktailmasters.backend.account.domain.entity.UserTag;
-import com.cocktailmasters.backend.account.domain.repository.UserRepository;
+import com.cocktailmasters.backend.account.user.domain.entity.User;
+import com.cocktailmasters.backend.account.user.domain.entity.UserTag;
+import com.cocktailmasters.backend.account.user.domain.repository.UserRepository;
 import com.cocktailmasters.backend.common.domain.entity.Tag;
 import com.cocktailmasters.backend.common.domain.repository.TagRepository;
 import com.cocktailmasters.backend.util.exception.NotFoundUserException;

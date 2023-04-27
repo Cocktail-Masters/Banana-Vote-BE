@@ -1,6 +1,6 @@
 package com.cocktailmasters.backend.achievement.domain.entity;
 
-import com.cocktailmasters.backend.account.domain.entity.User;
+import com.cocktailmasters.backend.account.user.domain.entity.User;
 import com.cocktailmasters.backend.common.domain.entity.BaseEntity;
 import jakarta.persistence.*;
 import lombok.AccessLevel;

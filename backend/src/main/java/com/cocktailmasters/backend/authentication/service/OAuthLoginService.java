@@ -1,7 +1,7 @@
 package com.cocktailmasters.backend.authentication.service;
 
-import com.cocktailmasters.backend.account.domain.entity.User;
-import com.cocktailmasters.backend.account.domain.repository.UserRepository;
+import com.cocktailmasters.backend.account.user.domain.entity.User;
+import com.cocktailmasters.backend.account.user.domain.repository.UserRepository;
 import com.cocktailmasters.backend.authentication.domain.AuthTokens;
 import com.cocktailmasters.backend.authentication.domain.AuthTokensGenerator;
 import com.cocktailmasters.backend.authentication.domain.oauth.OAuthInfoResponse;
