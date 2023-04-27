@@ -2,8 +2,6 @@ package com.cocktailmasters.backend.goods.controller.dto;
 
 import java.time.LocalDate;
 
-import org.springframework.cglib.core.Local;
-
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import jakarta.validation.constraints.NotBlank;
