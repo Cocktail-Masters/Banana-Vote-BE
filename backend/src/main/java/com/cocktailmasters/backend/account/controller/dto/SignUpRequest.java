@@ -2,6 +2,9 @@ package com.cocktailmasters.backend.account.controller.dto;
 
 import com.cocktailmasters.backend.account.domain.entity.Gender;
 import com.cocktailmasters.backend.account.domain.entity.User;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotNull;
 import lombok.Builder;
 import lombok.Getter;
 
@@ -9,9 +12,17 @@ import lombok.Getter;
 @Builder
 public class SignUpRequest {
 
+    @Email
+    @NotNull
     private String email;
+
+    @NotNull
+    @Min(8)
     private String password;
+
+    @NotNull
     private String nickname;
+
     private Gender gender;
 
     public User toUserEntity() {
