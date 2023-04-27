@@ -8,6 +8,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import com.cocktailmasters.backend.goods.domain.entity.Badge;
 
 public interface BadgeRepository extends JpaRepository<Badge, Long> {
-    List<Badge> findAllByBadgeEndDateBeforeAndIsSelling(LocalDate date, boolean isSelling);
-    List<Badge> findAllByIsSelling(boolean isSelling);
+    List<Badge> findAllByBadgeEndDateAfterAndIsSelling(LocalDate date, boolean isSelling);
 }
