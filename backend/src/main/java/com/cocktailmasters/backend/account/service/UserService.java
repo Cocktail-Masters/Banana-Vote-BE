@@ -14,7 +14,7 @@ public class UserService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
 
-    public void signUp(SignUpRequest signUpRequest) throws Exception {
+    public boolean signUp(SignUpRequest signUpRequest) throws Exception {
         if (userRepository.findByEmail(signUpRequest.getEmail()).isPresent()) {
             throw new Exception();
         }
@@ -24,5 +24,6 @@ public class UserService {
         User user = signUpRequest.toUserEntity();
         user.encodePassword(passwordEncoder);
         userRepository.save(user);
+        return true;
     }
 }
