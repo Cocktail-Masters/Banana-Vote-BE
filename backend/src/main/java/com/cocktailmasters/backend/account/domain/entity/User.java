@@ -40,7 +40,8 @@ public class User extends BaseEntity {
     private String nickname;
 
     @Enumerated(EnumType.STRING)
-    private Gender gender;
+    @Builder.Default
+    private Gender gender = null;
 
     @Builder.Default
     @Enumerated(EnumType.STRING)
