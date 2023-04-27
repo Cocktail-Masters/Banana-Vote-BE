@@ -1,5 +1,6 @@
 package com.cocktailmasters.backend.vote.controller;
 
+import com.cocktailmasters.backend.vote.controller.dto.item.VoteItemCreateDto;
 import com.cocktailmasters.backend.vote.controller.dto.vote.*;
 import com.cocktailmasters.backend.vote.service.VoteService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -8,6 +9,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.HashSet;
+import java.util.Set;
 
 @Tag(name = "vote", description = "투표 관리")
 @RequiredArgsConstructor
@@ -22,6 +26,16 @@ public class VoteController {
     public ResponseEntity<String> createVote(Long userId,
                                              @RequestBody CreateVoteRequest createVoteRequest) throws Exception {
         //TODO: 사용자 검사 및 예외처리
+        if (createVoteRequest.getVoteItems().isEmpty()) {
+            return ResponseEntity.badRequest().build();
+        }
+        Set<Integer> voteItemSet = new HashSet<>();
+        for (VoteItemCreateDto voteItem : createVoteRequest.getVoteItems()) {
+            if (voteItemSet.contains(voteItem.getItemNumber())) {
+                return ResponseEntity.badRequest().build();
+            }
+            voteItemSet.add(voteItem.getItemNumber());
+        }
         if (voteService.createVote(userId, createVoteRequest)) {
             return ResponseEntity.created(null).build();
         }
