@@ -1,15 +1,20 @@
 package com.cocktailmasters.backend.goods.controller;
 
+import java.util.List;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.cocktailmasters.backend.goods.controller.dto.BadgeRequest;
+import com.cocktailmasters.backend.goods.controller.dto.BadgeResponse;
 import com.cocktailmasters.backend.goods.service.BadgesService;
 
 import io.swagger.v3.oas.annotations.Operation;
@@ -60,5 +65,16 @@ public class BadgeController {
             return ResponseEntity.ok().build();
         else
             return ResponseEntity.notFound().build();
+    }
+
+    @Operation(summary = "뱃지 리스트 반환", description = "판매하는 뱃지 true, 아니면 false, 기본은 false, 판매 기한이 지난 뱃지도 제외")
+    @GetMapping
+    public ResponseEntity<List<BadgeResponse>> getBadgeList(@RequestParam(required = false, name = "selling", defaultValue = "false") boolean isSelling) {
+        List<BadgeResponse> badges = badgeService.getBadgeList(isSelling);
+
+        if(badges.size() == 0)
+            return ResponseEntity.noContent().build();
+        else
+            return ResponseEntity.ok(badges);
     }
 }

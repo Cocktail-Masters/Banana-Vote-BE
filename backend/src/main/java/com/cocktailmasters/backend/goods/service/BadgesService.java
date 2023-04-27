@@ -1,11 +1,15 @@
 package com.cocktailmasters.backend.goods.service;
 
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.cocktailmasters.backend.goods.controller.dto.BadgeRequest;
+import com.cocktailmasters.backend.goods.controller.dto.BadgeResponse;
 import com.cocktailmasters.backend.goods.domain.entity.Badge;
 import com.cocktailmasters.backend.goods.domain.repository.BadgeRepository;
 
@@ -65,5 +69,25 @@ public class BadgesService {
 
         badgeRepository.deleteById(badgeId);
         return true;
+    }
+
+    /**
+     * get Badge list with options
+     * @param isSelling
+     * @return List of badge Response
+     */
+    public List<BadgeResponse> getBadgeList(boolean isSelling) {
+        List<Badge> badges;
+        if(isSelling)
+            badges = badgeRepository.findAllByBadgeEndDateAfterAndIsSelling(LocalDate.now(), true);
+        else
+            badges = badgeRepository.findAll();
+
+        List<BadgeResponse> badgeDtos = new ArrayList<>();
+        for(Badge badge : badges) {
+            badgeDtos.add(BadgeResponse.createBadgeReponse(badge));
+        }
+
+        return badgeDtos;
     }
 }
