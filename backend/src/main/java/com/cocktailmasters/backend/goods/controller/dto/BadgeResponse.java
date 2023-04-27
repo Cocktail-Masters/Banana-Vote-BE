@@ -19,7 +19,7 @@ public class BadgeResponse {
     @JsonProperty("image_url")
     private String imageUrl;
 
-    private String desciption;
+    private String description;
 
     private long price;
 
@@ -37,7 +37,7 @@ public class BadgeResponse {
                 .id(badge.getId())
                 .name(badge.getBadgeName())
                 .imageUrl(badge.getBadgeImageUrl())
-                .desciption(badge.getBadgeDescription())
+                .description(badge.getBadgeDescription())
                 .price(badge.getBadgePrice())
                 .soldCount(badge.getBadgeSoldNumber())
                 .isSelling(badge.isSelling())
