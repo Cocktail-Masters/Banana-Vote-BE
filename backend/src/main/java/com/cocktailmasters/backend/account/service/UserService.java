@@ -1,6 +1,6 @@
 package com.cocktailmasters.backend.account.service;
 
-import com.cocktailmasters.backend.account.controller.dto.UserSignUpRequest;
+import com.cocktailmasters.backend.account.controller.dto.SignUpRequest;
 import com.cocktailmasters.backend.account.domain.entity.User;
 import com.cocktailmasters.backend.account.domain.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -14,14 +14,14 @@ public class UserService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
 
-    public void signUp(UserSignUpRequest userSignUpRequest) throws Exception {
-        if (userRepository.findByEmail(userSignUpRequest.getEmail()).isPresent()) {
+    public void signUp(SignUpRequest signUpRequest) throws Exception {
+        if (userRepository.findByEmail(signUpRequest.getEmail()).isPresent()) {
             throw new Exception();
         }
-        if (userRepository.findByNickname(userSignUpRequest.getEmail()).isPresent()) {
+        if (userRepository.findByNickname(signUpRequest.getEmail()).isPresent()) {
             throw new Exception();
         }
-        User user = userSignUpRequest.toUserEntity();
+        User user = signUpRequest.toUserEntity();
         user.encodePassword(passwordEncoder);
         userRepository.save(user);
     }
