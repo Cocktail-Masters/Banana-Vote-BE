@@ -14,7 +14,6 @@ public class VoteDetailDto {
 
     private Long id;
     private String title;
-    private String imageUrl;
     private String content;
     private Boolean isEvent;
     private Boolean isAnonymous;
@@ -31,7 +30,6 @@ public class VoteDetailDto {
         return VoteDetailDto.builder()
                 .id(vote.getId())
                 .title(vote.getVoteTitle())
-                .imageUrl(vote.getVoteImageUrl())
                 .content(vote.getVoteContent())
                 .isEvent(vote.isEvent())
                 .isAnonymous(vote.isAnonymous())

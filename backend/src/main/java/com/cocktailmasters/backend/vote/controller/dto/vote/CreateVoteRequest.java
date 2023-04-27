@@ -17,8 +17,6 @@ public class CreateVoteRequest {
 
     private String voteTitle;
     private String voteContent;
-    private String voteImageUrl;
-    private String voteThumbnailUrl;
     private LocalDateTime voteEndDate;
     private Boolean isPublic;
     private Boolean isAnonymous;
@@ -32,8 +30,6 @@ public class CreateVoteRequest {
                 .user(user)
                 .voteTitle(voteTitle)
                 .voteContent(voteContent)
-                .voteImageUrl(voteImageUrl)
-                .voteThumbnailUrl(voteThumbnailUrl)
                 .voteEndDate(voteEndDate)
                 .isAnonymous(isAnonymous)
                 .isPublic(isPublic)
