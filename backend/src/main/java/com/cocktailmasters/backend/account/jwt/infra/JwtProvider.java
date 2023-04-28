@@ -1,9 +1,7 @@
 package com.cocktailmasters.backend.account.jwt.infra;
 
 import com.cocktailmasters.backend.account.user.domain.entity.User;
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.*;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -56,6 +54,28 @@ public class JwtProvider {
 
     public Optional<String> extractRefreshToken(HttpServletRequest request) {
         return extractToken(request, refreshTokenHeader);
+    }
+
+    public boolean validateToken(String token) {
+        if (token == null) {
+            return false;
+        }
+        try {
+            Jwts.parserBuilder()
+                    .setSigningKey(secretKey)
+                    .build()
+                    .parseClaimsJws(token);
+            return true;
+        } catch (SecurityException | MalformedJwtException e) {
+            log.error("Invalid JWT signature");
+            return false;
+        } catch (UnsupportedJwtException e) {
+            log.error("Unsupported JWT token");
+            return false;
+        } catch (IllegalArgumentException e) {
+            log.error("JWT token is invalid");
+            return false;
+        }
     }
 
     private String createToken(String tokenType, User user, Long tokenExpirationDate) {
