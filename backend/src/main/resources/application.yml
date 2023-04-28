@@ -51,9 +51,10 @@ oauth:
       api: https://openapi.naver.com
 
 jwt:
-  token:
-    secret-key:
+  secret-key:
   access-token:
-    expire-length: 1800000
+    expiration: 1800000
+    header: Authorization
   refresh-token:
-    expire-length: 1209600000
+    expiration: 1209600000
+    header: Authorization-refresh
