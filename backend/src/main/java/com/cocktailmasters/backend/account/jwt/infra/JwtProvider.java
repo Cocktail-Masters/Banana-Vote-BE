@@ -50,12 +50,12 @@ public class JwtProvider {
         return createToken(REFRESH_TOKEN_SUBJECT, user, accessTokenExpirationDate);
     }
 
-    public Optional<String> resolveAccessToken(HttpServletRequest request) {
-        return resolveToken(request, accessTokenHeader);
+    public Optional<String> extractAccessToken(HttpServletRequest request) {
+        return extractToken(request, accessTokenHeader);
     }
 
-    public Optional<String> resolveRefreshToken(HttpServletRequest request) {
-        return resolveToken(request, refreshTokenHeader);
+    public Optional<String> extractRefreshToken(HttpServletRequest request) {
+        return extractToken(request, refreshTokenHeader);
     }
 
     private String createToken(String tokenType, User user, Long tokenExpirationDate) {
@@ -71,7 +71,7 @@ public class JwtProvider {
                 .compact();
     }
 
-    private Optional<String> resolveToken(HttpServletRequest request, String tokenHeader) {
+    private Optional<String> extractToken(HttpServletRequest request, String tokenHeader) {
         return Optional.ofNullable(request.getHeader(tokenHeader))
                 .filter(token -> token.startsWith(BEARER))
                 .map(token -> refreshTokenHeader.replace(BEARER, ""));
