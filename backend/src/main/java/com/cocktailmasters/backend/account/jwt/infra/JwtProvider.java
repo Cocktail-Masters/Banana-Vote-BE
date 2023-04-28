@@ -3,6 +3,7 @@ package com.cocktailmasters.backend.account.jwt.infra;
 import com.cocktailmasters.backend.account.user.domain.entity.User;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -10,6 +11,7 @@ import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Component;
 
 import java.util.Date;
+import java.util.Optional;
 
 @Slf4j
 @PropertySource("security.yml")
@@ -19,8 +21,10 @@ public class JwtProvider {
 
     private static final String ACCESS_TOKEN_SUBJECT = "AccessToken";
     private static final String REFRESH_TOKEN_SUBJECT = "RefreshToken";
-    private static final String EMAIL_CLAIM = "email";
     private static final String BEARER = "Bearer ";
+    private static final String ID_CLAIM = "id";
+    private static final String EMAIL_CLAIM = "email";
+    private static final String ROLE_CLAIM = "email";
 
     @Value("${jwt.secret-key}")
     private String secretKey;
@@ -45,15 +49,29 @@ public class JwtProvider {
         return createToken(REFRESH_TOKEN_SUBJECT, user, accessTokenExpirationDate);
     }
 
+    public Optional<String> resolveAccessToken(HttpServletRequest request) {
+        return resolveToken(request, accessTokenHeader);
+    }
+
+    public Optional<String> resolveRefreshToken(HttpServletRequest request) {
+        return resolveToken(request, refreshTokenHeader);
+    }
+
     private String createToken(String tokenType, User user, Long tokenExpirationDate) {
         return Jwts.builder()
                 .setSubject(tokenType)
-                .claim("id", user.getId())
-                .claim("email", user.getEmail())
-                .claim("role", user.getRole())
+                .claim(ID_CLAIM, user.getId())
+                .claim(EMAIL_CLAIM, user.getEmail())
+                .claim(ROLE_CLAIM, user.getRole())
                 .setExpiration(createExpireDate(tokenExpirationDate))
                 .signWith(SignatureAlgorithm.ES256, secretKey)
                 .compact();
+    }
+
+    private Optional<String> resolveToken(HttpServletRequest request, String tokenHeader) {
+        return Optional.ofNullable(request.getHeader(tokenHeader))
+                .filter(token -> token.startsWith(BEARER))
+                .map(token -> refreshTokenHeader.replace(BEARER, ""));
     }
 
     private Date createExpireDate(Long tokenExpirationDate) {
