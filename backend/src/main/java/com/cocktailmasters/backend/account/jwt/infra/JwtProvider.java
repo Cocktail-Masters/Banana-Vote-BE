@@ -1,6 +1,7 @@
 package com.cocktailmasters.backend.account.jwt.infra;
 
 import com.cocktailmasters.backend.account.user.domain.entity.User;
+import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import jakarta.servlet.http.HttpServletRequest;
@@ -58,11 +59,13 @@ public class JwtProvider {
     }
 
     private String createToken(String tokenType, User user, Long tokenExpirationDate) {
+        Claims claims = Jwts.claims();
+        claims.put(ID_CLAIM, user.getId());
+        claims.put(EMAIL_CLAIM, user.getEmail());
+        claims.put(ROLE_CLAIM, user.getRole());
         return Jwts.builder()
                 .setSubject(tokenType)
-                .claim(ID_CLAIM, user.getId())
-                .claim(EMAIL_CLAIM, user.getEmail())
-                .claim(ROLE_CLAIM, user.getRole())
+                .setClaims(claims)
                 .setExpiration(createExpireDate(tokenExpirationDate))
                 .signWith(SignatureAlgorithm.ES256, secretKey)
                 .compact();
