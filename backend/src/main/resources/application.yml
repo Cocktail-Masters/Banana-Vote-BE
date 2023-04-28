@@ -49,12 +49,3 @@ oauth:
     url:
       auth: https://nid.naver.com
       api: https://openapi.naver.com
-
-jwt:
-  secret-key:
-  access-token:
-    expiration: 1800000
-    header: Authorization
-  refresh-token:
-    expiration: 1209600000
-    header: Authorization-refresh
