@@ -3,6 +3,7 @@ package com.cocktailmasters.backend.account.jwt;
 import com.cocktailmasters.backend.account.user.domain.entity.User;
 import io.jsonwebtoken.*;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -48,6 +49,10 @@ public class JwtProvider {
         return createToken(REFRESH_TOKEN_SUBJECT, user, accessTokenExpirationDate);
     }
 
+    public void setTokenHeader(HttpServletResponse response, String token) {
+        response.setHeader(accessTokenHeader, token);
+    }
+
     public Optional<String> extractAccessToken(HttpServletRequest request) {
         return extractToken(request, accessTokenHeader);
     }
@@ -75,20 +80,8 @@ public class JwtProvider {
         } catch (IllegalArgumentException e) {
             log.error("JWT token is invalid");
             return false;
-        } catch ( ExpiredJwtException e) {
-
-            return false;
         }
     }
-
-    public void sendAccessToken() {
-    }
-
-    public void sendAccessAndRefreshToken() {
-
-    }
-    //TODO: 토큰 헤더에 추가 후 보내기
-    //TODO: 토큰 값 가져오기
 
     private String createToken(String tokenType, User user, Long tokenExpirationDate) {
         Claims claims = Jwts.claims();
