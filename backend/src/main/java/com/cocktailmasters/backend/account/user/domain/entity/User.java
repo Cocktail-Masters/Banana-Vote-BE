@@ -47,6 +47,8 @@ public class User extends BaseEntity {
     @Enumerated(EnumType.STRING)
     private Role role = Role.USER;
 
+    private String refreshToken;
+
     @Builder.Default
     private Long points = 0L;
 
@@ -123,5 +125,9 @@ public class User extends BaseEntity {
 
     public void encodePassword(PasswordEncoder passwordEncoder) {
         this.password = passwordEncoder.encode(this.password);
+    }
+
+    public void updateRefreshToken(String refreshToken) {
+        this.refreshToken = refreshToken;
     }
 }
