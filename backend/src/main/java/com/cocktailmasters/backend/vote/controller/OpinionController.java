@@ -25,10 +25,10 @@ public class OpinionController {
     @PostMapping()
     public ResponseEntity<String> createOpinion(@Valid @RequestBody CreateOpinionRequest createOpinionRequest) throws Exception {
         // TODO: 토큰으로 사용자 검증
+        Long userId = 1L;
         if (createOpinionRequest.getContent().trim().isEmpty()) {
             return ResponseEntity.badRequest().build();
         }
-        Long userId = 1L;
         if (opinionService.createOpinion(userId, createOpinionRequest)) {
             return ResponseEntity.created(null).build();
         }
