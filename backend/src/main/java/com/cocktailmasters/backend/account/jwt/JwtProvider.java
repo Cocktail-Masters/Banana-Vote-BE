@@ -49,8 +49,12 @@ public class JwtProvider {
         return createToken(REFRESH_TOKEN_SUBJECT, user, accessTokenExpirationDate);
     }
 
-    public void setTokenHeader(HttpServletResponse response, String token) {
+    public void setAccessTokenHeader(HttpServletResponse response, String token) {
         response.setHeader(accessTokenHeader, token);
+    }
+
+    public void setRefreshTokenHeader(HttpServletResponse response, String token) {
+        response.setHeader(refreshTokenHeader, token);
     }
 
     public Optional<String> extractAccessToken(HttpServletRequest request) {
@@ -59,6 +63,13 @@ public class JwtProvider {
 
     public Optional<String> extractRefreshToken(HttpServletRequest request) {
         return extractToken(request, refreshTokenHeader);
+    }
+
+    public Optional<String> extractClaims(String accessToken) {
+        try {
+        } catch (Exception e) {
+
+        }
     }
 
     public boolean validateToken(String token) {
