@@ -1,6 +1,8 @@
 package com.cocktailmasters.backend.vote.controller.dto.item;
 
 import com.cocktailmasters.backend.vote.domain.entity.Opinion;
+import com.fasterxml.jackson.databind.PropertyNamingStrategy;
+import com.fasterxml.jackson.databind.annotation.JsonNaming;
 import lombok.Builder;
 import lombok.Getter;
 
@@ -8,6 +10,7 @@ import java.time.LocalDateTime;
 
 @Getter
 @Builder
+@JsonNaming(PropertyNamingStrategy.SnakeCaseStrategy.class)
 public class OpinionDto {
 
     private Long id;
