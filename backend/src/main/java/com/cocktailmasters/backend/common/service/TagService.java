@@ -28,7 +28,7 @@ public class TagService {
         for (int i = 0; i < createTagsRequest.getTags().size(); i++) {
             String tagName = createTagsRequest.getTags().get(i);
 
-            if (tagRepository.findByTagName(tagName).isPresent()) {
+            if (tagRepository.findByTagName(tagName).isPresent() || tagName.isBlank()) {
                 createTagsRequest.getTags().remove(tagName);
                 i--;
             }
