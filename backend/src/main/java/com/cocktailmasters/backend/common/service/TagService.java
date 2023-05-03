@@ -18,16 +18,27 @@ public class TagService {
 
     private final TagRepository tagRepository;
 
+    /**
+     * create tag (not duplicated with name)
+     * @param createTagsRequest
+     * @return true or false(not created anything)
+     */
     @Transactional
     public boolean createTags(CreateTagsRequest createTagsRequest) {
-        //TODO: 관리자 검증
-        for (String tagName : createTagsRequest.getTags()) {
-            if (tagRepository.findByTagName(tagName).isEmpty()) {
+        for (int i = 0; i < createTagsRequest.getTags().size(); i++) {
+            String tagName = createTagsRequest.getTags().get(i);
+
+            if (tagRepository.findByTagName(tagName).isPresent()) {
                 createTagsRequest.getTags().remove(tagName);
+                i--;
             }
         }
+
         tagRepository.saveAll(createTagsRequest.toTagEntity());
-        return true;
+        if(createTagsRequest.getTags().size() == 0)
+            return false;
+        else
+            return true;
     }
 
     @Transactional
