@@ -1,6 +1,7 @@
 package com.cocktailmasters.backend.account.jwt;
 
 import com.cocktailmasters.backend.account.user.domain.entity.User;
+import com.cocktailmasters.backend.util.exception.AuthException;
 import io.jsonwebtoken.*;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -11,7 +12,9 @@ import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Component;
 
 import java.util.Date;
+import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Slf4j
 @PropertySource("security.yml")
@@ -24,7 +27,7 @@ public class JwtProvider {
     private static final String BEARER = "Bearer ";
     private static final String ID_CLAIM = "id";
     private static final String EMAIL_CLAIM = "email";
-    private static final String ROLE_CLAIM = "email";
+    private static final String ROLE_CLAIM = "role";
 
     @Value("${jwt.secret-key}")
     private String secretKey;
@@ -65,10 +68,14 @@ public class JwtProvider {
         return extractToken(request, refreshTokenHeader);
     }
 
-    public Optional<String> extractClaims(String accessToken) {
+    public Map<String, Object> getPayload(String token) {
         try {
-        } catch (Exception e) {
-
+            final Claims body = extractBody(token);
+            return body.entrySet()
+                    .stream()
+                    .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+        } catch (JwtException | IllegalArgumentException e) {
+            throw new AuthException();
         }
     }
 
@@ -116,5 +123,17 @@ public class JwtProvider {
         return Optional.ofNullable(request.getHeader(tokenHeader))
                 .filter(token -> token.startsWith(BEARER))
                 .map(token -> refreshTokenHeader.replace(BEARER, ""));
+    }
+
+    private Claims extractBody(String token) {
+        try {
+            return Jwts.parserBuilder()
+                    .setSigningKey(secretKey)
+                    .build()
+                    .parseClaimsJws(token)
+                    .getBody();
+        } catch (ExpiredJwtException e) {
+            throw new AuthException();
+        }
     }
 }
