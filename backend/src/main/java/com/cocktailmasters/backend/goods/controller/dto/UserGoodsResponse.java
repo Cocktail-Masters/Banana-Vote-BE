@@ -1,6 +1,5 @@
 package com.cocktailmasters.backend.goods.controller.dto;
 
-import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 
 import com.cocktailmasters.backend.goods.domain.GoodsType;
@@ -27,6 +26,9 @@ public class UserGoodsResponse {
     @JsonProperty("expiration_date")
     private String expirationDate;
 
+    @JsonProperty("is_using")
+    private boolean isUsing;
+
     public static UserGoodsResponse createUserGoodsReponse(UserGoods userGoods) {
         return UserGoodsResponse.builder()
                     .id(userGoods.getId())
@@ -36,6 +38,7 @@ public class UserGoodsResponse {
                     .type(userGoods.getGoods().getGoodsType())
                     .ea(userGoods.getGoodsAmount())
                     .expirationDate(userGoods.getGoodsExpirationDate().format(DateTimeFormatter.ISO_LOCAL_DATE))
+                    .isUsing(userGoods.isUsing())
                     .build();
     }
 }

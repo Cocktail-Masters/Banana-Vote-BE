@@ -6,7 +6,7 @@ import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 
 @Getter
 @SuperBuilder
@@ -19,7 +19,9 @@ public class UserGoods extends BaseEntity {
     @Builder.Default
     private int goodsAmount = 0;
 
-    private LocalDateTime goodsExpirationDate;
+    private LocalDate goodsExpirationDate;
+
+    private boolean isUsing;
 
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private User user;
