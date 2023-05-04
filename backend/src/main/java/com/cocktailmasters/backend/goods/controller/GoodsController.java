@@ -63,7 +63,7 @@ public class GoodsController {
     public ResponseEntity<String> buyGoods(@PathVariable long goodsId,
         @RequestParam(required = false, name = "quantity", defaultValue = "1") long quantity) {
         // TODO : 로그인 여부 확인 및 유저 아이디 확인
-        long userId = 0;
+        long userId = 1;
 
         if(quantity < 0)
             return ResponseEntity.badRequest().build();
