@@ -17,9 +17,9 @@ import java.time.LocalDateTime;
 public class UserGoods extends BaseEntity {
 
     @Builder.Default
-    private int goods_number = 0;
+    private int goodsAmount = 0;
 
-    private LocalDateTime goods_expiration_date;
+    private LocalDateTime goodsExpirationDate;
 
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private User user;
