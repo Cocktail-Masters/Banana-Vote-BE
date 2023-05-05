@@ -1,5 +1,6 @@
 package com.cocktailmasters.backend.account.jwt;
 
+import com.cocktailmasters.backend.account.jwt.util.PasswordUtil;
 import com.cocktailmasters.backend.account.user.domain.entity.User;
 import com.cocktailmasters.backend.account.user.domain.repository.UserRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -10,6 +11,12 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.authority.mapping.GrantedAuthoritiesMapper;
+import org.springframework.security.core.authority.mapping.NullAuthoritiesMapper;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
@@ -17,8 +24,13 @@ import java.io.IOException;
 @RequiredArgsConstructor
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
+    private static final String EMAIL_CLAIM = "email";
+    private static final String ID_CLAIM = "id";
+
     private final JwtProvider jwtProvider;
     private final UserRepository userRepository;
+
+    private GrantedAuthoritiesMapper authoritiesMapper = new NullAuthoritiesMapper();
 
     @Override
     protected void doFilterInternal(HttpServletRequest request,
@@ -35,12 +47,11 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                     .orElse(null);
             if (refreshToken != null) {
                 checkRefreshTokenAndReIssueAccessToken(response, refreshToken);
+                return;
             }
             if (refreshToken == null) {
-                // refresh null 이면 access 검증
-                // access가 없거나 유효하지 않으면 403
+                checkAccessTokenAndAuthentication(request, response, filterChain);
             }
-
         } catch (ExpiredJwtException e) {
             response.setStatus(HttpStatus.UNAUTHORIZED.value());
             response.setContentType("application/json;charset=UTF-8");
@@ -53,7 +64,9 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                                                        String refreshToken) {
         userRepository.findByRefreshToken(refreshToken)
                 .ifPresent(user -> {
+                    reIssueRefreshToken(user);
                     jwtProvider.setAccessTokenHeader(response, jwtProvider.createAccessToken(user));
+                    jwtProvider.setRefreshTokenHeader(response, jwtProvider.createRefreshToken(user));
                 });
     }
 
@@ -69,9 +82,27 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                                                    FilterChain filterChain) throws ServletException, IOException {
         jwtProvider.extractAccessToken(request)
                 .filter(jwtProvider::validateToken)
-                .ifPresent(accessToken -> jwtProvider.extractEmail(accessToken)
-                        .ifPresent(email -> userRepository.findByEmail(email)
-                                .ifPresent(this::saveAuthentication)));
+                .ifPresent(accessToken -> {
+                    Long userId = (Long) jwtProvider.getPayload(accessToken).get(ID_CLAIM);
+                    userRepository.findById(userId)
+                            .ifPresent(this::saveAuthentication);
+                });
         filterChain.doFilter(request, response);
+    }
+
+    private void saveAuthentication(User user) {
+        String password = user.getPassword();
+        if (password == null) {
+            password = PasswordUtil.generateRandomPassword();
+        }
+        UserDetails userDetailsUser = org.springframework.security.core.userdetails.User.builder()
+                .username(user.getEmail())
+                .password(password)
+                .roles(user.getRole().name())
+                .build();
+        Authentication authentication = new UsernamePasswordAuthenticationToken(userDetailsUser,
+                null,
+                authoritiesMapper.mapAuthorities(userDetailsUser.getAuthorities()));
+        SecurityContextHolder.getContext().setAuthentication(authentication);
     }
 }
