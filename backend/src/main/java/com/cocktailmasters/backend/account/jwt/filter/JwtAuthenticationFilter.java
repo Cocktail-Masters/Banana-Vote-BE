@@ -1,5 +1,6 @@
-package com.cocktailmasters.backend.account.jwt;
+package com.cocktailmasters.backend.account.jwt.filter;
 
+import com.cocktailmasters.backend.account.jwt.service.JwtProvider;
 import com.cocktailmasters.backend.account.jwt.util.PasswordUtil;
 import com.cocktailmasters.backend.account.user.domain.entity.User;
 import com.cocktailmasters.backend.account.user.domain.repository.UserRepository;
