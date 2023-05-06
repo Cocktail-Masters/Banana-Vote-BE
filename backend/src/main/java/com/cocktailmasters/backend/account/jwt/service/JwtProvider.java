@@ -5,6 +5,7 @@ import com.cocktailmasters.backend.util.exception.AuthException;
 import io.jsonwebtoken.*;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -17,7 +18,8 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Slf4j
-@PropertySource("security.yml")
+@Getter
+@PropertySource("application-dev.yml")
 @RequiredArgsConstructor
 @Component
 public class JwtProvider {
@@ -35,7 +37,7 @@ public class JwtProvider {
     @Value("${jwt.access-token.expiration}")
     private Long accessTokenExpirationDate;
 
-    @Value("${jwt.refresh-token.expiation}")
+    @Value("${jwt.refresh-token.expiration}")
     private Long refreshTokenExpirationDate;
 
     @Value("${jwt.access-token.header}")
