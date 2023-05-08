@@ -11,8 +11,10 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.cocktailmasters.backend.goods.controller.dto.GoodsResponse;
+import com.cocktailmasters.backend.goods.controller.dto.UserGoodsResponse;
 import com.cocktailmasters.backend.goods.domain.GoodsType;
 import com.cocktailmasters.backend.goods.service.GoodsService;
+import com.cocktailmasters.backend.goods.service.UserGoodsService;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -25,6 +27,7 @@ import lombok.RequiredArgsConstructor;
 public class GoodsController {
     
     private final GoodsService goodsService;
+    private final UserGoodsService userGoodsService;
 
     @Operation(summary = "상품들의 타입 리스트 반환",
         description = "상품들의 타입 리스트 반환")
@@ -72,5 +75,20 @@ public class GoodsController {
             return ResponseEntity.notFound().build();
         else            
             return ResponseEntity.ok().build();
+    }
+
+    @Operation(summary = "유저가 가진 상품 목록 조회",
+        description = "유저가 가진 상품 목록 조회")
+    @GetMapping("/users")
+    public ResponseEntity<List<UserGoodsResponse>> getUsersGoodsList() {
+        // TODO : 로그인 및 유저 정보 확인
+        long userId = 1;
+
+        List<UserGoodsResponse> userGoods = userGoodsService.getUsersGoods(userId);
+
+        if(userGoods.size() == 0)
+            return ResponseEntity.noContent().build();
+        else
+            return ResponseEntity.ok().body(userGoods);
     }
 }
