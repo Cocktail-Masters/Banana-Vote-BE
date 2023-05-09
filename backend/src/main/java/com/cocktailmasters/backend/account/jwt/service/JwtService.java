@@ -19,7 +19,7 @@ import java.util.stream.Collectors;
 
 @Slf4j
 @Getter
-@PropertySource("application-dev.yml")
+@PropertySource("application-jwt.yml")
 @RequiredArgsConstructor
 @Component
 public class JwtService {
