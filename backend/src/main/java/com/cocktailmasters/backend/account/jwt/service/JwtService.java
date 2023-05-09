@@ -22,7 +22,7 @@ import java.util.stream.Collectors;
 @PropertySource("application-dev.yml")
 @RequiredArgsConstructor
 @Component
-public class JwtProvider {
+public class JwtService {
 
     private static final String ACCESS_TOKEN_SUBJECT = "AccessToken";
     private static final String REFRESH_TOKEN_SUBJECT = "RefreshToken";
@@ -54,12 +54,12 @@ public class JwtProvider {
         return createToken(REFRESH_TOKEN_SUBJECT, user, accessTokenExpirationDate);
     }
 
-    public void setAccessTokenHeader(HttpServletResponse response, String token) {
-        response.setHeader(accessTokenHeader, token);
+    public void setAccessTokenHeader(HttpServletResponse response, String accessToken) {
+        response.setHeader(accessTokenHeader, accessToken);
     }
 
-    public void setRefreshTokenHeader(HttpServletResponse response, String token) {
-        response.setHeader(refreshTokenHeader, token);
+    public void setRefreshTokenHeader(HttpServletResponse response, String refreshToken) {
+        response.setHeader(refreshTokenHeader, refreshToken);
     }
 
     public Optional<String> extractAccessToken(HttpServletRequest request) {
