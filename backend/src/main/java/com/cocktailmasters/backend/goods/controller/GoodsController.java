@@ -33,7 +33,7 @@ public class GoodsController {
         description = "상품들의 타입 리스트 반환")
     @GetMapping("/types")
     public ResponseEntity<List<GoodsType>> getGoodsTypes() {        
-        List<GoodsType> goodsTypes = goodsService.getGoodsTpyes();
+        List<GoodsType> goodsTypes = goodsService.getGoodsTypes();
 
         if(goodsTypes.size() == 0)
             return ResponseEntity.noContent().build();
