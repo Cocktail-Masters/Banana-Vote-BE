@@ -15,40 +15,6 @@ spring:
     hibernate:
       ddl-auto: update
     show-sql: 'false'
-#  security:
-#    oauth2:
-#      client:
-#        registration:
-#          kakao:
-#            client-id:
-#            redirect-uri: "http://localhost:8080/api/v1/users/login/kakao"
-#            authorization-grant-type: authorization_code
-#            client-authentication-method: POST
-#            client-name: Kakao
-#            scope:
-#              - profile_nickname
-#              - account_email
-#              - gender
-#              - age_range
-#        provider:
-#          kakao:
-#            authorization-uri: https://kauth.kakao.com/oauth/authorize
-#            token-uri: https://kauth.kakao.com/oauth/token
-#            user-info-uri: https://kapi.kakao.com/v2/user/me
-#            user-name-attribute: id
-#
-#oauth:
-#  kakao:
-#    client-id:
-#    url:
-#      auth: https://kauth.kakao.com
-#      api: https://kapi.kakao.com
-#  naver:
-#    secret:
-#    client-id:
-#    url:
-#      auth: https://nid.naver.com
-#      api: https://openapi.naver.com
 
 logging:
     level:
