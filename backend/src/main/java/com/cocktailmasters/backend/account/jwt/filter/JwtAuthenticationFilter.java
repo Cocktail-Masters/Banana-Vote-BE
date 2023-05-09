@@ -1,6 +1,6 @@
 package com.cocktailmasters.backend.account.jwt.filter;
 
-import com.cocktailmasters.backend.account.jwt.service.JwtProvider;
+import com.cocktailmasters.backend.account.jwt.service.JwtService;
 import com.cocktailmasters.backend.account.jwt.util.PasswordUtil;
 import com.cocktailmasters.backend.account.user.domain.entity.User;
 import com.cocktailmasters.backend.account.user.domain.repository.UserRepository;
@@ -28,7 +28,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     private static final String EMAIL_CLAIM = "email";
     private static final String ID_CLAIM = "id";
 
-    private final JwtProvider jwtProvider;
+    private final JwtService jwtService;
     private final UserRepository userRepository;
 
     private GrantedAuthoritiesMapper authoritiesMapper = new NullAuthoritiesMapper();
@@ -43,8 +43,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 filterChain.doFilter(request, response);
                 return;
             }
-            String refreshToken = jwtProvider.extractRefreshToken(request)
-                    .filter(jwtProvider::validateToken)
+            String refreshToken = jwtService.extractRefreshToken(request)
+                    .filter(jwtService::validateToken)
                     .orElse(null);
             if (refreshToken != null) {
                 checkRefreshTokenAndReIssueAccessToken(response, refreshToken);
@@ -66,13 +66,13 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         userRepository.findByRefreshToken(refreshToken)
                 .ifPresent(user -> {
                     reIssueRefreshToken(user);
-                    jwtProvider.setAccessTokenHeader(response, jwtProvider.createAccessToken(user));
-                    jwtProvider.setRefreshTokenHeader(response, jwtProvider.createRefreshToken(user));
+                    jwtService.setAccessTokenHeader(response, jwtService.createAccessToken(user));
+                    jwtService.setRefreshTokenHeader(response, jwtService.createRefreshToken(user));
                 });
     }
 
     private String reIssueRefreshToken(User user) {
-        String reIssueRefreshToken = jwtProvider.createRefreshToken(user);
+        String reIssueRefreshToken = jwtService.createRefreshToken(user);
         user.updateRefreshToken(reIssueRefreshToken);
         userRepository.saveAndFlush(user);
         return reIssueRefreshToken;
@@ -81,10 +81,10 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     private void checkAccessTokenAndAuthentication(HttpServletRequest request,
                                                    HttpServletResponse response,
                                                    FilterChain filterChain) throws ServletException, IOException {
-        jwtProvider.extractAccessToken(request)
-                .filter(jwtProvider::validateToken)
+        jwtService.extractAccessToken(request)
+                .filter(jwtService::validateToken)
                 .ifPresent(accessToken -> {
-                    Long userId = (Long) jwtProvider.getPayload(accessToken).get(ID_CLAIM);
+                    Long userId = (Long) jwtService.getPayload(accessToken).get(ID_CLAIM);
                     userRepository.findById(userId)
                             .ifPresent(this::saveAuthentication);
                 });
