@@ -18,7 +18,7 @@ import org.springframework.security.web.authentication.SimpleUrlAuthenticationSu
 import java.io.IOException;
 
 @Slf4j
-@PropertySource("application-dev.yml")
+@PropertySource("application-jwt.yml")
 @RequiredArgsConstructor
 public class LoginSuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
 
