@@ -32,7 +32,8 @@ public class Goods extends BaseEntity {
 
     private String goodsImageUrl;
 
-    private Long goodsValidityPeriod;
+    @Builder.Default
+    private Long goodsValidityPeriod = 30L;
 
     @NotNull
     private Long goodsPrice;
@@ -41,8 +42,10 @@ public class Goods extends BaseEntity {
     @Builder.Default
     private Long goodsRemainingQuantity = -1L;
 
-    private LocalDate saleStartDate;
-    private LocalDate saleEndDate;
+    @Builder.Default
+    private LocalDate saleStartDate = LocalDate.now();
+    @Builder.Default
+    private LocalDate saleEndDate = LocalDate.of(2100, 12, 31);
 
     @Builder.Default
     private Long goodsSoldNumber = 0L;
