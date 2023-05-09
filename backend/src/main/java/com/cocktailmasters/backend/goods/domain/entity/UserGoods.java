@@ -28,4 +28,8 @@ public class UserGoods extends BaseEntity {
 
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private Goods goods;
+
+    public void addQuantity(int quanity) {
+        goodsAmount += quanity;
+    }
 }
