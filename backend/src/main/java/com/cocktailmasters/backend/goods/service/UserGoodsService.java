@@ -43,9 +43,10 @@ public class UserGoodsService {
     }
 
     /**
+     * add goods to user
      * @param goodsId
      * @param userId
-     * @return
+     * @return true of false(user or goods not existed)
      */
     @Transactional
     public boolean addUserGoodsToUser(long userId, int quanity, long goodsId) {
@@ -69,9 +70,7 @@ public class UserGoodsService {
                                 .build();
         }
 
-        if(userGoodsRepository.save(userGoods) != null)
-            return true;
-        else
-            return false;
+        userGoodsRepository.save(userGoods);
+        return true;
     }
 }
