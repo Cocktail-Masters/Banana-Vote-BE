@@ -64,7 +64,7 @@ public class GoodsController {
         description = "상품의 수량이 부족할 경우, 구매 일자가 유효하지 않을 경우 에러, 상품이 존재하지 않을 경우에도 에러")
     @PostMapping("/{goodsId}")
     public ResponseEntity<String> buyGoods(@PathVariable long goodsId,
-        @RequestParam(required = false, name = "quantity", defaultValue = "1") long quantity) {
+        @RequestParam(required = false, name = "quantity", defaultValue = "1") int quantity) {
         // TODO : 로그인 여부 확인 및 유저 아이디 확인
         long userId = 1;
 
