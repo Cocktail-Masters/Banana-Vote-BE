@@ -42,7 +42,7 @@ public class GoodsController {
     }
 
     @Operation(summary = "상품들의 리스트 반환",
-        description = "type 미 명시 시 전체, 정렬 기준 default는 1 (1, 2 이외의 값이들어갔을 경우 1로 취급), 기본 페이지는 0, 기본 페이지 사이즈는 10")
+        description = "type 미 명시 시 전체(뱃지의 경우엔 X), 정렬 기준 default는 1, 기본 페이지는 0, 기본 페이지 사이즈는 10")
     @GetMapping("/list")
     public ResponseEntity<GoodsResponse> getGoods(@RequestParam(required = false, name = "type", defaultValue = "-1") String goodsTypeName,
         @RequestParam(required = false, name = "sortby", defaultValue = "1") int sortBy,
