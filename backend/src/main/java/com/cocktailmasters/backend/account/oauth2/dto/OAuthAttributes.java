@@ -10,10 +10,12 @@ import com.cocktailmasters.backend.account.user.domain.entity.SocialType;
 import com.cocktailmasters.backend.account.user.domain.entity.User;
 import com.cocktailmasters.backend.util.exception.AuthException;
 import lombok.Builder;
+import lombok.Getter;
 
 import java.util.Map;
 import java.util.UUID;
 
+@Getter
 public class OAuthAttributes {
 
     private String nameAttributeKey;
