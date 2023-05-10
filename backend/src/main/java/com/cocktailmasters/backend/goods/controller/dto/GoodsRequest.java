@@ -5,7 +5,6 @@ import java.time.LocalDate;
 import com.cocktailmasters.backend.goods.domain.GoodsType;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-import jakarta.validation.Valid;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
