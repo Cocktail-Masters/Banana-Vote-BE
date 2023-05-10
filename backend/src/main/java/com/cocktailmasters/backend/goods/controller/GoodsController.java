@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -120,7 +121,7 @@ public class GoodsController {
     }
 
     @Operation(summary = "굿즈 수정(관리자용)", description = "굿즈 수정, 기입하지 않은 정보가 있을 시에 기본값으로 초기화에 주의")
-    @PostMapping
+    @PatchMapping
     public ResponseEntity<String> modifyGoods(@PathVariable long goodsId,
             @RequestBody @Valid GoodsRequest goodsRequest) {
         // TODO : 관리자 확인
