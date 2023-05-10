@@ -114,7 +114,7 @@ public class GoodsController {
     }
 
     @Operation(summary = "굿즈 삭제(관리자용)", description = "굿즈 삭제")
-    @DeleteMapping
+    @DeleteMapping("/{goodsId}")
     public ResponseEntity<String> deleteGoods(@PathVariable long goodsId) {
         // TODO : 관리자 확인
 
@@ -125,7 +125,7 @@ public class GoodsController {
     }
 
     @Operation(summary = "굿즈 수정(관리자용)", description = "굿즈 수정, 기입하지 않은 정보가 있을 시에 기본값으로 초기화에 주의")
-    @PatchMapping
+    @PatchMapping("/{goodsId}")
     public ResponseEntity<String> modifyGoods(@PathVariable long goodsId,
             @RequestBody @Valid GoodsRequest goodsRequest) {
         // TODO : 관리자 확인
