@@ -66,6 +66,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         userRepository.findByRefreshToken(refreshToken)
                 .ifPresent(user -> {
                     reIssueRefreshToken(user);
+                    response.setStatus(HttpServletResponse.SC_OK);
                     jwtService.setAccessTokenHeader(response, jwtService.createAccessToken(user));
                     jwtService.setRefreshTokenHeader(response, jwtService.createRefreshToken(user));
                 });
