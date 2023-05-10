@@ -1,5 +1,6 @@
 package com.cocktailmasters.backend.account.user.domain.repository;
 
+import com.cocktailmasters.backend.account.user.domain.entity.SocialType;
 import com.cocktailmasters.backend.account.user.domain.entity.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
@@ -15,6 +16,8 @@ public interface UserRepository extends JpaRepository<User, Long> {
     Optional<User> findByEmail(String email);
 
     Optional<User> findByNickname(String nickname);
+
+    Optional<User> findBySocialTypeAndSocialId(SocialType socialType, String socialId);
 
     @Modifying
     @Query("UPDATE User u SET u.points = :point WHERE u.id = :id")
