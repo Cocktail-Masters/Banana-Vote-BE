@@ -29,7 +29,9 @@ import java.util.List;
 public class User extends BaseEntity {
 
     @Enumerated(EnumType.STRING)
-    private OAuthProvider oAuthProvider;
+    private SocialType socialType;
+
+    private String socialId;
 
     @NotNull
     private String email;

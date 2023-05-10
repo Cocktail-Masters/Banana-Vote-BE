@@ -1,6 +1,6 @@
 package com.cocktailmasters.backend.account.user.domain.entity;
 
-public enum OAuthProvider {
+public enum SocialType {
 
     KAKAO, NAVER, GOOGLE;
 }
