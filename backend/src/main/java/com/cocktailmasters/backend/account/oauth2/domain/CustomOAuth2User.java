@@ -1,5 +1,6 @@
 package com.cocktailmasters.backend.account.oauth2.domain;
 
+import com.cocktailmasters.backend.account.user.domain.entity.Gender;
 import com.cocktailmasters.backend.account.user.domain.entity.Role;
 import lombok.Getter;
 import org.springframework.security.core.GrantedAuthority;
@@ -13,8 +14,7 @@ public class CustomOAuth2User extends DefaultOAuth2User {
 
     private String email;
     private String nickname;
-    private String gender;
-    private String age;
+    private Gender gender;
     private Role role;
 
 
@@ -31,14 +31,12 @@ public class CustomOAuth2User extends DefaultOAuth2User {
                             String nameAttributeKey,
                             String email,
                             String nickname,
-                            String gender,
-                            String age,
+                            Gender gender,
                             Role role) {
         super(authorities, attributes, nameAttributeKey);
         this.email = email;
         this.nickname = nickname;
         this.gender = gender;
-        this.age = age;
         this.role = role;
     }
 }
