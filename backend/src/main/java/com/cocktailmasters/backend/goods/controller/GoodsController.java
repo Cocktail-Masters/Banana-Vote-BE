@@ -94,14 +94,18 @@ public class GoodsController {
             return ResponseEntity.ok().body(userGoods);
     }
 
-    @Operation(summary = "굿즈 생성(관리자용)", description = "굿즈 생성")
+    @Operation(summary = "굿즈 생성(관리자용)", description = "굿즈 생성, 타입이 뱃지 일경우엔 X, 뱃지 생성 API 이용하세요")
     @PostMapping
     public ResponseEntity<String> createGoods(@RequestBody @Valid GoodsRequest goodsRequest) {
         // TODO : 관리자 확인
 
         // date validation
         if (goodsRequest.getStartDate().isAfter(goodsRequest.getEndDate()))
-            return ResponseEntity.badRequest().build();
+            return ResponseEntity.badRequest().body("invalud date");
+
+        // type check
+        if (goodsRequest.getType() == GoodsType.BADGE)
+            return ResponseEntity.badRequest().body("use badge api for creating badge");
 
         if (goodsService.addGoods(goodsRequest))
             return ResponseEntity.created(null).build();
@@ -128,7 +132,11 @@ public class GoodsController {
 
         // date validation
         if (goodsRequest.getStartDate().isAfter(goodsRequest.getEndDate()))
-            return ResponseEntity.badRequest().build();
+            return ResponseEntity.badRequest().body("invalud date");
+
+        // type check
+        if (goodsRequest.getType() == GoodsType.BADGE)
+            return ResponseEntity.badRequest().body("use badge api for creating badge");
 
         if (goodsService.modifyGoods(goodsId, goodsRequest))
             return ResponseEntity.ok().build();
