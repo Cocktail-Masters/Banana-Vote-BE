@@ -35,10 +35,13 @@ public class LoginSuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
         String email = extractUsername(authentication);
         User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new UsernameNotFoundException("Email does not exist"));
+
         String accessToken = jwtService.createAccessToken(user);
         String refreshToken = jwtService.createRefreshToken(user);
+        response.setStatus(HttpServletResponse.SC_OK);
         jwtService.setAccessTokenHeader(response, accessToken);
         jwtService.setRefreshTokenHeader(response, refreshToken);
+
         user.updateRefreshToken(refreshToken);
         userRepository.saveAndFlush(user);
         log.info("로그인에 성공하였습니다. 이메일 : {}", email);
