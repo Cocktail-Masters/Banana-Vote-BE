@@ -104,7 +104,7 @@ public class GoodsController {
             return ResponseEntity.badRequest().build();
 
         if (goodsService.addGoods(goodsRequest))
-            return ResponseEntity.ok().build();
+            return ResponseEntity.created(null).build();
         else
             return ResponseEntity.badRequest().build();
     }
