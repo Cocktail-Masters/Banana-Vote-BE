@@ -1,6 +1,7 @@
 package com.cocktailmasters.backend.goods.domain.entity;
 
 import com.cocktailmasters.backend.common.domain.entity.BaseEntity;
+import com.cocktailmasters.backend.goods.controller.dto.GoodsRequest;
 import com.cocktailmasters.backend.goods.domain.GoodsType;
 
 import jakarta.persistence.*;
@@ -57,5 +58,23 @@ public class Goods extends BaseEntity {
     public void soldGoods(long quantity) {
         goodsRemainingQuantity -= quantity;
         goodsSoldNumber += quantity;
+    }
+
+    /**
+     * modify goods with DTO
+     * 
+     * @param goodsRequest
+     * @return numbed of modified field
+     */
+    public void modifiyGoodsInfo(GoodsRequest goodsRequest) {
+        this.goodsName = goodsRequest.getName();
+        this.goodsDescription = goodsRequest.getDescription();
+        this.goodsImageUrl = goodsRequest.getImageUrl();
+        this.goodsPrice = goodsRequest.getPrice();
+        this.goodsValidityPeriod = goodsRequest.getValidPeriod();
+        this.goodsRemainingQuantity = goodsRequest.getRemainingQuantity();
+        this.goodsType = goodsRequest.getType();
+        this.saleStartDate = goodsRequest.getStartDate();
+        this.saleEndDate = goodsRequest.getEndDate();
     }
 }
