@@ -68,16 +68,40 @@ public class GoodsService {
         Pageable pageable = PageRequest.of(page, pageSize);
 
         List<Goods> goodsList;
-        if (type == null) { // find all
-            if (sortBy == 2) // popular first
-                goodsList = goodsRepository.findAllByOrderByGoodsSoldNumberAsc(pageable).getContent();
-            else // newly first
-                goodsList = goodsRepository.findAllByOrderBySaleStartDateAsc(pageable).getContent();
-        } else { // find by type
-            if (sortBy == 2) // popular first
-                goodsList = goodsRepository.findByGoodsTypeOrderByGoodsSoldNumberAsc(type, pageable).getContent();
-            else // newly first
-                goodsList = goodsRepository.findByGoodsTypeOrderBySaleStartDateAsc(type, pageable).getContent();
+        if (type == null) {
+            // find all
+            switch (sortBy) {
+                case 1: // newly first
+                default:
+                    goodsList = goodsRepository.findAllByOrderBySaleStartDateAsc(pageable).getContent();
+                    break;
+                case 2: // popular first
+                    goodsList = goodsRepository.findAllByOrderByGoodsSoldNumberAsc(pageable).getContent();
+                    break;
+                case 3: // upper price
+                    goodsList = goodsRepository.findAllByOrderByGoodsPriceAsc(pageable).getContent();
+                    break;
+                case 4: // lower price
+                    goodsList = goodsRepository.findAllByOrderByGoodsPriceDec(pageable).getContent();
+                    break;
+            }
+        } else {
+            // find by type
+            switch (sortBy) {
+                case 1: // newly first
+                default:
+                    goodsList = goodsRepository.findByGoodsTypeOrderBySaleStartDateAsc(type, pageable).getContent();
+                    break;
+                case 2: // popular first
+                    goodsList = goodsRepository.findByGoodsTypeOrderByGoodsSoldNumberAsc(type, pageable).getContent();
+                    break;
+                case 3: // upper price
+                    goodsList = goodsRepository.findByGoodsTypeOrderByGoodsPriceAsc(type, pageable).getContent();
+                    break;
+                case 4: // lower price
+                    goodsList = goodsRepository.findByGoodsTypeOrderByGoodsPriceDec(type, pageable).getContent();
+                    break;
+            }
         }
 
         // change to dto
