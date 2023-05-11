@@ -6,9 +6,11 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+@Slf4j
 @Tag(name = "user", description = "회원 관리")
 @RequiredArgsConstructor
 @RestController
@@ -21,6 +23,7 @@ public class UserController {
     @PostMapping("/sign-up")
     public ResponseEntity<String> signUp(@RequestBody @Valid SignUpRequest signUpRequest) throws Exception {
         if (userService.signUp(signUpRequest)) {
+            log.info("successful membership");
             return ResponseEntity.created(null).build();
         }
         return ResponseEntity.badRequest().build();
