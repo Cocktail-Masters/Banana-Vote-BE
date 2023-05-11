@@ -23,7 +23,7 @@ import org.springframework.web.filter.OncePerRequestFilter;
 import java.io.IOException;
 
 @RequiredArgsConstructor
-public class JwtAuthenticationFilter extends OncePerRequestFilter {
+public class JwtAuthenticationProcessingFilter extends OncePerRequestFilter {
 
     private static final String EMAIL_CLAIM = "email";
     private static final String ID_CLAIM = "id";
