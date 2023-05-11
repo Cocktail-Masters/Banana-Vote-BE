@@ -106,8 +106,8 @@ public class GoodsService {
 
         // change to dto
         List<GoodsItemDto> goodsDtosList = new ArrayList<>();
-        for (int i = 0; i < goodsList.size(); i++)
-            goodsDtosList.add(GoodsItemDto.createGoodItemDto(goodsList.get(i)));
+        for (Goods goods : goodsList)
+            goodsDtosList.add(GoodsItemDto.createGoodItemDto(goods));
 
         // get total page
         int totalPages = getGoodsListTotalPages(type, pageSize);
