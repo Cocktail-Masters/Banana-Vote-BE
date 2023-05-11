@@ -19,8 +19,7 @@ public class SignUpRequest {
     @NotNull
     @Min(8)
     private String password;
-
-    @NotNull
+    
     private String nickname;
 
     private Gender gender;
