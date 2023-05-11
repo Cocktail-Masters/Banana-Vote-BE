@@ -16,10 +16,10 @@ public class UserService {
 
     public boolean signUp(SignUpRequest signUpRequest) throws Exception {
         if (userRepository.findByEmail(signUpRequest.getEmail()).isPresent()) {
-            throw new Exception();
+            throw new Exception("This email already exists");
         }
-        if (userRepository.findByNickname(signUpRequest.getEmail()).isPresent()) {
-            throw new Exception();
+        if (userRepository.findByNickname(signUpRequest.getNickname()).isPresent()) {
+            throw new Exception("This nickname already exists");
         }
         User user = signUpRequest.toUserEntity();
         user.encodePassword(passwordEncoder);
