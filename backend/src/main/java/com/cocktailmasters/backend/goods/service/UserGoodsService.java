@@ -21,13 +21,14 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 @Service
 public class UserGoodsService {
-    
-    private UserRepository userRepository;
-    private UserGoodsRepository userGoodsRepository;
-    private GoodsRepository goodsRepository;
+
+    private final UserRepository userRepository;
+    private final UserGoodsRepository userGoodsRepository;
+    private final GoodsRepository goodsRepository;
 
     /**
      * get list of user goods
+     * 
      * @param userId
      * @return list of user goods response
      */
@@ -35,7 +36,7 @@ public class UserGoodsService {
         List<UserGoods> userGoodsList = userGoodsRepository.findByUserId(userId);
         List<UserGoodsResponse> userGoodsDtos = new ArrayList<>();
 
-        for(UserGoods userGoods : userGoodsList) {
+        for (UserGoods userGoods : userGoodsList) {
             userGoodsDtos.add(UserGoodsResponse.createUserGoodsReponse(userGoods));
         }
 
@@ -44,6 +45,7 @@ public class UserGoodsService {
 
     /**
      * add goods to user
+     * 
      * @param goodsId
      * @param userId
      * @return true of false(user or goods not existed)
@@ -54,20 +56,21 @@ public class UserGoodsService {
         Optional<User> targetUser = userRepository.findById(userId);
         Optional<UserGoods> optionalUserGoods = userGoodsRepository.findByGoodsIdAndUserId(goodsId, userId);
 
-        if(!addedGoods.isPresent() || !targetUser.isPresent()) return false;
+        if (!addedGoods.isPresent() || !targetUser.isPresent())
+            return false;
 
         UserGoods userGoods;
-        if(optionalUserGoods.isPresent()) {
+        if (optionalUserGoods.isPresent()) {
             userGoods = optionalUserGoods.get();
             userGoods.addQuantity(quanity);
         } else {
             userGoods = UserGoods.builder()
-                                .goodsAmount(quanity)
-                                .isUsing(false)
-                                .goodsExpirationDate(LocalDate.of(2100, 12, 31))
-                                .user(targetUser.get())
-                                .goods(addedGoods.get())
-                                .build();
+                    .goodsAmount(quanity)
+                    .isUsing(false)
+                    .goodsExpirationDate(LocalDate.of(2100, 12, 31))
+                    .user(targetUser.get())
+                    .goods(addedGoods.get())
+                    .build();
         }
 
         userGoodsRepository.save(userGoods);
