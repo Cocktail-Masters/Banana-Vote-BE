@@ -10,7 +10,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
 import java.util.Date;
 import java.util.Map;
@@ -21,7 +21,7 @@ import java.util.stream.Collectors;
 @Getter
 @PropertySource("application-jwt.yml")
 @RequiredArgsConstructor
-@Component
+@Service
 public class JwtService {
 
     private static final String ACCESS_TOKEN_SUBJECT = "AccessToken";
