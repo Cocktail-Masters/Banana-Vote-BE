@@ -21,7 +21,6 @@ public class SignUpRequest {
     private String password;
     
     private String nickname;
-
     private Gender gender;
 
     public User toUserEntity() {
