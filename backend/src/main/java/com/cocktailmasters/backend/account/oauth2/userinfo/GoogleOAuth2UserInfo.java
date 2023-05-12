@@ -22,9 +22,4 @@ public class GoogleOAuth2UserInfo extends OAuth2UserInfo {
     public String getGender() {
         return null;
     }
-
-    @Override
-    public String getAge() {
-        return null;
-    }
 }

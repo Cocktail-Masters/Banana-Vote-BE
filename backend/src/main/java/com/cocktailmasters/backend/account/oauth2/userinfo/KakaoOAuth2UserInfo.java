@@ -11,7 +11,7 @@ public class KakaoOAuth2UserInfo extends OAuth2UserInfo {
 
     @Override
     public String getId() {
-        return (String) String.valueOf(attributes.get("id"));
+        return String.valueOf(attributes.get("id"));
     }
 
     @Override
@@ -31,14 +31,5 @@ public class KakaoOAuth2UserInfo extends OAuth2UserInfo {
             return null;
         }
         return (String) account.get("gender");
-    }
-
-    @Override
-    public String getAge() {
-        Map<String, Object> account = (Map<String, Object>) attributes.get("kakao_account");
-        if (account.isEmpty()) {
-            return null;
-        }
-        return (String) account.get("age_range");
     }
 }

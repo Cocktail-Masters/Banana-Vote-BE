@@ -15,6 +15,4 @@ public abstract class OAuth2UserInfo {
     public abstract String getNickname();
 
     public abstract String getGender();
-
-    public abstract String getAge();
 }
