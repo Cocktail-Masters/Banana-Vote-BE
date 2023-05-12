@@ -9,7 +9,6 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
@@ -19,7 +18,6 @@ import java.util.stream.Collectors;
 
 @Slf4j
 @Getter
-@PropertySource("application-jwt.yml")
 @RequiredArgsConstructor
 @Service
 public class JwtService {
@@ -112,7 +110,7 @@ public class JwtService {
                 .setSubject(tokenType)
                 .setClaims(claims)
                 .setExpiration(createExpireDate(tokenExpirationDate))
-                .signWith(SignatureAlgorithm.ES256, secretKey)
+                .signWith(SignatureAlgorithm.HS256, secretKey)
                 .compact();
     }
 
