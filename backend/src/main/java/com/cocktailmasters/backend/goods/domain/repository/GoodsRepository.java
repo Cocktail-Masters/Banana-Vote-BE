@@ -15,7 +15,7 @@ public interface GoodsRepository extends JpaRepository<Goods, Long> {
 
     Page<Goods> findByGoodsTypeOrderByGoodsPriceAsc(GoodsType goodstype, Pageable pageable);
 
-    Page<Goods> findByGoodsTypeOrderByGoodsPriceDec(GoodsType goodstype, Pageable pageable);
+    Page<Goods> findByGoodsTypeOrderByGoodsPriceDesc(GoodsType goodstype, Pageable pageable);
 
     Page<Goods> findAllByOrderBySaleStartDateAsc(Pageable pageable);
 
@@ -23,7 +23,7 @@ public interface GoodsRepository extends JpaRepository<Goods, Long> {
 
     Page<Goods> findAllByOrderByGoodsPriceAsc(Pageable pageable);
 
-    Page<Goods> findAllByOrderByGoodsPriceDec(Pageable pageable);
+    Page<Goods> findAllByOrderByGoodsPriceDesc(Pageable pageable);
 
     long countByGoodsType(GoodsType goodsType);
 }

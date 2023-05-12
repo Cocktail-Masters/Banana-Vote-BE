@@ -82,7 +82,7 @@ public class GoodsService {
                     goodsList = goodsRepository.findAllByOrderByGoodsPriceAsc(pageable).getContent();
                     break;
                 case 4: // lower price
-                    goodsList = goodsRepository.findAllByOrderByGoodsPriceDec(pageable).getContent();
+                    goodsList = goodsRepository.findAllByOrderByGoodsPriceDesc(pageable).getContent();
                     break;
             }
         } else {
@@ -99,7 +99,7 @@ public class GoodsService {
                     goodsList = goodsRepository.findByGoodsTypeOrderByGoodsPriceAsc(type, pageable).getContent();
                     break;
                 case 4: // lower price
-                    goodsList = goodsRepository.findByGoodsTypeOrderByGoodsPriceDec(type, pageable).getContent();
+                    goodsList = goodsRepository.findByGoodsTypeOrderByGoodsPriceDesc(type, pageable).getContent();
                     break;
             }
         }
