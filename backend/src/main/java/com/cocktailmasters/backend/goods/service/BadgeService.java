@@ -116,7 +116,7 @@ public class BadgeService {
                     break;
                 case 4:
                     badgeList = badgeRepository
-                            .findByBadgeEndDateAfterAndIsSellingOrderByBadgePriceDec(LocalDate.now(), true,
+                            .findByBadgeEndDateAfterAndIsSellingOrderByBadgePriceDesc(LocalDate.now(), true,
                                     pageable)
                             .getContent();
                     break;
@@ -135,7 +135,7 @@ public class BadgeService {
                     badgeList = badgeRepository.findAllByOrderByBadgePriceAsc(pageable).getContent();
                     break;
                 case 4:
-                    badgeList = badgeRepository.findAllByOrderByBadgePriceDec(pageable).getContent();
+                    badgeList = badgeRepository.findAllByOrderByBadgePriceDesc(pageable).getContent();
                     break;
             }
         }
