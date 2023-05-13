@@ -25,6 +25,7 @@ import java.io.IOException;
 @RequiredArgsConstructor
 public class JwtAuthenticationProcessingFilter extends OncePerRequestFilter {
 
+    private static final String NO_CHECK_URL = "/api/v1/login";
     private static final String EMAIL_CLAIM = "email";
     private static final String ID_CLAIM = "id";
 
@@ -39,7 +40,7 @@ public class JwtAuthenticationProcessingFilter extends OncePerRequestFilter {
                                     FilterChain filterChain) throws ServletException, IOException {
         try {
             String requestURI = request.getRequestURI();
-            if (requestURI.startsWith("/api/v1/users/login")) {
+            if (requestURI.equals(NO_CHECK_URL)) {
                 filterChain.doFilter(request, response);
                 return;
             }
