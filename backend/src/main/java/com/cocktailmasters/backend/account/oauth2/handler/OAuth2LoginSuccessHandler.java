@@ -6,7 +6,6 @@ import com.cocktailmasters.backend.account.user.domain.entity.Role;
 import com.cocktailmasters.backend.account.user.domain.entity.User;
 import com.cocktailmasters.backend.account.user.domain.repository.UserRepository;
 import com.cocktailmasters.backend.util.exception.AuthException;
-import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
@@ -26,7 +25,9 @@ public class OAuth2LoginSuccessHandler implements AuthenticationSuccessHandler {
     private final UserRepository userRepository;
 
     @Override
-    public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
+    public void onAuthenticationSuccess(HttpServletRequest request,
+                                        HttpServletResponse response,
+                                        Authentication authentication) throws IOException {
         log.info("Success OAuth2 Login");
         try {
             CustomOAuth2User oAuth2User = (CustomOAuth2User) authentication.getPrincipal();
@@ -34,7 +35,7 @@ public class OAuth2LoginSuccessHandler implements AuthenticationSuccessHandler {
             if (oAuth2User.getRole() == Role.GUEST) {
                 String accessToken = jwtService.createAccessToken(user);
                 response.addHeader(jwtService.getAccessTokenHeader(), "Bearer " + accessToken);
-                response.sendRedirect("api/v1/users/oauth2/sign-up");
+//                response.sendRedirect("/");    // 프론트의 회원가입 추가 정보 입력 폼 리다이렉트
                 response.setStatus(HttpServletResponse.SC_OK);
                 jwtService.setAccessTokenHeader(response, accessToken);
             } else {
@@ -46,9 +47,11 @@ public class OAuth2LoginSuccessHandler implements AuthenticationSuccessHandler {
     }
 
     private void loginSuccess(HttpServletResponse response, CustomOAuth2User oAuth2User) throws IOException {
+        log.info("로그인 성공 및 토큰 생성");
         User user = findUserByEmail(oAuth2User.getEmail());
         String accessToken = jwtService.createAccessToken(user);
         String refreshToken = jwtService.createRefreshToken(user);
+
         response.addHeader(jwtService.getAccessTokenHeader(), "Bearer " + accessToken);
         response.addHeader(jwtService.getRefreshTokenHeader(), "Bearer " + refreshToken);
 
@@ -56,6 +59,7 @@ public class OAuth2LoginSuccessHandler implements AuthenticationSuccessHandler {
         jwtService.setAccessTokenHeader(response, accessToken);
         jwtService.setRefreshTokenHeader(response, refreshToken);
         user.updateRefreshToken(refreshToken);
+        userRepository.saveAndFlush(user);
     }
 
     private User findUserByEmail(String email) {
