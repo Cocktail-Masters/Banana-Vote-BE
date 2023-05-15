@@ -24,7 +24,7 @@ public class MegaphoneResponse {
 
     private UserInfoItem user;
 
-    static MegaphoneResponse createMegaphoneResponse(Megaphone megaphone) {
+    public static MegaphoneResponse createMegaphoneResponse(Megaphone megaphone) {
         return MegaphoneResponse.builder()
                 .id(megaphone.getId())
                 .endDateTime(megaphone.getMegaphoneEndDateTime().format(DateTimeFormatter.ISO_LOCAL_DATE_TIME))
