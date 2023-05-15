@@ -82,7 +82,7 @@ public class PicketService {
 
         Optional<Picket> picket = picketRepository.findByVoteIdAndPosition(voteId, position);
         // check user Id
-        if(picket.isPresent() && picket.get().getUser().getId() == userId) return -1;
+        // if(picket.isPresent() && picket.get().getUser().getId() == userId) return -1;
 
         // apply point
         if(!pointService.addPoint(paidPrice * -1, vote.get().getVoteTitle() + " 투표 " + position + "번째 피켓 구매", userId))
