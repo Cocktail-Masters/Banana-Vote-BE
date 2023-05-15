@@ -1,47 +1,21 @@
 package com.cocktailmasters.backend.goods.controller.dto;
 
-import java.time.LocalDate;
+import java.util.List;
 
-import com.cocktailmasters.backend.goods.domain.entity.Badge;
+import com.cocktailmasters.backend.goods.controller.dto.item.BadgeItemDto;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-import lombok.Builder;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Getter
-@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class BadgeResponse {
-    
-    private long id;
+    @JsonProperty("total_page")
+    private long totalPage;
 
-    private String name;
-
-    @JsonProperty("image_url")
-    private String imageUrl;
-
-    private String description;
-
-    private long price;
-
-    @JsonProperty("sold_count")
-    private long soldCount;
-
-    @JsonProperty("is_selling")
-    private boolean isSelling;
-
-    @JsonProperty("end_date")
-    private LocalDate endDate;
-
-    public static BadgeResponse createBadgeReponse(Badge badge) {
-        return BadgeResponse.builder()
-                .id(badge.getId())
-                .name(badge.getBadgeName())
-                .imageUrl(badge.getBadgeImageUrl())
-                .description(badge.getBadgeDescription())
-                .price(badge.getBadgePrice())
-                .soldCount(badge.getBadgeSoldNumber())
-                .isSelling(badge.isSelling())
-                .endDate(badge.getBadgeEndDate())
-                .build();
-    }
+    @JsonProperty("badge_list")
+    List<BadgeItemDto> badgeList;
 }

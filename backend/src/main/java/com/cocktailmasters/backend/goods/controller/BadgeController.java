@@ -30,7 +30,7 @@ import lombok.RequiredArgsConstructor;
 @RestController
 @RequestMapping("/badges")
 public class BadgeController {
-    
+
     private final BadgeService badgeService;
     private final UserBadgeService userBadgeService;
 
@@ -39,7 +39,7 @@ public class BadgeController {
     public ResponseEntity<String> createBadge(@RequestBody @Valid BadgeRequest badgeRequest) {
         // TODO : 관리자 검증
 
-        if(badgeService.makeBadge(badgeRequest)) 
+        if (badgeService.makeBadge(badgeRequest))
             return ResponseEntity.created(null).build();
         else
             return ResponseEntity.badRequest().build();
@@ -48,13 +48,13 @@ public class BadgeController {
     @Operation(summary = "뱃지 수정(관리자용)", description = "뱃지를 수정")
     @PatchMapping("/{badgeId}")
     public ResponseEntity<String> modifiyBadge(@PathVariable Long badgeId,
-                                                @RequestBody @Valid BadgeRequest badgeRequest) {
+            @RequestBody @Valid BadgeRequest badgeRequest) {
         // TODO : 관리자 검증
 
         int res = badgeService.modifiyBadge(badgeId, badgeRequest);
-        if(res == 1) 
+        if (res == 1)
             return ResponseEntity.ok().build();
-        else if(res == 0)
+        else if (res == 0)
             return ResponseEntity.badRequest().build();
         else
             return ResponseEntity.notFound().build();
@@ -64,22 +64,29 @@ public class BadgeController {
     @DeleteMapping("/{badgeId}")
     public ResponseEntity<String> deleteBadge(@PathVariable Long badgeId) {
         // TODO : 관리자 검증
-        
-        if(badgeService.deleteBadge(badgeId))
+
+        if (badgeService.deleteBadge(badgeId))
             return ResponseEntity.ok().build();
         else
             return ResponseEntity.notFound().build();
     }
 
-    @Operation(summary = "뱃지 리스트 반환", description = "판매하는 뱃지 true, 아니면 false, 기본은 false, 판매 기한이 지난 뱃지도 제외")
+    @Operation(summary = "뱃지 리스트 반환", description = "판매하는 뱃지 true, 아니면 false, 기본은 false, 판매 기한이 지난 뱃지도 제외\n")
     @GetMapping
-    public ResponseEntity<List<BadgeResponse>> getBadgeList(@RequestParam(required = false, name = "selling", defaultValue = "false") boolean isSelling) {
-        List<BadgeResponse> badges = badgeService.getBadgeList(isSelling);
+    public ResponseEntity<BadgeResponse> getBadgeList(
+            @RequestParam(required = false, name = "selling", defaultValue = "false") boolean isSelling,
+            @RequestParam(required = false, name = "sortby", defaultValue = "1") int sortBy,
+            @RequestParam(required = false, name = "page", defaultValue = "0") int page,
+            @RequestParam(required = false, name = "size", defaultValue = "10") int pageSize) {
+        if (page < 0 || pageSize < 1)
+            return ResponseEntity.badRequest().build();
 
-        if(badges.size() == 0)
+        BadgeResponse badgeResponse = badgeService.getBadgeList(isSelling, sortBy, page, pageSize);
+
+        if (badgeResponse.getBadgeList().size() == 0)
             return ResponseEntity.noContent().build();
         else
-            return ResponseEntity.ok().body(badges);
+            return ResponseEntity.ok().body(badgeResponse);
     }
 
     @Operation(summary = "유저가 소유 중인 뱃지 리스트 반환", description = "유저가 소유 중인 뱃지 리스트 반환 (로그인 필요)")
@@ -90,7 +97,7 @@ public class BadgeController {
 
         List<UserBadgeResponse> badgeResponses = userBadgeService.getUserBadgesList(userId);
 
-        if(badgeResponses.size() == 0)
+        if (badgeResponses.size() == 0)
             return ResponseEntity.noContent().build();
         else
             return ResponseEntity.ok().body(badgeResponses);
@@ -99,25 +106,25 @@ public class BadgeController {
     @Operation(summary = "유저에게 해당 뱃지를 추가(관리자용)", description = "해당 유저에게 뱃지를 추가, 유저가 없거나 추가할 뱃지가 없거나, \n해당 유저가 이미 그 뱃지를 가지고 있을 경우 X")
     @PostMapping("/users/{badgeId}")
     public ResponseEntity<String> addBadgeToUser(@PathVariable long badgeId,
-                                                @RequestParam(required = true, name = "userId") long userId) {
+            @RequestParam(required = true, name = "userId") long userId) {
         // TODO : 관리자 검증
         int res = userBadgeService.addBadgeToUser(badgeId, userId);
 
-        if(res == 1)
-            return ResponseEntity.created(null).build();                  
-        else if(res == 0)
-            return ResponseEntity.notFound().build();                                
+        if (res == 1)
+            return ResponseEntity.created(null).build();
+        else if (res == 0)
+            return ResponseEntity.notFound().build();
         else
             return ResponseEntity.status(HttpStatus.CONFLICT).build();
     }
 
     @Operation(summary = "유저에게 해당 뱃지를 삭제(관리자용)", description = "해당 유저에게 뱃지를 삭제, 유저가 없거나 삭제할 뱃지가 없거나")
     @DeleteMapping("/users/{badgeId}")
-    public ResponseEntity<String> deleteBadgeToUser(@PathVariable long badgeId, 
-    @RequestParam(required = true, name = "userId") long userId) {
+    public ResponseEntity<String> deleteBadgeToUser(@PathVariable long badgeId,
+            @RequestParam(required = true, name = "userId") long userId) {
         // TODO : 관리자 검증
 
-        if(userBadgeService.deleteBadgeFromUser(badgeId, userId))
+        if (userBadgeService.deleteBadgeFromUser(badgeId, userId))
             return ResponseEntity.ok().build();
         else
             return ResponseEntity.notFound().build();
