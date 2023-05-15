@@ -7,4 +7,8 @@ public class AuthException extends CustomException {
     public AuthException() {
         super(HttpStatus.UNAUTHORIZED, "not authorized");
     }
+
+    public AuthException(String errorMessage) {
+        super(HttpStatus.UNAUTHORIZED, errorMessage);
+    }
 }

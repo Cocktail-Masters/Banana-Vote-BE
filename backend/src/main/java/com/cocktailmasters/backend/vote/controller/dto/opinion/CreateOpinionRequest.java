@@ -1,6 +1,6 @@
 package com.cocktailmasters.backend.vote.controller.dto.opinion;
 
-import com.cocktailmasters.backend.account.domain.entity.User;
+import com.cocktailmasters.backend.account.user.domain.entity.User;
 import com.cocktailmasters.backend.vote.domain.entity.Opinion;
 import com.cocktailmasters.backend.vote.domain.entity.Vote;
 import com.fasterxml.jackson.databind.PropertyNamingStrategy;

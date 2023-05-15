@@ -1,6 +1,6 @@
 package com.cocktailmasters.backend.report.domain.entity;
 
-import com.cocktailmasters.backend.account.domain.entity.User;
+import com.cocktailmasters.backend.account.user.domain.entity.User;
 import com.cocktailmasters.backend.common.domain.entity.BaseEntity;
 import com.cocktailmasters.backend.common.domain.entity.ReportedContentType;
 import com.cocktailmasters.backend.common.domain.entity.ReportedReasonType;

@@ -1,6 +1,6 @@
 package com.cocktailmasters.backend.picket.domain.entity;
 
-import com.cocktailmasters.backend.account.domain.entity.User;
+import com.cocktailmasters.backend.account.user.domain.entity.User;
 import com.cocktailmasters.backend.common.domain.entity.BaseEntity;
 import com.cocktailmasters.backend.vote.domain.entity.Vote;
 

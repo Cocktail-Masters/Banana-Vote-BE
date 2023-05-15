@@ -8,7 +8,7 @@ import java.util.ArrayList;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.cocktailmasters.backend.account.domain.repository.UserRepository;
+import com.cocktailmasters.backend.account.user.domain.repository.UserRepository;
 import com.cocktailmasters.backend.picket.controller.dto.PicketRequest;
 import com.cocktailmasters.backend.picket.controller.dto.item.PicketItem;
 import com.cocktailmasters.backend.picket.domain.entity.Picket;

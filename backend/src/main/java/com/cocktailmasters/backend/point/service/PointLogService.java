@@ -7,8 +7,8 @@ import java.util.Optional;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.cocktailmasters.backend.account.domain.entity.User;
-import com.cocktailmasters.backend.account.domain.repository.UserRepository;
+import com.cocktailmasters.backend.account.user.domain.entity.User;
+import com.cocktailmasters.backend.account.user.domain.repository.UserRepository;
 import com.cocktailmasters.backend.point.controller.dto.PointLogResponse;
 import com.cocktailmasters.backend.point.domain.entity.PointLog;
 import com.cocktailmasters.backend.point.domain.repository.PointLogRepository;

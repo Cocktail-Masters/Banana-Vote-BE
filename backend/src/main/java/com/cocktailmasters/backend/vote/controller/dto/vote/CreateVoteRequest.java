@@ -1,6 +1,6 @@
 package com.cocktailmasters.backend.vote.controller.dto.vote;
 
-import com.cocktailmasters.backend.account.domain.entity.User;
+import com.cocktailmasters.backend.account.user.domain.entity.User;
 import com.cocktailmasters.backend.vote.controller.dto.item.VoteItemCreateDto;
 import com.cocktailmasters.backend.vote.domain.entity.Vote;
 import com.cocktailmasters.backend.vote.domain.entity.VoteItem;

@@ -1,4 +1,4 @@
-package com.cocktailmasters.backend.account.domain.entity;
+package com.cocktailmasters.backend.account.user.domain.entity;
 
 import com.cocktailmasters.backend.achievement.domain.entity.UserAchievement;
 import com.cocktailmasters.backend.common.domain.entity.BaseEntity;
@@ -14,6 +14,7 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -27,13 +28,28 @@ import java.util.List;
 @Entity
 public class User extends BaseEntity {
 
+    @Enumerated(EnumType.STRING)
+    private SocialType socialType;
+
+    private String socialId;
+
+    @NotNull
+    private String email;
+
+    private String password;
+
     @NotNull
     private String nickname;
 
-    private String gender;
+    @Enumerated(EnumType.STRING)
+    @Builder.Default
+    private Gender gender = null;
 
     @Builder.Default
-    private Boolean isAdmin = false;
+    @Enumerated(EnumType.STRING)
+    private Role role = Role.USER;
+
+    private String refreshToken;
 
     @Builder.Default
     private Long points = 0L;
@@ -107,5 +123,13 @@ public class User extends BaseEntity {
             throw new Exception();
         }
         this.points -= points;
+    }
+
+    public void encodePassword(PasswordEncoder passwordEncoder) {
+        this.password = passwordEncoder.encode(this.password);
+    }
+
+    public void updateRefreshToken(String refreshToken) {
+        this.refreshToken = refreshToken;
     }
 }
