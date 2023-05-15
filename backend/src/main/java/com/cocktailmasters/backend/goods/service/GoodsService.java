@@ -29,12 +29,13 @@ public class GoodsService {
     private final GoodsRepository goodsRepository;
 
     private final PointService pointService;
+    private final UserGoodsService userGoodsService;
 
     /**
      * get all types
      * @return enum List
      */
-    public List<GoodsType> getGoodsTpyes() {
+    public List<GoodsType> getGoodsTypes() {
         return Arrays.asList(GoodsType.values());
     }
 
@@ -112,7 +113,7 @@ public class GoodsService {
      * @throws CustomException (lack of quantity, lack of point, out of date)
      */
     @Transactional
-    public boolean buyGoods(long userId, long quantity, long goodsId) throws CustomException {
+    public boolean buyGoods(long userId, int quantity, long goodsId) throws CustomException {
         Optional<Goods> goods = goodsRepository.findById(goodsId);
         if(!goods.isPresent()) return false;
 
@@ -133,6 +134,10 @@ public class GoodsService {
         goods.get().soldGoods(quantity);
         goodsRepository.save(goods.get());
 
+        // add goods to user
+        if(!userGoodsService.addUserGoodsToUser(userId, quantity, goodsId))
+            throw new CustomException(HttpStatus.NOT_FOUND, "user or goods not found");    
+        
         return true;
     }
 }

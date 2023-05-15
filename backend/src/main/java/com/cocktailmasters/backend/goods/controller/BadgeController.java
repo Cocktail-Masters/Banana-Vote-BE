@@ -111,7 +111,7 @@ public class BadgeController {
             return ResponseEntity.status(HttpStatus.CONFLICT).build();
     }
 
-    @Operation(summary = "유저에게 해당 뱃지를 추가(관리자용)", description = "해당 유저에게 뱃지를 추가, 유저가 없거나 추가할 뱃지가 없거나, \n해당 유저가 이미 그 뱃지를 가지고 있지 않을 경우X")
+    @Operation(summary = "유저에게 해당 뱃지를 삭제(관리자용)", description = "해당 유저에게 뱃지를 삭제, 유저가 없거나 삭제할 뱃지가 없거나")
     @DeleteMapping("/users/{badgeId}")
     public ResponseEntity<String> deleteBadgeToUser(@PathVariable long badgeId, 
     @RequestParam(required = true, name = "userId") long userId) {

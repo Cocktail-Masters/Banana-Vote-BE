@@ -11,8 +11,10 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.cocktailmasters.backend.goods.controller.dto.GoodsResponse;
+import com.cocktailmasters.backend.goods.controller.dto.UserGoodsResponse;
 import com.cocktailmasters.backend.goods.domain.GoodsType;
 import com.cocktailmasters.backend.goods.service.GoodsService;
+import com.cocktailmasters.backend.goods.service.UserGoodsService;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -25,12 +27,13 @@ import lombok.RequiredArgsConstructor;
 public class GoodsController {
     
     private final GoodsService goodsService;
+    private final UserGoodsService userGoodsService;
 
     @Operation(summary = "상품들의 타입 리스트 반환",
         description = "상품들의 타입 리스트 반환")
     @GetMapping("/types")
     public ResponseEntity<List<GoodsType>> getGoodsTypes() {        
-        List<GoodsType> goodsTypes = goodsService.getGoodsTpyes();
+        List<GoodsType> goodsTypes = goodsService.getGoodsTypes();
 
         if(goodsTypes.size() == 0)
             return ResponseEntity.noContent().build();
@@ -39,7 +42,7 @@ public class GoodsController {
     }
 
     @Operation(summary = "상품들의 리스트 반환",
-        description = "type 미 명시 시 전체, 정렬 기준 default는 1 (1, 2 이외의 값이들어갔을 경우 1로 취급), 기본 페이지는 0, 기본 페이지 사이즈는 10")
+        description = "type 미 명시 시 전체(뱃지의 경우엔 X), 정렬 기준 default는 1, 기본 페이지는 0, 기본 페이지 사이즈는 10")
     @GetMapping("/list")
     public ResponseEntity<GoodsResponse> getGoods(@RequestParam(required = false, name = "type", defaultValue = "-1") String goodsTypeName,
         @RequestParam(required = false, name = "sortby", defaultValue = "1") int sortBy,
@@ -61,9 +64,9 @@ public class GoodsController {
         description = "상품의 수량이 부족할 경우, 구매 일자가 유효하지 않을 경우 에러, 상품이 존재하지 않을 경우에도 에러")
     @PostMapping("/{goodsId}")
     public ResponseEntity<String> buyGoods(@PathVariable long goodsId,
-        @RequestParam(required = false, name = "quantity", defaultValue = "1") long quantity) {
+        @RequestParam(required = false, name = "quantity", defaultValue = "1") int quantity) {
         // TODO : 로그인 여부 확인 및 유저 아이디 확인
-        long userId = 0;
+        long userId = 1;
 
         if(quantity < 0)
             return ResponseEntity.badRequest().build();
@@ -72,5 +75,20 @@ public class GoodsController {
             return ResponseEntity.notFound().build();
         else            
             return ResponseEntity.ok().build();
+    }
+
+    @Operation(summary = "유저가 가진 상품 목록 조회",
+        description = "유저가 가진 상품 목록 조회")
+    @GetMapping("/users")
+    public ResponseEntity<List<UserGoodsResponse>> getUsersGoodsList() {
+        // TODO : 로그인 및 유저 정보 확인
+        long userId = 1;
+
+        List<UserGoodsResponse> userGoods = userGoodsService.getUsersGoods(userId);
+
+        if(userGoods.size() == 0)
+            return ResponseEntity.noContent().build();
+        else
+            return ResponseEntity.ok().body(userGoods);
     }
 }
