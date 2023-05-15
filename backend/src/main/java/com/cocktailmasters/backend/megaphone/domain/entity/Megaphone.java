@@ -1,4 +1,4 @@
-package com.cocktailmasters.backend.vote.domain.entity;
+package com.cocktailmasters.backend.megaphone.domain.entity;
 
 import com.cocktailmasters.backend.account.domain.entity.User;
 import com.cocktailmasters.backend.common.domain.entity.BaseEntity;
