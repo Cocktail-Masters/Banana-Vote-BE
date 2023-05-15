@@ -17,7 +17,7 @@ import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
 @Service
-public class BadgesService {
+public class BadgeService {
 
     private final BadgeRepository badgeRepository;
     

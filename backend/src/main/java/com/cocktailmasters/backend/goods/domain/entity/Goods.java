@@ -1,6 +1,7 @@
 package com.cocktailmasters.backend.goods.domain.entity;
 
 import com.cocktailmasters.backend.common.domain.entity.BaseEntity;
+import com.cocktailmasters.backend.goods.controller.dto.GoodsRequest;
 import com.cocktailmasters.backend.goods.domain.GoodsType;
 
 import jakarta.persistence.*;
@@ -32,7 +33,8 @@ public class Goods extends BaseEntity {
 
     private String goodsImageUrl;
 
-    private Long goodsValidityPeriod;
+    @Builder.Default
+    private Long goodsValidityPeriod = 30L;
 
     @NotNull
     private Long goodsPrice;
@@ -41,8 +43,10 @@ public class Goods extends BaseEntity {
     @Builder.Default
     private Long goodsRemainingQuantity = -1L;
 
-    private LocalDate saleStartDate;
-    private LocalDate saleEndDate;
+    @Builder.Default
+    private LocalDate saleStartDate = LocalDate.now();
+    @Builder.Default
+    private LocalDate saleEndDate = LocalDate.of(2100, 12, 31);
 
     @Builder.Default
     private Long goodsSoldNumber = 0L;
@@ -54,5 +58,23 @@ public class Goods extends BaseEntity {
     public void soldGoods(long quantity) {
         goodsRemainingQuantity -= quantity;
         goodsSoldNumber += quantity;
+    }
+
+    /**
+     * modify goods with DTO
+     * 
+     * @param goodsRequest
+     * @return numbed of modified field
+     */
+    public void modifiyGoodsInfo(GoodsRequest goodsRequest) {
+        this.goodsName = goodsRequest.getName();
+        this.goodsDescription = goodsRequest.getDescription();
+        this.goodsImageUrl = goodsRequest.getImageUrl();
+        this.goodsPrice = goodsRequest.getPrice();
+        this.goodsValidityPeriod = goodsRequest.getValidPeriod();
+        this.goodsRemainingQuantity = goodsRequest.getRemainingQuantity();
+        this.goodsType = goodsRequest.getType();
+        this.saleStartDate = goodsRequest.getStartDate();
+        this.saleEndDate = goodsRequest.getEndDate();
     }
 }

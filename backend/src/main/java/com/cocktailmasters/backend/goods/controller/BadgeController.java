@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.cocktailmasters.backend.goods.controller.dto.BadgeRequest;
 import com.cocktailmasters.backend.goods.controller.dto.BadgeResponse;
 import com.cocktailmasters.backend.goods.controller.dto.UserBadgeResponse;
-import com.cocktailmasters.backend.goods.service.BadgesService;
+import com.cocktailmasters.backend.goods.service.BadgeService;
 import com.cocktailmasters.backend.goods.service.UserBadgeService;
 
 import io.swagger.v3.oas.annotations.Operation;
@@ -31,7 +31,7 @@ import lombok.RequiredArgsConstructor;
 @RequestMapping("/badges")
 public class BadgeController {
     
-    private final BadgesService badgeService;
+    private final BadgeService badgeService;
     private final UserBadgeService userBadgeService;
 
     @Operation(summary = "뱃지 생성(관리자용)", description = "뱃지를 생성")
