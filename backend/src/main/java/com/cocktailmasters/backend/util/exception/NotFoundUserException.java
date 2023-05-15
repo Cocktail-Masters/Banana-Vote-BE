@@ -5,6 +5,6 @@ import org.springframework.http.HttpStatus;
 public class NotFoundUserException extends CustomException {
     
     public NotFoundUserException() {
-        super(HttpStatus.NOT_FOUND, "not found");
+        super(HttpStatus.NOT_FOUND, "not found user");
     }
 }
