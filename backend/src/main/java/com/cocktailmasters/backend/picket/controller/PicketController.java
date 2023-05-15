@@ -43,7 +43,7 @@ public class PicketController {
     }
 
     @Operation(summary = "피켓 구매",
-        description = "피켓을 구매, 이미 자신의 것이거나 서버와의 가격의 차이가 있을 경우 실패 코드 반환")
+        description = "피켓을 구매, 이미 자신의 것이거나 서버와의 가격의 차이가 있을 경우 실패 코드 반환, 구매하려는 금액은 현재 금액보다 커야함")
     @PostMapping("/{voteId}")
     public ResponseEntity<PicketConflictedResponse> buyPicket(@PathVariable long voteId, 
             @RequestBody PicketRequest picketRequest) {

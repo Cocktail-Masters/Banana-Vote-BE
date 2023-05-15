@@ -5,6 +5,8 @@ import com.cocktailmasters.backend.vote.controller.dto.item.VoteItemCreateDto;
 import com.cocktailmasters.backend.vote.domain.entity.Vote;
 import com.cocktailmasters.backend.vote.domain.entity.VoteItem;
 import com.cocktailmasters.backend.vote.domain.entity.VoteTag;
+import com.fasterxml.jackson.databind.PropertyNamingStrategy;
+import com.fasterxml.jackson.databind.annotation.JsonNaming;
 import lombok.Builder;
 import lombok.Getter;
 
@@ -13,12 +15,11 @@ import java.util.List;
 
 @Getter
 @Builder
+@JsonNaming(PropertyNamingStrategy.SnakeCaseStrategy.class)
 public class CreateVoteRequest {
 
     private String voteTitle;
     private String voteContent;
-    private String voteImageUrl;
-    private String voteThumbnailUrl;
     private LocalDateTime voteEndDate;
     private Boolean isPublic;
     private Boolean isAnonymous;
@@ -32,8 +33,6 @@ public class CreateVoteRequest {
                 .user(user)
                 .voteTitle(voteTitle)
                 .voteContent(voteContent)
-                .voteImageUrl(voteImageUrl)
-                .voteThumbnailUrl(voteThumbnailUrl)
                 .voteEndDate(voteEndDate)
                 .isAnonymous(isAnonymous)
                 .isPublic(isPublic)

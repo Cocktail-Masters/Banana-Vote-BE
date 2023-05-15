@@ -3,7 +3,6 @@ package com.cocktailmasters.backend.vote.domain.entity;
 import com.cocktailmasters.backend.account.user.domain.entity.User;
 import com.cocktailmasters.backend.common.domain.entity.BaseEntity;
 import com.cocktailmasters.backend.picket.domain.entity.Picket;
-
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
@@ -25,8 +24,6 @@ public class Vote extends BaseEntity {
     private String voteTitle;
 
     private String voteContent;
-    private String voteImageUrl;
-    private String voteThumbnailUrl;
 
     @Builder.Default
     private Long voteHits = 0L;
@@ -59,6 +56,7 @@ public class Vote extends BaseEntity {
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private User user;
 
+    @Builder.Default
     @OneToMany(mappedBy = "vote", cascade = CascadeType.ALL)
     private List<Opinion> opinions = new ArrayList<>();
 
