@@ -23,7 +23,7 @@ public class Megaphone extends BaseEntity {
     private String voteLink;
 
     @NotNull
-    private LocalDateTime megaphoneEndDate;
+    private LocalDateTime megaphoneEndDateTime;
 
     @Builder.Default
     private int megaphoneReportedNumber = 0;
