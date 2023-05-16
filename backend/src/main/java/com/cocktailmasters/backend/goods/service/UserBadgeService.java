@@ -7,8 +7,8 @@ import java.util.Optional;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.cocktailmasters.backend.account.domain.entity.User;
-import com.cocktailmasters.backend.account.domain.repository.UserRepository;
+import com.cocktailmasters.backend.account.user.domain.entity.User;
+import com.cocktailmasters.backend.account.user.domain.repository.UserRepository;
 import com.cocktailmasters.backend.goods.controller.dto.UserBadgeResponse;
 import com.cocktailmasters.backend.goods.domain.entity.Badge;
 import com.cocktailmasters.backend.goods.domain.entity.UserBadge;
@@ -20,13 +20,14 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 @Service
 public class UserBadgeService {
-    
+
     private final UserRepository userRepository;
     private final BadgeRepository badgeRepository;
     private final UserBadgeRepository userBadgeRepository;
 
     /**
      * get users all badges list by user id
+     * 
      * @param userId
      * @return badge of user
      */
@@ -34,7 +35,7 @@ public class UserBadgeService {
         List<UserBadge> userBadges = userBadgeRepository.findAllByUserId(userId);
 
         List<UserBadgeResponse> userBadgesDtos = new ArrayList<>();
-        for(UserBadge badge : userBadges) {
+        for (UserBadge badge : userBadges) {
             userBadgesDtos.add(UserBadgeResponse.createUserBadgeResponse(badge));
         }
 
@@ -43,6 +44,7 @@ public class UserBadgeService {
 
     /**
      * add badge to user
+     * 
      * @param badgeId
      * @param userId
      * @return 1 or 0, -1(user or badge not existed, or badge already had)
@@ -53,16 +55,18 @@ public class UserBadgeService {
         Optional<User> targetUser = userRepository.findById(userId);
         Optional<UserBadge> userBadge = userBadgeRepository.findByBadgeIdAndUserId(badgeId, userId);
 
-        if(!addedBadge.isPresent() || !targetUser.isPresent()) return 0;
-        if(userBadge.isPresent()) return -1;
+        if (!addedBadge.isPresent() || !targetUser.isPresent())
+            return 0;
+        if (userBadge.isPresent())
+            return -1;
 
         UserBadge addedUserBadge = UserBadge.builder()
-                                    .isEquipped(false)
-                                    .badge(addedBadge.get())
-                                    .user(targetUser.get())
-                                    .build();
-        
-        if(userBadgeRepository.save(addedUserBadge) != null)
+                .isEquipped(false)
+                .badge(addedBadge.get())
+                .user(targetUser.get())
+                .build();
+
+        if (userBadgeRepository.save(addedUserBadge) != null)
             return 1;
         else
             return -1;
@@ -70,6 +74,7 @@ public class UserBadgeService {
 
     /**
      * delete badge from user
+     * 
      * @param badgeId
      * @param userId
      * @return true or false(user or badge not existed, or badge already had)
@@ -80,7 +85,8 @@ public class UserBadgeService {
         Optional<User> targetUser = userRepository.findById(userId);
         Optional<UserBadge> userBadge = userBadgeRepository.findByBadgeIdAndUserId(badgeId, userId);
 
-        if(!addedBadge.isPresent() || !targetUser.isPresent() || !userBadge.isPresent()) return false;
+        if (!addedBadge.isPresent() || !targetUser.isPresent() || !userBadge.isPresent())
+            return false;
 
         userBadgeRepository.delete(userBadge.get());
         return true;
