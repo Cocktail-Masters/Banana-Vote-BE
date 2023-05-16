@@ -3,7 +3,6 @@ package com.cocktailmasters.backend.account.user.controller.dto;
 import com.cocktailmasters.backend.account.user.domain.entity.Gender;
 import com.cocktailmasters.backend.account.user.domain.entity.User;
 import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
 import lombok.Builder;
 import lombok.Getter;
@@ -17,9 +16,8 @@ public class SignUpRequest {
     private String email;
 
     @NotNull
-    @Min(8)
     private String password;
-    
+
     private String nickname;
     private Gender gender;
 
