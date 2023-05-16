@@ -30,6 +30,14 @@ import org.springframework.security.web.authentication.logout.LogoutFilter;
 @Configuration
 public class SecurityConfig {
 
+    private static final String[] PERMIT_URL_ARRAY = {
+            /* swagger v3 */
+            "/v3/api-docs/**",
+            "/swagger-ui/**",
+            /* api */
+            "/api/v1/users/sign-up"
+    };
+
     private final CustomOAuth2UserService customOAuth2UserService;
     private final JwtService jwtService;
     private final LoginService loginService;
@@ -50,7 +58,7 @@ public class SecurityConfig {
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
                 .authorizeRequests()
-                .requestMatchers("/api/v1/users/sign-up").permitAll()
+                .requestMatchers(PERMIT_URL_ARRAY).permitAll()
                 .anyRequest().authenticated()
                 .and()
                 .oauth2Login()
