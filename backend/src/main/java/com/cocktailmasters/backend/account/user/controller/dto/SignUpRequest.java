@@ -4,10 +4,14 @@ import com.cocktailmasters.backend.account.user.domain.entity.Gender;
 import com.cocktailmasters.backend.account.user.domain.entity.User;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotNull;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Getter
+@NoArgsConstructor
+@AllArgsConstructor
 @Builder
 public class SignUpRequest {
 
