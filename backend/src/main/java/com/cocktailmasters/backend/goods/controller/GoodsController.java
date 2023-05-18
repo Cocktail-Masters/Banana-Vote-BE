@@ -72,6 +72,7 @@ public class GoodsController {
 
     @Operation(summary = "상품을 구매", description = "상품의 수량이 부족할 경우, 구매 일자가 유효하지 않을 경우 에러, 상품이 존재하지 않을 경우에도 에러(로그인 필요)", security = {
             @SecurityRequirement(name = SECURITY_SCHEME_NAME) })
+    @PreAuthorize("hasAnyAuthority('ADMIN', 'USER')")
     @PostMapping("/{goodsId}")
     public ResponseEntity<String> buyGoods(
             @RequestHeader(name = "Authorization", required = false) String token,
@@ -90,6 +91,7 @@ public class GoodsController {
 
     @Operation(summary = "유저가 가진 상품 목록 조회", description = "유저가 가진 상품 목록 조회", security = {
             @SecurityRequirement(name = SECURITY_SCHEME_NAME) })
+    @PreAuthorize("hasAnyAuthority('ADMIN', 'USER')")
     @GetMapping("/users")
     public ResponseEntity<List<UserGoodsResponse>> getUsersGoodsList(
             @RequestHeader(name = "Authorization", required = false) String token) {
