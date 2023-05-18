@@ -30,7 +30,7 @@ public class VoteController {
     private final JwtService jwtService;
     private final VoteService voteService;
 
-    @Operation(summary = "투표 생성", description = "새로운 투표 생성",
+    @Operation(summary = "투표 생성", description = "새로운 투표 생성(투표 종료 날짜는 하루 이상부터)",
             security = {@SecurityRequirement(name = SECURITY_SCHEME_NAME)})
     @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
     @PostMapping("")
@@ -57,25 +57,29 @@ public class VoteController {
     }
 
     @Operation(summary = "투표 검색", description = "검색어를 사용하여 투표 검색," +
-            "검색 옵션은 정렬기준, 종료유무, 페이지 인덱스, 10개 반환")
+            "검색 옵션은 정렬기준, 종료유무, 페이지 인덱스, 10개 반환",
+            security = {@SecurityRequirement(name = SECURITY_SCHEME_NAME)})
     @GetMapping("/{page_index}/options")
-    public ResponseEntity<FindVotesResponse> findVotes(@PathVariable("page_index") int pageIndex,
+    public ResponseEntity<FindVotesResponse> findVotes(@RequestHeader(name = "Authorization", required = false) String token,
+                                                       @PathVariable("page_index") int pageIndex,
                                                        @RequestParam("keyword") String keyword,
                                                        @RequestParam(value = "is-tag", defaultValue = "false") boolean isTag,
                                                        @RequestParam(value = "is-closed", defaultValue = "false") boolean isClosed,
                                                        @RequestParam(value = "sort-by", defaultValue = "1") int sortBy) {
-        // TODO: 사용자 검사 필요
-        Long userId = 1L;
+        User user;
+        if (token == null) {
+            user = null;
+        } else {
+            user = jwtService.findUserByToken(token);
+        }
         PageRequest page = PageRequest.of(pageIndex, 10);
         return ResponseEntity.ok()
-                .body(voteService.findVotes(userId, keyword, isTag, isClosed, sortBy, page));
+                .body(voteService.findVotes(user, keyword, isTag, isClosed, sortBy, page));
     }
 
     @Operation(summary = "투표글 상세 보기", description = "투표글 상세 보기, 투표 조회수 증가")
     @GetMapping("/{vote_id}")
     public ResponseEntity<FindVoteDetailResponse> findVoteDetail(@PathVariable("vote_id") Long voteId) {
-        //TODO: 사용자 검사 및 예외처리
-        Long userId = 1L;
         return ResponseEntity.ok()
                 .body(voteService.findVoteDetail(voteId));
     }
