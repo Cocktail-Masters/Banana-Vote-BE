@@ -6,16 +6,20 @@ import com.cocktailmasters.backend.vote.controller.dto.item.VoteItemCreateDto;
 import com.cocktailmasters.backend.vote.controller.dto.vote.*;
 import com.cocktailmasters.backend.vote.service.VoteService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Set;
+
+import static com.cocktailmasters.backend.SwaggerConfig.SECURITY_SCHEME_NAME;
 
 @Tag(name = "vote", description = "투표 관리")
 @RequiredArgsConstructor
@@ -26,7 +30,9 @@ public class VoteController {
     private final JwtService jwtService;
     private final VoteService voteService;
 
-    @Operation(summary = "투표 생성", description = "새로운 투표 생성")
+    @Operation(summary = "투표 생성", description = "새로운 투표 생성",
+            security = {@SecurityRequirement(name = SECURITY_SCHEME_NAME)})
+    @PreAuthorize("hasAnyAuthority('ADMIN', 'USER')")
     @PostMapping("")
     public ResponseEntity<String> createVote(@RequestHeader("Authorization") String token,
                                              @Valid @RequestBody CreateVoteRequest createVoteRequest) throws Exception {
