@@ -18,12 +18,13 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 @Service
 public class PointLogService {
-    
+
     private final PointLogRepository pointLogRepository;
     private final UserRepository userRepository;
 
     /**
      * get Point Logs by user Id
+     * 
      * @param userId
      * @return List of point logs
      */
@@ -31,7 +32,7 @@ public class PointLogService {
         List<PointLog> pointLogs = pointLogRepository.findAllByUserId(userId);
 
         List<PointLogResponse> pointLogResponses = new ArrayList<>();
-        for(PointLog pointLog : pointLogs)
+        for (PointLog pointLog : pointLogs)
             pointLogResponses.add(new PointLogResponse(pointLog));
 
         return pointLogResponses;
@@ -39,6 +40,7 @@ public class PointLogService {
 
     /**
      * add point log with User object
+     * 
      * @param amount
      * @param description
      * @param user
@@ -46,19 +48,21 @@ public class PointLogService {
      */
     @Transactional
     public PointLog addPointLog(long amount, String description, User user) {
-        if(user == null) return null;
+        if (user == null)
+            return null;
 
         PointLog addedPointLog = PointLog.builder()
-            .user(user)
-            .amount(amount)
-            .description(description)
-            .build();
+                .user(user)
+                .amount(amount)
+                .description(description)
+                .build();
 
         return pointLogRepository.save(addedPointLog);
     }
 
     /**
      * add point log with user Id
+     * 
      * @param amount
      * @param description
      * @param userId
@@ -67,7 +71,9 @@ public class PointLogService {
     @Transactional
     public PointLog addPointLog(long amount, String description, long userId) {
         Optional<User> user = userRepository.findById(userId);
-        if(!user.isPresent()) return null;
-        else return addPointLog(amount, description, user.get());
+        if (!user.isPresent())
+            return null;
+        else
+            return addPointLog(amount, description, user.get());
     }
 }

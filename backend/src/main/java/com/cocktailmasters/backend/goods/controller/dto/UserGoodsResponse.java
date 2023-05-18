@@ -31,14 +31,14 @@ public class UserGoodsResponse {
 
     public static UserGoodsResponse createUserGoodsReponse(UserGoods userGoods) {
         return UserGoodsResponse.builder()
-                    .id(userGoods.getId())
-                    .name(userGoods.getGoods().getGoodsName())
-                    .description(userGoods.getGoods().getGoodsDescription())
-                    .imageUrl(userGoods.getGoods().getGoodsImageUrl())
-                    .type(userGoods.getGoods().getGoodsType())
-                    .ea(userGoods.getGoodsAmount())
-                    .expirationDate(userGoods.getGoodsExpirationDate().format(DateTimeFormatter.ISO_LOCAL_DATE))
-                    .isUsing(userGoods.isUsing())
-                    .build();
+                .id(userGoods.getId())
+                .name(userGoods.getGoods().getGoodsName())
+                .description(userGoods.getGoods().getGoodsDescription())
+                .imageUrl(userGoods.getGoods().getGoodsImageUrl())
+                .type(userGoods.getGoods().getGoodsType())
+                .ea(userGoods.getGoodsAmount())
+                .expirationDate(userGoods.getGoodsExpirationDate().format(DateTimeFormatter.ISO_LOCAL_DATE))
+                .isUsing(userGoods.isUsing())
+                .build();
     }
 }

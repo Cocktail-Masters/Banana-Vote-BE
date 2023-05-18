@@ -16,7 +16,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Builder
 public class BadgeRequest {
-    
+
     @NotBlank
     private String name;
 

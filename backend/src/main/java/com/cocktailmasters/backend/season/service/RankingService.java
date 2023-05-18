@@ -24,7 +24,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 @Service
 public class RankingService {
-    
+
     private final RankingRepository rankingRepository;
     private final SeasonRepository seasonRepository;
     private final UserRepository userRepository;
@@ -32,7 +32,8 @@ public class RankingService {
     private final SeasonService seasonService;
 
     /**
-     * get raking list with specific season id and page 
+     * get raking list with specific season id and page
+     * 
      * @param seasonId
      * @param page
      * @param pageSize
@@ -45,7 +46,7 @@ public class RankingService {
 
         // make list with dto class
         List<UserRanking> userRankings = new ArrayList<>();
-        for(int i = 0; i < seasonRankings.size(); i++)
+        for (int i = 0; i < seasonRankings.size(); i++)
             userRankings.add(new UserRanking(seasonRankings.get(i), page * pageSize + i));
 
         return new RankingResponse(rankingsWithPage.getTotalPages(), page, userRankings);
@@ -53,6 +54,7 @@ public class RankingService {
 
     /**
      * get total page of ranking with specific season
+     * 
      * @return total pages
      */
     public int getRankingTotalPages(long seasonId, int pageSize) {
@@ -63,34 +65,40 @@ public class RankingService {
     }
 
     /**
-     * get raking page number with specific season id and nickname 
+     * get raking page number with specific season id and nickname
+     * 
      * @param seasonId
      * @param pageSize
-     * @param nickname 
-     * @return UserRankings page number containing nickname parameter or -1 if user Ranking is invalid
+     * @param nickname
+     * @return UserRankings page number containing nickname parameter or -1 if user
+     *         Ranking is invalid
      */
     public int getRankingPageNumberByNickname(long seasonId, int pageSize, String nickname) {
         long userRanking = getUserRanking(seasonId, nickname);
-        if(userRanking == -1) return -1; // nickname not found
+        if (userRanking == -1)
+            return -1; // nickname not found
 
         return (int) Math.floor((double) userRanking / pageSize);
     }
 
     /**
      * get user ranking with seasonid and nickname
+     * 
      * @param seasonId
      * @param nickname
      * @return user ranking or -1 if nickname or seasonId is invalid
      */
     public long getUserRanking(long seasonId, String nickname) {
         Optional<User> user = userRepository.findByNickname(nickname);
-        if(!user.isPresent()) return -1; // not found user
+        if (!user.isPresent())
+            return -1; // not found user
 
         Long userScore = rankingRepository.findScoreBySeasonIdAndUser(seasonId, user.get().getId());
-        if(userScore == null) return -1;
-        
+        if (userScore == null)
+            return -1;
+
         Long userRanking = rankingRepository.countUserRankingByScore(seasonId, userScore);
-        if(userRanking == null)
+        if (userRanking == null)
             return -1;
         else
             return userRanking;
@@ -98,18 +106,21 @@ public class RankingService {
 
     /**
      * get user ranking of current season
+     * 
      * @param userId
      * @return user ranking or -1 if current season is off
      */
     public long getCurrentSeasonUserRanking(long userId) {
         Season currentSeason = seasonService.getCurrentSeason();
-        if(currentSeason == null) return -1;
+        if (currentSeason == null)
+            return -1;
 
         Long userScore = rankingRepository.findScoreBySeasonIdAndUser(currentSeason.getId(), userId);
-        if(userScore == null) return -1;
+        if (userScore == null)
+            return -1;
 
         Long userRanking = rankingRepository.countUserRankingByScore(currentSeason.getId(), userScore);
-        if(userRanking == null)
+        if (userRanking == null)
             return -1;
         else
             return userRanking;
@@ -117,15 +128,17 @@ public class RankingService {
 
     /**
      * get user score of current season
+     * 
      * @param userId
      * @return score or -1 if not in season
      */
     public long getCurrentSeasonUserScore(long userId) {
         Season currentSeason = seasonService.getCurrentSeason();
-        if(currentSeason == null) return -1;
+        if (currentSeason == null)
+            return -1;
 
         Long userScore = rankingRepository.findScoreBySeasonIdAndUser(currentSeason.getId(), userId);
-        if(userScore == null)
+        if (userScore == null)
             return -1;
         else
             return userScore;
@@ -133,13 +146,14 @@ public class RankingService {
 
     /**
      * check season is valid
+     * 
      * @param seasonId
      * @return true or false
      */
     public boolean isValidSeason(long seasonId) {
         // invalid season id
         Optional<Season> season = seasonRepository.findById(seasonId);
-        if(season.isPresent())
+        if (season.isPresent())
             return true;
         else
             return false;
@@ -147,30 +161,34 @@ public class RankingService {
 
     /**
      * add score to current season
+     * 
      * @param amount must be positive number
      * @return true of false by success
      */
     @Transactional
     public boolean addCurrentSeasonScore(long amount, User user) {
-        if(amount < 0) return false;
+        if (amount < 0)
+            return false;
 
         // check current season
         Season currentSeason = seasonService.getCurrentSeason();
-        if(currentSeason == null) return false;
+        if (currentSeason == null)
+            return false;
 
-        Optional<SeasonRanking> seasonRanking = rankingRepository.findBySeasonIdAndUserId(currentSeason.getId(), user.getId());
+        Optional<SeasonRanking> seasonRanking = rankingRepository.findBySeasonIdAndUserId(currentSeason.getId(),
+                user.getId());
 
         SeasonRanking modifiedSeasonRanking = null;
-        if(seasonRanking.isPresent()) {
+        if (seasonRanking.isPresent()) {
             modifiedSeasonRanking = seasonRanking.get();
             modifiedSeasonRanking.setScore(modifiedSeasonRanking.getScore() + amount);
         } else {
             // newly add user score column
             modifiedSeasonRanking = SeasonRanking.builder()
-                .score(amount)
-                .season(currentSeason)
-                .user(user)
-                .build();
+                    .score(amount)
+                    .season(currentSeason)
+                    .user(user)
+                    .build();
         }
 
         rankingRepository.save(modifiedSeasonRanking);

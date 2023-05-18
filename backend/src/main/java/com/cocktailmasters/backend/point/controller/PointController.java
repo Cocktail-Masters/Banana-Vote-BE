@@ -25,12 +25,11 @@ import lombok.RequiredArgsConstructor;
 @RestController
 @RequestMapping("/point")
 public class PointController {
-    
+
     private final PointLogService pointLogService;
     private final PointService pointService;
 
-    @Operation(summary = "포인트 로그 조회",
-        description = "포인트 로그 조회(로그인 필요)")
+    @Operation(summary = "포인트 로그 조회", description = "포인트 로그 조회(로그인 필요)")
     @GetMapping
     public ResponseEntity<List<PointLogResponse>> getPointLogs() {
         // TODO : add JWT token validation and extract user id by token
@@ -38,35 +37,34 @@ public class PointController {
 
         List<PointLogResponse> pointLogResponses = pointLogService.getPointLogs(userId);
 
-        if(pointLogResponses.isEmpty())
+        if (pointLogResponses.isEmpty())
             return ResponseEntity.noContent().build();
         else
             return ResponseEntity.ok().body(pointLogResponses);
     }
 
-    @Operation(summary = "포인트 조회(관리자용)",
-        description = "다른 사람의 포인트 조회")
+    @Operation(summary = "포인트 조회(관리자용)", description = "다른 사람의 포인트 조회")
     @GetMapping("/{userId}")
     public ResponseEntity<Long> getPoint(@PathVariable long userId) {
         // TODO : admin check logic
 
         long userPoint = pointService.getPoint(userId);
 
-        if(userPoint == -1)
+        if (userPoint == -1)
             return ResponseEntity.noContent().build();
         else
             return ResponseEntity.ok().body(userPoint);
     }
 
-    @Operation(summary = "포인트 수정(관리자용)",
-        description = "다른 사람의 포인트 수정")
+    @Operation(summary = "포인트 수정(관리자용)", description = "다른 사람의 포인트 수정")
     @PatchMapping("/{userId}")
     public ResponseEntity<String> modifyPoint(@PathVariable long userId, @RequestBody PointRequest points) {
         // TODO : admin check logic
 
-        if(points == null) return ResponseEntity.badRequest().build();
+        if (points == null)
+            return ResponseEntity.badRequest().build();
 
-        if(pointService.modifyPoint(points.getPoints(), userId))
+        if (pointService.modifyPoint(points.getPoints(), userId))
             return ResponseEntity.ok().build();
         else
             return ResponseEntity.noContent().build();

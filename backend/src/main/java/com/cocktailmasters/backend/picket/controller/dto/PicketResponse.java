@@ -10,7 +10,7 @@ import lombok.Getter;
 @Getter
 @AllArgsConstructor
 public class PicketResponse {
-    
+
     private String last_updated;
 
     private List<PicketItem> pickets;
