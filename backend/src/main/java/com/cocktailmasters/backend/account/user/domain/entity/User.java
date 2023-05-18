@@ -52,7 +52,7 @@ public class User extends BaseEntity {
     private String refreshToken;
 
     @Builder.Default
-    private Long points = 0L;
+    private Long points = 1000L;
 
     private LocalDateTime banReleaseDate;
 
