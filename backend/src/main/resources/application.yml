@@ -6,6 +6,15 @@ spring:
   profiles:
     include: dev, jwt, oauth
 
+  jpa:
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MySQLDialect
+    hibernate:
+      ddl-auto: update
+    show-sql: 'false'
+    open-in-view: false
+
 logging:
   level:
     root: info
