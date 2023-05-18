@@ -5,6 +5,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -16,8 +17,10 @@ import org.springframework.web.bind.annotation.RestController;
 import com.cocktailmasters.backend.season.controller.dto.SeasonDto;
 import com.cocktailmasters.backend.season.domain.entity.Season;
 import com.cocktailmasters.backend.season.service.SeasonService;
+import static com.cocktailmasters.backend.SwaggerConfig.SECURITY_SCHEME_NAME;
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -57,11 +60,11 @@ public class SeasonController {
         }
     }
 
-    @Operation(summary = "시즌 정보를 추가(관리자용) - id는 신경 안써도 됨", description = "현재 시즌의 정보에 대해 추가, 만약 일자가 겹칠 경우엔 에러 발생")
+    @Operation(summary = "시즌 정보를 추가(관리자용) - id는 신경 안써도 됨", description = "현재 시즌의 정보에 대해 추가, 만약 일자가 겹칠 경우엔 에러 발생", security = {
+            @SecurityRequirement(name = SECURITY_SCHEME_NAME) })
+    @PreAuthorize("hasRole('ADMIN')")
     @PostMapping
     public ResponseEntity<String> addSeasonInfo(@Valid @RequestBody SeasonDto season) {
-        // TODO : add admin check logic
-
         // check invalid date request
         if (season.getEndDate().isBefore(season.getStartDate()))
             return ResponseEntity.badRequest().body("invalid start and end date");
@@ -76,10 +79,9 @@ public class SeasonController {
     }
 
     @Operation(summary = "시즌 정보를 수정(관리자용)", description = "시즌의 정보에 대해 수정, 일부 필드에 대해서만 수정하는 경우도 가능")
+    @PreAuthorize("hasRole('ADMIN')")
     @PatchMapping
     public ResponseEntity<String> patchSeasonInfo(@Valid @RequestBody SeasonDto season) {
-        // TODO : add admin check logic
-
         if (seasonService.modifySeason(season, true))
             return ResponseEntity.ok().build();
         else
