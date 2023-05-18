@@ -7,8 +7,8 @@ spring:
     include: dev, jwt, oauth
 
 logging:
-    level:
-      root: info
+  level:
+    root: info
 
 springdoc:
   default-consumes-media-type: application/json
