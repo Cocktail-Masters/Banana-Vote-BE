@@ -53,7 +53,7 @@ public class Vote extends BaseEntity {
     @Builder.Default
     private int opinionNumber = 0;
 
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @ManyToOne(fetch = FetchType.LAZY)
     private User user;
 
     @Builder.Default
