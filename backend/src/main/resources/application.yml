@@ -3,20 +3,8 @@ server:
     context-path: /api/v1
 
 spring:
-  datasource:
-    driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://localhost:3307/bananavote?serverTimezone=UTC&characterEncoding=UTF-8
-    username:
-    password:
-  jpa:
-    properties:
-      hibernate:
-        dialect: org.hibernate.dialect.MySQL8Dialect
-    hibernate:
-      ddl-auto: update
-    show-sql: 'false'
   profiles:
-    include: jwt, oauth
+    include: dev, jwt, oauth
 
 logging:
     level:
