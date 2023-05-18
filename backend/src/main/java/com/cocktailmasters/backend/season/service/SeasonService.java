@@ -26,12 +26,13 @@ public class SeasonService {
     public Season getCurrentSeason() {
         LocalDate current = LocalDate.now();
 
-        for(Season season : seasonRepository.findAll(Sort.by(Sort.Direction.ASC, "seasonStartDate"))) {
+        for (Season season : seasonRepository.findAll(Sort.by(Sort.Direction.ASC, "seasonStartDate"))) {
             LocalDate startDate = season.getSeasonStartDate();
             LocalDate endDate = season.getSeasonEndDate();
 
             // between start and end
-            if(!startDate.isAfter(current) && !endDate.isBefore(current)) return season;
+            if (!startDate.isAfter(current) && !endDate.isBefore(current))
+                return season;
         }
 
         return null;
@@ -39,19 +40,22 @@ public class SeasonService {
 
     /**
      * Latest ended season
+     * 
      * @return the latest season info if any season is gone return null
      */
     public Season getLatestSeason() {
         LocalDate current = LocalDate.now();
 
-        for(Season season : seasonRepository.findAll(Sort.by(Sort.Direction.DESC, "seasonEndDate"))) {
+        for (Season season : seasonRepository.findAll(Sort.by(Sort.Direction.DESC, "seasonEndDate"))) {
             LocalDate startDate = season.getSeasonStartDate();
             LocalDate endDate = season.getSeasonEndDate();
 
             // between start and end
-            if(!startDate.isAfter(current) && !endDate.isBefore(current)) return season;
+            if (!startDate.isAfter(current) && !endDate.isBefore(current))
+                return season;
             // latest season
-            if(endDate.isBefore(current)) return season;
+            if (endDate.isBefore(current))
+                return season;
         }
 
         return Season.builder().id(-1L).build();
@@ -71,6 +75,7 @@ public class SeasonService {
 
     /**
      * add Season data to DB
+     * 
      * @param season
      * @param isCheckingDateRange for overlapped date checking
      * @return true or false by success transaction
@@ -78,13 +83,13 @@ public class SeasonService {
     @Transactional
     public boolean addSeason(SeasonDto season, boolean isCheckingDateRange) {
         Season addedSeason = Season.builder()
-            .seasonStartDate(season.getStartDate())
-            .seasonEndDate(season.getEndDate())
-            .seasonDescription(season.getDescription())
-            .build();
+                .seasonStartDate(season.getStartDate())
+                .seasonEndDate(season.getEndDate())
+                .seasonDescription(season.getDescription())
+                .build();
 
         // checking overlap date with parameter season
-        if(isCheckingDateRange && isOverlapWithAllSeason(addedSeason))
+        if (isCheckingDateRange && isOverlapWithAllSeason(addedSeason))
             return false;
 
         seasonRepository.save(addedSeason);
@@ -100,15 +105,16 @@ public class SeasonService {
         LocalDate endDate = season.getSeasonEndDate();
 
         List<Season> allSeasons = getSeasons();
-        for(Season currentSeason : allSeasons) {
+        for (Season currentSeason : allSeasons) {
             // not compare by me
-            if(currentSeason.getId() == season.getId()) continue;
+            if (currentSeason.getId() == season.getId())
+                continue;
 
             LocalDate curStartDate = currentSeason.getSeasonStartDate();
             LocalDate curEndDate = currentSeason.getSeasonEndDate();
 
-            if((!startDate.isAfter(curStartDate) && !endDate.isBefore(curStartDate))
-                || (!startDate.isAfter(curEndDate) && !endDate.isBefore(curEndDate)))
+            if ((!startDate.isAfter(curStartDate) && !endDate.isBefore(curStartDate))
+                    || (!startDate.isAfter(curEndDate) && !endDate.isBefore(curEndDate)))
                 return true;
         }
         return false;
@@ -116,6 +122,7 @@ public class SeasonService {
 
     /**
      * modify Season
+     * 
      * @param season
      * @param isCheckingDateRange for overlapped date checking
      * @return true of false by success transaction
@@ -123,23 +130,24 @@ public class SeasonService {
     @Transactional
     public boolean modifySeason(SeasonDto season, boolean isCheckingDateRange) {
         Optional<Season> optionalSeason = seasonRepository.findById(season.getId());
-        if(!optionalSeason.isPresent())
+        if (!optionalSeason.isPresent())
             return false;
 
         Season modifiedSeason = optionalSeason.get();
         modifiedSeason = Season.builder()
-            .id(modifiedSeason.getId())
-            .seasonStartDate(season.getStartDate() == null? modifiedSeason.getSeasonStartDate() : season.getStartDate())
-            .seasonEndDate(season.getEndDate() == null? modifiedSeason.getSeasonEndDate() : season.getEndDate())
-            .seasonDescription(season.getDescription())
-            .build();
+                .id(modifiedSeason.getId())
+                .seasonStartDate(
+                        season.getStartDate() == null ? modifiedSeason.getSeasonStartDate() : season.getStartDate())
+                .seasonEndDate(season.getEndDate() == null ? modifiedSeason.getSeasonEndDate() : season.getEndDate())
+                .seasonDescription(season.getDescription())
+                .build();
 
         // checking overlap date with parameter season
-        if(isCheckingDateRange && isOverlapWithAllSeason(modifiedSeason))
+        if (isCheckingDateRange && isOverlapWithAllSeason(modifiedSeason))
             return false;
-        if(modifiedSeason.getSeasonEndDate().isBefore(modifiedSeason.getSeasonStartDate()))
+        if (modifiedSeason.getSeasonEndDate().isBefore(modifiedSeason.getSeasonStartDate()))
             return false;
-        
+
         seasonRepository.save(modifiedSeason);
         return true;
     }

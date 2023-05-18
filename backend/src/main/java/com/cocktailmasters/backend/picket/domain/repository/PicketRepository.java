@@ -8,7 +8,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import com.cocktailmasters.backend.picket.domain.entity.Picket;
 
 public interface PicketRepository extends JpaRepository<Picket, Long> {
-    
+
     List<Picket> findAllByVoteId(long voteId);
 
     Optional<Picket> findByVoteIdAndPosition(long voteId, int position);

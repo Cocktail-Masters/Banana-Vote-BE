@@ -23,7 +23,8 @@ public class PointService {
     /**
      * add point to user with log
      * if season is on, it will modify season score too
-     * @param amount increase or decrease value of mount
+     * 
+     * @param amount      increase or decrease value of mount
      * @param description
      * @param user
      * @return true for success or false
@@ -31,20 +32,24 @@ public class PointService {
     @Transactional
     public boolean addPoint(long amount, String description, long userId) {
         Optional<User> user = userRepository.findById(userId);
-        if(!user.isPresent() || user.get().getPoints() + amount < 0) return false;
+        if (!user.isPresent() || user.get().getPoints() + amount < 0)
+            return false;
 
         // update point
-        if(userRepository.updateUserPointById(user.get().getId(), user.get().getPoints() + amount) == 0) return false;
-        
+        if (userRepository.updateUserPointById(user.get().getId(), user.get().getPoints() + amount) == 0)
+            return false;
+
         pointLogService.addPointLog(amount, description, user.get()); // add log
-        if(amount > 0) rankingService.addCurrentSeasonScore(amount, user.get());  // score update
+        if (amount > 0)
+            rankingService.addCurrentSeasonScore(amount, user.get()); // score update
 
         return true;
     }
 
     /**
      * add point to user with log only used by admin
-     * @param value increase or decrease value of mount
+     * 
+     * @param value       increase or decrease value of mount
      * @param description
      * @param user
      * @return true for success or false
@@ -52,11 +57,13 @@ public class PointService {
     @Transactional
     public boolean modifyPoint(long value, long userId) {
         Optional<User> user = userRepository.findById(userId);
-        if(!user.isPresent()) return false;
+        if (!user.isPresent())
+            return false;
 
         long prev_point = user.get().getPoints();
         int res = userRepository.updateUserPointById(user.get().getId(), value);
-        if(res == 0) return false;
+        if (res == 0)
+            return false;
 
         pointLogService.addPointLog(prev_point - value, "modified by admin", user.get()); // add log
 
@@ -65,13 +72,16 @@ public class PointService {
 
     /**
      * get Point amount by nickname
+     * 
      * @param nickname
      * @return -1 or points
      */
     public long getPoint(long userId) {
         Optional<User> user = userRepository.findById(userId);
 
-        if(!user.isPresent()) return -1;
-        else return user.get().getPoints();
+        if (!user.isPresent())
+            return -1;
+        else
+            return user.get().getPoints();
     }
 }

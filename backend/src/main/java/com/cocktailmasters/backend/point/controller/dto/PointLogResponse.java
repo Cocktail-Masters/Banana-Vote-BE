@@ -19,7 +19,7 @@ public class PointLogResponse {
     public PointLogResponse(PointLog pointLog) {
         this.amount = pointLog.getAmount();
         this.description = pointLog.getDescription();
-        
+
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
         this.createdTime = pointLog.getCreatedDate().format(formatter);
     }

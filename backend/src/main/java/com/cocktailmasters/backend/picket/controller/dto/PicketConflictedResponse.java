@@ -10,7 +10,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class PicketConflictedResponse {
-    
+
     @JsonProperty("last_modified")
     private String lastModified = "";
 

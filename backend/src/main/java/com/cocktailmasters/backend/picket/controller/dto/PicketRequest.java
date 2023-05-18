@@ -10,7 +10,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class PicketRequest {
-    
+
     private int position = -1;
 
     @JsonProperty("picket_image_url")

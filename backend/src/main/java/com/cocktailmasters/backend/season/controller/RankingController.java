@@ -24,43 +24,41 @@ import lombok.RequiredArgsConstructor;
 @RestController
 @RequestMapping("/ranking")
 public class RankingController {
-    
+
     private final RankingService rankingService;
 
     private final SeasonService seasonService;
 
     private final String DEFAULT_PAGE_SIZE = "10";
 
-    @Operation(summary = "랭킹 정보 조회",
-        description = "일치된 시즌의 페이지에 해당하는 랭킹 정보 리스트 반환, 닉네임을 포함 할 경우 페이지 파라미터는 무효되고, 페이지 사이즈에 맞추어 해당 플레이어가 포함된 결과 반환")
+    @Operation(summary = "랭킹 정보 조회", description = "일치된 시즌의 페이지에 해당하는 랭킹 정보 리스트 반환, 닉네임을 포함 할 경우 페이지 파라미터는 무효되고, 페이지 사이즈에 맞추어 해당 플레이어가 포함된 결과 반환")
     @GetMapping("/{seasonId}")
     public ResponseEntity<RankingResponse> getRanking(@PathVariable(required = false) Optional<Long> seasonId,
             @RequestParam(required = false, name = "page", defaultValue = "0") int page,
             @RequestParam(required = false, name = "size", defaultValue = DEFAULT_PAGE_SIZE) int pageSize,
             @RequestParam(required = false, name = "nickname") String nickname) {
-            long seasonIdNum = seasonId.orElse(seasonService.getLatestSeason().getId());
+        long seasonIdNum = seasonId.orElse(seasonService.getLatestSeason().getId());
 
-            if(seasonIdNum == -1) // check season is existed
-                throw new CustomException(HttpStatus.NOT_FOUND, "there is no season");    
-            if(page < 0 || pageSize < 1)
-                throw new CustomException(HttpStatus.BAD_REQUEST, "bad page or page size request");
+        if (seasonIdNum == -1) // check season is existed
+            throw new CustomException(HttpStatus.NOT_FOUND, "there is no season");
+        if (page < 0 || pageSize < 1)
+            throw new CustomException(HttpStatus.BAD_REQUEST, "bad page or page size request");
 
-            if(nickname != null && !nickname.isBlank()) {
-                page = rankingService.getRankingPageNumberByNickname(seasonIdNum, pageSize, nickname);
-                if(page == -1) // nickname not found
-                    return ResponseEntity.noContent().build();
-            }
-            
-            RankingResponse rankingResponse = rankingService.getRankingListWithPage(seasonIdNum, page, pageSize);
-
-            if(rankingResponse.getRankingList() == null || rankingResponse.getRankingList().isEmpty())
+        if (nickname != null && !nickname.isBlank()) {
+            page = rankingService.getRankingPageNumberByNickname(seasonIdNum, pageSize, nickname);
+            if (page == -1) // nickname not found
                 return ResponseEntity.noContent().build();
-            else
-                return ResponseEntity.ok().body(rankingResponse);
+        }
+
+        RankingResponse rankingResponse = rankingService.getRankingListWithPage(seasonIdNum, page, pageSize);
+
+        if (rankingResponse.getRankingList() == null || rankingResponse.getRankingList().isEmpty())
+            return ResponseEntity.noContent().build();
+        else
+            return ResponseEntity.ok().body(rankingResponse);
     }
 
-    @Operation(summary = "로그인 한 유저의 현재 시즌 랭킹 스코어 조회(로그인 필요)",
-        description = "현재 시즌 랭킹 스코어를 조회, 현재 진행중 시즌없을 경우 no content code")
+    @Operation(summary = "로그인 한 유저의 현재 시즌 랭킹 스코어 조회(로그인 필요)", description = "현재 시즌 랭킹 스코어를 조회, 현재 진행중 시즌없을 경우 no content code")
     @GetMapping("/score")
     public ResponseEntity<Long> getUserScore() {
         // TODO : 로그인 여부 확인 로직
@@ -68,14 +66,13 @@ public class RankingController {
 
         long userScore = rankingService.getCurrentSeasonUserScore(userId);
 
-        if(userScore == -1)
+        if (userScore == -1)
             return ResponseEntity.noContent().build();
         else
             return ResponseEntity.ok().body(userScore);
     }
 
-    @Operation(summary = "로그인 한 유저의 현재 시즌 랭킹 순위 조회(로그인 필요)",
-        description = "현재 시즌 랭킹 순위를 조회, 현재 진행중 시즌없을 경우 no content code")
+    @Operation(summary = "로그인 한 유저의 현재 시즌 랭킹 순위 조회(로그인 필요)", description = "현재 시즌 랭킹 순위를 조회, 현재 진행중 시즌없을 경우 no content code")
     @GetMapping("")
     public ResponseEntity<Long> getUserRanking() {
         // TODO : 로그인 여부 확인 로직
@@ -83,7 +80,7 @@ public class RankingController {
 
         long userRanking = rankingService.getCurrentSeasonUserScore(userId);
 
-        if(userRanking == -1)
+        if (userRanking == -1)
             return ResponseEntity.noContent().build();
         else
             return ResponseEntity.ok().body(userRanking);

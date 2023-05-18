@@ -12,7 +12,7 @@ import lombok.Getter;
 @Getter
 @Builder
 public class GoodsItemDto {
-    
+
     private long id;
     private String name;
     private String description;
@@ -30,7 +30,7 @@ public class GoodsItemDto {
 
     @JsonProperty("sell_count")
     private long sellCount;
-    
+
     @JsonProperty("use_period")
     private long validPeriod;
 
