@@ -3,24 +3,29 @@ package com.cocktailmasters.backend.goods.controller;
 import java.util.List;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.cocktailmasters.backend.account.jwt.service.JwtService;
 import com.cocktailmasters.backend.goods.controller.dto.GoodsRequest;
 import com.cocktailmasters.backend.goods.controller.dto.GoodsResponse;
 import com.cocktailmasters.backend.goods.controller.dto.UserGoodsResponse;
 import com.cocktailmasters.backend.goods.domain.GoodsType;
 import com.cocktailmasters.backend.goods.service.GoodsService;
 import com.cocktailmasters.backend.goods.service.UserGoodsService;
+import static com.cocktailmasters.backend.SwaggerConfig.SECURITY_SCHEME_NAME;
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -33,6 +38,7 @@ public class GoodsController {
 
     private final GoodsService goodsService;
     private final UserGoodsService userGoodsService;
+    private final JwtService jwtService;
 
     @Operation(summary = "상품들의 타입 리스트 반환", description = "상품들의 타입 리스트 반환")
     @GetMapping("/types")
@@ -64,12 +70,14 @@ public class GoodsController {
             return ResponseEntity.ok().body(goodsResponse);
     }
 
-    @Operation(summary = "상품을 구매", description = "상품의 수량이 부족할 경우, 구매 일자가 유효하지 않을 경우 에러, 상품이 존재하지 않을 경우에도 에러")
+    @Operation(summary = "상품을 구매", description = "상품의 수량이 부족할 경우, 구매 일자가 유효하지 않을 경우 에러, 상품이 존재하지 않을 경우에도 에러(로그인 필요)", security = {
+            @SecurityRequirement(name = SECURITY_SCHEME_NAME) })
     @PostMapping("/{goodsId}")
-    public ResponseEntity<String> buyGoods(@PathVariable long goodsId,
+    public ResponseEntity<String> buyGoods(
+            @RequestHeader(name = "Authorization", required = false) String token,
+            @PathVariable long goodsId,
             @RequestParam(required = false, name = "quantity", defaultValue = "1") int quantity) {
-        // TODO : 로그인 여부 확인 및 유저 아이디 확인
-        long userId = 1;
+        long userId = jwtService.findUserByToken(token).getId();
 
         if (quantity < 0)
             return ResponseEntity.badRequest().build();
@@ -80,11 +88,12 @@ public class GoodsController {
             return ResponseEntity.ok().build();
     }
 
-    @Operation(summary = "유저가 가진 상품 목록 조회", description = "유저가 가진 상품 목록 조회")
+    @Operation(summary = "유저가 가진 상품 목록 조회", description = "유저가 가진 상품 목록 조회", security = {
+            @SecurityRequirement(name = SECURITY_SCHEME_NAME) })
     @GetMapping("/users")
-    public ResponseEntity<List<UserGoodsResponse>> getUsersGoodsList() {
-        // TODO : 로그인 및 유저 정보 확인
-        long userId = 1;
+    public ResponseEntity<List<UserGoodsResponse>> getUsersGoodsList(
+            @RequestHeader(name = "Authorization", required = false) String token) {
+        long userId = jwtService.findUserByToken(token).getId();
 
         List<UserGoodsResponse> userGoods = userGoodsService.getUsersGoods(userId);
 
@@ -94,11 +103,11 @@ public class GoodsController {
             return ResponseEntity.ok().body(userGoods);
     }
 
-    @Operation(summary = "굿즈 생성(관리자용)", description = "굿즈 생성, 타입이 뱃지 일경우엔 X, 뱃지 생성 API 이용하세요")
+    @Operation(summary = "굿즈 생성(관리자용)", description = "굿즈 생성, 타입이 뱃지 일경우엔 X, 뱃지 생성 API 이용하세요", security = {
+            @SecurityRequirement(name = SECURITY_SCHEME_NAME) })
+    @PreAuthorize("hasRole('ADMIN')")
     @PostMapping
     public ResponseEntity<String> createGoods(@RequestBody @Valid GoodsRequest goodsRequest) {
-        // TODO : 관리자 확인
-
         // date validation
         if (goodsRequest.getStartDate().isAfter(goodsRequest.getEndDate()))
             return ResponseEntity.badRequest().body("invalud date");
@@ -113,23 +122,23 @@ public class GoodsController {
             return ResponseEntity.badRequest().build();
     }
 
-    @Operation(summary = "굿즈 삭제(관리자용)", description = "굿즈 삭제")
+    @Operation(summary = "굿즈 삭제(관리자용)", description = "굿즈 삭제", security = {
+            @SecurityRequirement(name = SECURITY_SCHEME_NAME) })
+    @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/{goodsId}")
     public ResponseEntity<String> deleteGoods(@PathVariable long goodsId) {
-        // TODO : 관리자 확인
-
         if (goodsService.deleteGoods(goodsId))
             return ResponseEntity.ok().build();
         else
             return ResponseEntity.notFound().build();
     }
 
-    @Operation(summary = "굿즈 수정(관리자용)", description = "굿즈 수정, 기입하지 않은 정보가 있을 시에 기본값으로 초기화에 주의")
+    @Operation(summary = "굿즈 수정(관리자용)", description = "굿즈 수정, 기입하지 않은 정보가 있을 시에 기본값으로 초기화에 주의", security = {
+            @SecurityRequirement(name = SECURITY_SCHEME_NAME) })
+    @PreAuthorize("hasRole('ADMIN')")
     @PatchMapping("/{goodsId}")
     public ResponseEntity<String> modifyGoods(@PathVariable long goodsId,
             @RequestBody @Valid GoodsRequest goodsRequest) {
-        // TODO : 관리자 확인
-
         // date validation
         if (goodsRequest.getStartDate().isAfter(goodsRequest.getEndDate()))
             return ResponseEntity.badRequest().body("invalud date");
