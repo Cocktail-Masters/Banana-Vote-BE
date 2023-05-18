@@ -60,14 +60,14 @@ public class PointLogService {
     /**
      * add point log with user Id
      * @param amount
-     * @param decription
+     * @param description
      * @param userId
      * @return added Point log object
      */
     @Transactional
-    public PointLog addPointLog(long amount, String decription, long userId) {
+    public PointLog addPointLog(long amount, String description, long userId) {
         Optional<User> user = userRepository.findById(userId);
         if(!user.isPresent()) return null;
-        else return addPointLog(amount, decription, user.get());
+        else return addPointLog(amount, description, user.get());
     }
 }

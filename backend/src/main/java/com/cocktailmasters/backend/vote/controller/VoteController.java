@@ -1,15 +1,19 @@
 package com.cocktailmasters.backend.vote.controller;
 
+import com.cocktailmasters.backend.account.jwt.service.JwtService;
+import com.cocktailmasters.backend.account.user.domain.entity.User;
 import com.cocktailmasters.backend.vote.controller.dto.item.VoteItemCreateDto;
 import com.cocktailmasters.backend.vote.controller.dto.vote.*;
 import com.cocktailmasters.backend.vote.service.VoteService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -19,13 +23,14 @@ import java.util.Set;
 @RequestMapping("/votes")
 public class VoteController {
 
+    private final JwtService jwtService;
     private final VoteService voteService;
 
     @Operation(summary = "투표 생성", description = "새로운 투표 생성")
     @PostMapping("")
-    public ResponseEntity<String> createVote(@RequestBody CreateVoteRequest createVoteRequest) throws Exception {
-        //TODO: 사용자 검사 및 예외처리
-        Long userId = 1L;
+    public ResponseEntity<String> createVote(@RequestHeader("Authorization") String token,
+                                             @Valid @RequestBody CreateVoteRequest createVoteRequest) throws Exception {
+        User user = jwtService.findUserByToken(token);
         if (createVoteRequest.getVoteItems().isEmpty()) {
             return ResponseEntity.badRequest().build();
         }
@@ -36,7 +41,10 @@ public class VoteController {
             }
             voteItemSet.add(voteItem.getItemNumber());
         }
-        if (voteService.createVote(userId, createVoteRequest)) {
+        if (createVoteRequest.getVoteEndDate().isBefore(LocalDateTime.now())) {
+            return ResponseEntity.badRequest().build();
+        }
+        if (voteService.createVote(user, createVoteRequest)) {
             return ResponseEntity.created(null).build();
         }
         throw new Exception();

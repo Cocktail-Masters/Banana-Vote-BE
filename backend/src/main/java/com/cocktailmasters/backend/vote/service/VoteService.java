@@ -5,6 +5,7 @@ import com.cocktailmasters.backend.account.user.domain.entity.UserTag;
 import com.cocktailmasters.backend.account.user.domain.repository.UserRepository;
 import com.cocktailmasters.backend.common.domain.entity.Tag;
 import com.cocktailmasters.backend.common.domain.repository.TagRepository;
+import com.cocktailmasters.backend.point.service.PointService;
 import com.cocktailmasters.backend.util.exception.NotFoundUserException;
 import com.cocktailmasters.backend.vote.controller.dto.item.*;
 import com.cocktailmasters.backend.vote.controller.dto.vote.*;
@@ -16,6 +17,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
+import java.time.Period;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -23,6 +26,10 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 @Service
 public class VoteService {
+
+    private static final long CREATE_VOTE_POINTS = 20;
+    private static final long CREATE_VOTE_POINTS_PER_DAY = 5;
+    private static final String CREATE_VOTE_POINT_LOG_DESCRIPTION = "Create a vote for";
 
     private final OpinionRepository opinionRepository;
     private final PredictionRepository predictionRepository;
@@ -33,13 +40,11 @@ public class VoteService {
     private final VoteTagRepository voteTagRepository;
     private final AgreementRepository agreementRepository;
 
+    private final PointService pointService;
+
     @Transactional
-    public boolean createVote(Long userId,
+    public boolean createVote(User user,
                               CreateVoteRequest createVoteRequest) {
-        // TODO: controller에서 사용자 검사 후, service에서 사용자 객체 받기
-        // TODO: request 검사
-        // TODO: 작성자 포인트 감소
-        User user = findUserById(userId);
         List<VoteItem> voteItems = new ArrayList<>();
         List<VoteTag> voteTags = new ArrayList<>();
         createVoteRequest.getVoteItems()
@@ -55,6 +60,17 @@ public class VoteService {
                     voteTags.add(createVoteTag(tag));
                 });
         voteRepository.save(createVoteRequest.toVoteEntity(user, voteItems, voteTags));
+
+        int votePeriod = Period.between(LocalDate.now(), createVoteRequest.getVoteEndDate().toLocalDate())
+                .getDays();
+        long pointAmount;
+        if (votePeriod == 1) {
+            pointAmount = CREATE_VOTE_POINTS;
+            pointService.addPoint(pointAmount, CREATE_VOTE_POINT_LOG_DESCRIPTION, user.getId());
+        } else {
+            pointAmount = CREATE_VOTE_POINTS + (CREATE_VOTE_POINTS_PER_DAY * (votePeriod - 1));
+            pointService.addPoint(pointAmount, CREATE_VOTE_POINT_LOG_DESCRIPTION, user.getId());
+        }
         return true;
     }
 
