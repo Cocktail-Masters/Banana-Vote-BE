@@ -32,9 +32,9 @@ public class VoteController {
 
     @Operation(summary = "투표 생성", description = "새로운 투표 생성",
             security = {@SecurityRequirement(name = SECURITY_SCHEME_NAME)})
-    @PreAuthorize("hasAnyAuthority('ADMIN', 'USER')")
+    @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
     @PostMapping("")
-    public ResponseEntity<String> createVote(@RequestHeader("Authorization") String token,
+    public ResponseEntity<String> createVote(@RequestHeader(name = "Authorization", required = false) String token,
                                              @Valid @RequestBody CreateVoteRequest createVoteRequest) throws Exception {
         User user = jwtService.findUserByToken(token);
         if (createVoteRequest.getVoteItems().isEmpty()) {
