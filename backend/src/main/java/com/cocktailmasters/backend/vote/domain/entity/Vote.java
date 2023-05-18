@@ -61,7 +61,7 @@ public class Vote extends BaseEntity {
     private List<Opinion> opinions = new ArrayList<>();
 
     @Builder.Default
-    @OneToMany(mappedBy = "vote", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "vote", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<VoteItem> voteItems = new ArrayList<>();
 
     @Builder.Default
@@ -74,5 +74,17 @@ public class Vote extends BaseEntity {
 
     public void updateVotedNumber() {
         this.votedNumber++;
+    }
+
+    public void updateVoteHits() {
+        this.voteHits++;
+    }
+
+    public void addVoteItem(VoteItem voteItem) {
+        voteItems.add(voteItem);
+    }
+
+    public void addVoteTag(VoteTag voteTag) {
+        voteTags.add(voteTag);
     }
 }
