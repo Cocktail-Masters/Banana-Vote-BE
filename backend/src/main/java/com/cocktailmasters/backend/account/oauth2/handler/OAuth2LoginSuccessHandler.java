@@ -26,16 +26,18 @@ public class OAuth2LoginSuccessHandler implements AuthenticationSuccessHandler {
 
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request,
-                                        HttpServletResponse response,
-                                        Authentication authentication) throws IOException {
+            HttpServletResponse response,
+            Authentication authentication) throws IOException {
         log.info("Success OAuth2 Login");
         try {
             CustomOAuth2User oAuth2User = (CustomOAuth2User) authentication.getPrincipal();
             User user = findUserByEmail(oAuth2User.getEmail());
             if (oAuth2User.getRole() == Role.GUEST) {
                 String accessToken = jwtService.createAccessToken(user);
+                log.info("GUEST access token : " + accessToken);
+
                 response.addHeader(jwtService.getAccessTokenHeader(), "Bearer " + accessToken);
-//                response.sendRedirect("/");    // 프론트의 회원가입 추가 정보 입력 폼 리다이렉트
+                // response.sendRedirect("/"); // 프론트의 회원가입 추가 정보 입력 폼 리다이렉트
                 response.setStatus(HttpServletResponse.SC_OK);
                 jwtService.setAccessTokenHeader(response, accessToken);
             } else {
@@ -51,6 +53,8 @@ public class OAuth2LoginSuccessHandler implements AuthenticationSuccessHandler {
         User user = findUserByEmail(oAuth2User.getEmail());
         String accessToken = jwtService.createAccessToken(user);
         String refreshToken = jwtService.createRefreshToken(user);
+
+        log.info("USER access token : " + accessToken);
 
         response.addHeader(jwtService.getAccessTokenHeader(), "Bearer " + accessToken);
         response.addHeader(jwtService.getRefreshTokenHeader(), "Bearer " + refreshToken);
