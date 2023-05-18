@@ -4,18 +4,23 @@ import java.util.Optional;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.cocktailmasters.backend.account.jwt.service.JwtService;
 import com.cocktailmasters.backend.season.controller.dto.RankingResponse;
 import com.cocktailmasters.backend.season.service.RankingService;
 import com.cocktailmasters.backend.season.service.SeasonService;
 import com.cocktailmasters.backend.util.exception.CustomException;
+import static com.cocktailmasters.backend.SwaggerConfig.SECURITY_SCHEME_NAME;
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 
@@ -26,8 +31,8 @@ import lombok.RequiredArgsConstructor;
 public class RankingController {
 
     private final RankingService rankingService;
-
     private final SeasonService seasonService;
+    private final JwtService jwtService;
 
     private final String DEFAULT_PAGE_SIZE = "10";
 
@@ -58,11 +63,12 @@ public class RankingController {
             return ResponseEntity.ok().body(rankingResponse);
     }
 
-    @Operation(summary = "로그인 한 유저의 현재 시즌 랭킹 스코어 조회(로그인 필요)", description = "현재 시즌 랭킹 스코어를 조회, 현재 진행중 시즌없을 경우 no content code")
+    @Operation(summary = "로그인 한 유저의 현재 시즌 랭킹 스코어 조회(로그인 필요)", description = "현재 시즌 랭킹 스코어를 조회, 현재 진행중 시즌없을 경우 no content code", security = {
+            @SecurityRequirement(name = SECURITY_SCHEME_NAME) })
+    @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
     @GetMapping("/score")
-    public ResponseEntity<Long> getUserScore() {
-        // TODO : 로그인 여부 확인 로직
-        long userId = 1;
+    public ResponseEntity<Long> getUserScore(@RequestHeader(name = "Authorization", required = false) String token) {
+        long userId = jwtService.findUserByToken(token).getId();
 
         long userScore = rankingService.getCurrentSeasonUserScore(userId);
 
@@ -72,11 +78,12 @@ public class RankingController {
             return ResponseEntity.ok().body(userScore);
     }
 
-    @Operation(summary = "로그인 한 유저의 현재 시즌 랭킹 순위 조회(로그인 필요)", description = "현재 시즌 랭킹 순위를 조회, 현재 진행중 시즌없을 경우 no content code")
+    @Operation(summary = "로그인 한 유저의 현재 시즌 랭킹 순위 조회(로그인 필요)", description = "현재 시즌 랭킹 순위를 조회, 현재 진행중 시즌없을 경우 no content code", security = {
+            @SecurityRequirement(name = SECURITY_SCHEME_NAME) })
+    @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
     @GetMapping("")
-    public ResponseEntity<Long> getUserRanking() {
-        // TODO : 로그인 여부 확인 로직
-        long userId = 1;
+    public ResponseEntity<Long> getUserRanking(@RequestHeader(name = "Authorization", required = false) String token) {
+        long userId = jwtService.findUserByToken(token).getId();
 
         long userRanking = rankingService.getCurrentSeasonUserScore(userId);
 
