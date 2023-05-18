@@ -45,11 +45,11 @@ public class VoteService {
     @Transactional
     public boolean createVote(User user,
                               CreateVoteRequest createVoteRequest) {
-        List<VoteItem> voteItems = new ArrayList<>();
-        List<VoteTag> voteTags = new ArrayList<>();
+        Vote vote = createVoteRequest.toVoteEntity(user);
         createVoteRequest.getVoteItems()
                 .forEach(voteItem -> {
-                    voteItems.add(createVoteItem(voteItem));
+                    VoteItem voteItem1 = createVoteItem(voteItem, vote);
+                    vote.addVoteItem(voteItem1);
                 });
         createVoteRequest.getTags().
                 forEach(tagName -> {
@@ -57,9 +57,10 @@ public class VoteService {
                     tag.countTagUsedNumber();
                     tag.updateLastModifiedDate();
                     tagRepository.save(tag);
-                    voteTags.add(createVoteTag(tag));
+                    VoteTag voteTag = createVoteTag(tag, vote);
+                    vote.addVoteTag(voteTag);
                 });
-        voteRepository.save(createVoteRequest.toVoteEntity(user, voteItems, voteTags));
+        voteRepository.save(vote);
 
         int votePeriod = Period.between(LocalDate.now(), createVoteRequest.getVoteEndDate().toLocalDate())
                 .getDays();
@@ -75,28 +76,28 @@ public class VoteService {
     }
 
     @Transactional
-    public FindVotesResponse findVotes(Long userId,
+    public FindVotesResponse findVotes(User user,
                                        String keyword,
                                        boolean isTag,
-                                       boolean isClosed,
+                                       Boolean isClosed,
                                        int sortBy,
                                        Pageable pageable) {
         Page<Vote> votes;
         long totalCount;
         if (isTag) {
             votes = voteRepository.findVotesByTagAndOption(keyword,
-                    (isClosed ? true : null),
+                    (isClosed != null ? isClosed : null),
                     VoteSortBy.valueOfNumber(sortBy),
                     pageable);
             totalCount = voteRepository.countVotesByTag(keyword,
-                    (isClosed ? true : null));
+                    (isClosed != null ? isClosed : null));
         } else {
             votes = voteRepository.findVotesByTitleAndOption(keyword,
-                    (isClosed ? true : null),
+                    (isClosed != null ? isClosed : null),
                     VoteSortBy.valueOfNumber(sortBy),
                     pageable);
             totalCount = voteRepository.countVotesByTitle(keyword,
-                    (isClosed ? true : null));
+                    (isClosed != null ? isClosed : null));
         }
         return FindVotesResponse.builder()
                 .totalCount(totalCount)
@@ -104,7 +105,7 @@ public class VoteService {
                         .map(vote -> {
                             Opinion opinion = opinionRepository.findFirstByVoteIdOrderByAgreedNumberDesc(vote.getId())
                                     .orElse(null);
-                            Agreement agreement = agreementRepository.findByUserIdAndOpinionId(userId, opinion.getId())
+                            Agreement agreement = agreementRepository.findByUserIdAndOpinionId(user.getId(), opinion.getId())
                                     .orElse(null);
                             return VoteDto.builder()
                                     .vote(VoteDetailDto.createVoteDetailDto(vote))
@@ -122,9 +123,8 @@ public class VoteService {
     @Transactional
     public FindVoteDetailResponse findVoteDetail(Long voteId) {
         Vote vote = findVoteById(voteId);
-        voteRepository.save(vote.builder()
-                .voteHits(vote.getVoteHits() + 1)
-                .build());
+        vote.updateVoteHits();
+        voteRepository.save(vote);
         User writer = vote.getUser();
         return FindVoteDetailResponse.builder()
                 .vote(VoteDetailDto.createVoteDetailDto(vote))
@@ -252,17 +252,16 @@ public class VoteService {
                 .build();
     }
 
-    private VoteItem createVoteItem(VoteItemCreateDto createVoteItemRequest) {
-        VoteItem voteItem = createVoteItemRequest.toVoteItemEntity(createVoteItemRequest);
-        voteItemRepository.save(voteItem);
+    private VoteItem createVoteItem(VoteItemCreateDto createVoteItemRequest, Vote vote) {
+        VoteItem voteItem = createVoteItemRequest.toVoteItemEntity(createVoteItemRequest, vote);
         return voteItem;
     }
 
-    private VoteTag createVoteTag(Tag tag) {
+    private VoteTag createVoteTag(Tag tag, Vote vote) {
         VoteTag voteTag = VoteTag.builder()
                 .tag(tag)
+                .vote(vote)
                 .build();
-        voteTagRepository.save(voteTag);
         return voteTag;
     }
 

@@ -3,8 +3,6 @@ package com.cocktailmasters.backend.vote.controller.dto.vote;
 import com.cocktailmasters.backend.account.user.domain.entity.User;
 import com.cocktailmasters.backend.vote.controller.dto.item.VoteItemCreateDto;
 import com.cocktailmasters.backend.vote.domain.entity.Vote;
-import com.cocktailmasters.backend.vote.domain.entity.VoteItem;
-import com.cocktailmasters.backend.vote.domain.entity.VoteTag;
 import com.fasterxml.jackson.databind.PropertyNamingStrategy;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
 import jakarta.validation.constraints.NotNull;
@@ -38,9 +36,7 @@ public class CreateVoteRequest {
 
     private List<String> tags;
 
-    public Vote toVoteEntity(User user,
-                             List<VoteItem> voteItems,
-                             List<VoteTag> voteTags) {
+    public Vote toVoteEntity(User user) {
         return Vote.builder()
                 .user(user)
                 .voteTitle(voteTitle)
@@ -48,8 +44,6 @@ public class CreateVoteRequest {
                 .voteEndDate(voteEndDate)
                 .isAnonymous(isAnonymous)
                 .isPublic(isPublic)
-                .voteItems(voteItems)
-                .voteTags(voteTags)
                 .build();
     }
 }
