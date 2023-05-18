@@ -1,4 +1,4 @@
-package com.cocktailmasters.backend.vote.domain.entity;
+package com.cocktailmasters.backend.megaphone.domain.entity;
 
 import com.cocktailmasters.backend.account.user.domain.entity.User;
 import com.cocktailmasters.backend.common.domain.entity.BaseEntity;
@@ -23,7 +23,7 @@ public class Megaphone extends BaseEntity {
     private String voteLink;
 
     @NotNull
-    private LocalDateTime megaphoneEndDate;
+    private LocalDateTime megaphoneEndDateTime;
 
     @Builder.Default
     private int megaphoneReportedNumber = 0;

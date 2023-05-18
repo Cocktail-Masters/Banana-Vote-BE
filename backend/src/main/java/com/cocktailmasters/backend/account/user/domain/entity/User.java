@@ -4,6 +4,7 @@ import com.cocktailmasters.backend.achievement.domain.entity.UserAchievement;
 import com.cocktailmasters.backend.common.domain.entity.BaseEntity;
 import com.cocktailmasters.backend.goods.domain.entity.UserBadge;
 import com.cocktailmasters.backend.goods.domain.entity.UserGoods;
+import com.cocktailmasters.backend.megaphone.domain.entity.Megaphone;
 import com.cocktailmasters.backend.picket.domain.entity.Picket;
 import com.cocktailmasters.backend.point.domain.entity.PointLog;
 import com.cocktailmasters.backend.report.domain.entity.BanLog;
@@ -118,7 +119,7 @@ public class User extends BaseEntity {
     private List<Report> reports = new ArrayList<>();
 
     public void usePoints(Long points) throws Exception {
-        //TODO: 예외처리
+        // TODO: 예외처리
         if (this.points < points) {
             throw new Exception();
         }
