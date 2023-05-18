@@ -1,6 +1,6 @@
 package com.cocktailmasters.backend.megaphone.domain.dto.item;
 
-import com.cocktailmasters.backend.account.domain.entity.User;
+import com.cocktailmasters.backend.account.user.domain.entity.User;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import lombok.Getter;
