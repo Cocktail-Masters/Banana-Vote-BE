@@ -50,7 +50,7 @@ public class PicketController {
 
     @Operation(summary = "피켓 구매", description = "피켓을 구매, 이미 자신의 것이거나 서버와의 가격의 차이가 있을 경우 실패 코드 반환, 구매하려는 금액은 현재 금액보다 커야함", security = {
             @SecurityRequirement(name = SECURITY_SCHEME_NAME) })
-    @PreAuthorize("hasAnyAuthority('ADMIN', 'USER')")
+    @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
     @PostMapping("/{voteId}")
     public ResponseEntity<PicketConflictedResponse> buyPicket(
             @RequestHeader(name = "Authorization", required = false) String token,
@@ -78,7 +78,7 @@ public class PicketController {
 
     @Operation(summary = "내가 산 피켓 정보 수정", description = "피켓 정보를 수정, 자신의 피켓이아닌 경우 에러 코드 반환", security = {
             @SecurityRequirement(name = SECURITY_SCHEME_NAME) })
-    @PreAuthorize("hasAnyAuthority('ADMIN', 'USER')")
+    @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
     @PatchMapping("/{voteId}")
     public ResponseEntity<String> modifyPicket(
             @RequestHeader(name = "Authorization", required = false) String token,

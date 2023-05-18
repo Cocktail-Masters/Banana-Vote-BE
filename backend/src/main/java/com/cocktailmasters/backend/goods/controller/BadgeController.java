@@ -94,7 +94,7 @@ public class BadgeController {
 
     @Operation(summary = "유저가 소유 중인 뱃지 리스트 반환", description = "유저가 소유 중인 뱃지 리스트 반환 (로그인 필요)", security = {
             @SecurityRequirement(name = SECURITY_SCHEME_NAME) })
-    @PreAuthorize("hasAnyAuthority('USER', 'ADMIN')")
+    @PreAuthorize("hasAnyRole('USER', 'ADMIN')")
     @GetMapping("/users")
     public ResponseEntity<List<UserBadgeResponse>> getUsersBadgeList() {
         long userId = 1L;
