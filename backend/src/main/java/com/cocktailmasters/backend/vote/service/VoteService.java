@@ -29,7 +29,7 @@ public class VoteService {
 
     private static final long CREATE_VOTE_POINTS = 20;
     private static final long CREATE_VOTE_POINTS_PER_DAY = 5;
-    private static final String CREATE_VOTE_POINT_LOG_DESCRIPTION = "Create a vote for";
+    private static final String CREATE_VOTE_POINT_LOG_DESCRIPTION = "Create a vote";
 
     private final OpinionRepository opinionRepository;
     private final PredictionRepository predictionRepository;
@@ -37,7 +37,6 @@ public class VoteService {
     private final UserRepository userRepository;
     private final VoteRepository voteRepository;
     private final VoteItemRepository voteItemRepository;
-    private final VoteTagRepository voteTagRepository;
     private final AgreementRepository agreementRepository;
 
     private final PointService pointService;
@@ -136,12 +135,12 @@ public class VoteService {
     }
 
     @Transactional
-    public FindVoteParticipationResponse findVoteParticipation(Long userId,
+    public FindVoteParticipationResponse findVoteParticipation(User user,
                                                                Long voteId) {
         Prediction prediction;
         List<VoteItem> voteItems = findVoteById(voteId).getVoteItems();
         for (VoteItem voteItem : voteItems) {
-            prediction = predictionRepository.findByUserIdAndVoteItemId(userId, voteItem.getId())
+            prediction = predictionRepository.findByUserIdAndVoteItemId(user.getId(), voteItem.getId())
                     .orElse(null);
             if (prediction != null) {
                 return FindVoteParticipationResponse.builder()
@@ -158,12 +157,11 @@ public class VoteService {
     }
 
     @Transactional
-    public boolean createPrediction(Long userId,
+    public boolean createPrediction(User user,
                                     CreatePredictionRequest createPredictionRequest) throws Exception {
         PredictionDto predictionDto = createPredictionRequest.getVote();
         //TODO: 포인트가 모자랄 시 예외 처리 적용
         //TODO: 포인트 사용 시 로그 생성
-        User user = findUserById(userId);
         user.usePoints(predictionDto.getPoints());
         userRepository.save(user);
         VoteItem voteItem = findVoteItemById(predictionDto.getVoteItemId());

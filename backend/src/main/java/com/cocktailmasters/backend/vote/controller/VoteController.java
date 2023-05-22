@@ -84,29 +84,36 @@ public class VoteController {
                 .body(voteService.findVoteDetail(voteId));
     }
 
-    @Operation(summary = "투표 유무 확인", description = "투표 유무 확인")
+    @Operation(summary = "투표 유무 확인", description = "투표 유무 확인",
+            security = {@SecurityRequirement(name = SECURITY_SCHEME_NAME)})
+    @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
     @GetMapping("/check/{vote_id}")
-    public ResponseEntity<FindVoteParticipationResponse> findVoteParticipation(@PathVariable("vote_id") Long voteId) {
-        //TODO: 사용자 검사 및 예외처리
-        Long userId = 1L;
+    public ResponseEntity<FindVoteParticipationResponse> findVoteParticipation(@RequestHeader(name = "Authorization", required = false) String token,
+                                                                               @PathVariable("vote_id") Long voteId) {
+        User user = jwtService.findUserByToken(token);
         return ResponseEntity.ok()
-                .body(voteService.findVoteParticipation(userId, voteId));
+                .body(voteService.findVoteParticipation(user, voteId));
     }
 
-    @Operation(summary = "투표하기", description = "투표하기, 예측 생성")
+    @Operation(summary = "투표하기", description = "투표하기, 예측 생성",
+            security = {@SecurityRequirement(name = SECURITY_SCHEME_NAME)})
+    @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
     @PostMapping("/vote")
-    public ResponseEntity<String> createPrediction(@RequestBody CreatePredictionRequest createPredictionRequest) throws Exception {
-        //TODO: 사용자 검사 및 예외처리
-        Long userId = 1L;
-        if (voteService.createPrediction(userId, createPredictionRequest)) {
+    public ResponseEntity<String> createPrediction(@RequestHeader(name = "Authorization", required = false) String token,
+                                                   @RequestBody CreatePredictionRequest createPredictionRequest) throws Exception {
+        User user = jwtService.findUserByToken(token);
+        if (voteService.createPrediction(user, createPredictionRequest)) {
             return ResponseEntity.created(null).build();
         }
         throw new Exception();
     }
 
-    @Operation(summary = "투표 예측", description = "기존에 투표만 한 투표에 포인트 예측")
+    @Operation(summary = "투표 예측", description = "기존에 투표만 한 투표에 포인트 예측",
+            security = {@SecurityRequirement(name = SECURITY_SCHEME_NAME)})
+    @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
     @PatchMapping("/prediction")
-    public ResponseEntity<String> updatePrediction(@RequestBody UpdatePredictionRequest updatePredictionRequest) throws Exception {
+    public ResponseEntity<String> updatePrediction(@RequestHeader(name = "Authorization", required = false) String token,
+                                                   @RequestBody UpdatePredictionRequest updatePredictionRequest) throws Exception {
         //TODO: 사용자 검사 및 예외처리
         Long userId = 1L;
         if (voteService.updatePrediction(userId, updatePredictionRequest)) {
@@ -115,9 +122,12 @@ public class VoteController {
         throw new Exception();
     }
 
-    @Operation(summary = "투표 삭제", description = "본인이 생성한 투표만 삭제 가능")
+    @Operation(summary = "투표 삭제", description = "본인이 생성한 투표만 삭제 가능",
+            security = {@SecurityRequirement(name = SECURITY_SCHEME_NAME)})
+    @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
     @DeleteMapping("/{vote_id}")
-    public ResponseEntity<String> deleteVote(@PathVariable("vote_id") Long voteId) throws Exception {
+    public ResponseEntity<String> deleteVote(@RequestHeader(name = "Authorization", required = false) String token,
+                                             @PathVariable("vote_id") Long voteId) throws Exception {
         //TODO: 사용자 검사 및 예외처리
         Long userId = 1L;
         if (voteService.deleteVote(userId, voteId)) {
@@ -130,7 +140,6 @@ public class VoteController {
     @GetMapping("/popular")
     public ResponseEntity<FindPopularVotesResponse> findPopularVotes() {
         //TODO: 예외처리
-        Long userId = 1L;
         return ResponseEntity.ok()
                 .body(voteService.findPopularVotes());
     }
@@ -144,9 +153,12 @@ public class VoteController {
                 .body(voteService.findInterestVotes(userId));
     }
 
-    @Operation(summary = "관심 있을만한 최신 투표 리스트 조회", description = "관심 있을만한 최신 투표 리스트를 최소 5개 반환")
+    @Operation(summary = "투표 예측 리스트 확인", description = "투표 예측 리스트 확인",
+            security = {@SecurityRequirement(name = SECURITY_SCHEME_NAME)})
+    @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
     @GetMapping("/{vote_id}/prediction/")
-    public ResponseEntity<FindPredictionsResponse> findPredictions(@PathVariable("vote_id") Long voteId) {
+    public ResponseEntity<FindPredictionsResponse> findPredictions(@RequestHeader(name = "Authorization", required = false) String token,
+                                                                   @PathVariable("vote_id") Long voteId) {
         //TODO: 사용자 검사 및 예외처리
         Long userId = 1L;
         return ResponseEntity.ok()
