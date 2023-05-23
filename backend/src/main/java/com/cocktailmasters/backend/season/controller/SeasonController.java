@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.cocktailmasters.backend.season.controller.dto.SeasonDto;
 import com.cocktailmasters.backend.season.domain.entity.Season;
 import com.cocktailmasters.backend.season.service.SeasonService;
-import static com.cocktailmasters.backend.SwaggerConfig.SECURITY_SCHEME_NAME;
+import static com.cocktailmasters.backend.config.SwaggerConfig.SECURITY_SCHEME_NAME;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;

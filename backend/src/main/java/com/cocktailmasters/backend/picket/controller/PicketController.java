@@ -22,7 +22,7 @@ import com.cocktailmasters.backend.picket.controller.dto.PicketResponse;
 import com.cocktailmasters.backend.picket.controller.dto.item.PicketItem;
 import com.cocktailmasters.backend.picket.service.PicketService;
 import com.cocktailmasters.backend.picket.controller.dto.PicketRequest;
-import static com.cocktailmasters.backend.SwaggerConfig.SECURITY_SCHEME_NAME;
+import static com.cocktailmasters.backend.config.SwaggerConfig.SECURITY_SCHEME_NAME;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;

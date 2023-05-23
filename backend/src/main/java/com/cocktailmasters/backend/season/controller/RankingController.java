@@ -17,7 +17,7 @@ import com.cocktailmasters.backend.season.controller.dto.RankingResponse;
 import com.cocktailmasters.backend.season.service.RankingService;
 import com.cocktailmasters.backend.season.service.SeasonService;
 import com.cocktailmasters.backend.util.exception.CustomException;
-import static com.cocktailmasters.backend.SwaggerConfig.SECURITY_SCHEME_NAME;
+import static com.cocktailmasters.backend.config.SwaggerConfig.SECURITY_SCHEME_NAME;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
