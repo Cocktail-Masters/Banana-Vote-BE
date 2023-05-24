@@ -1,4 +1,4 @@
-package com.cocktailmasters.backend.common.domain.entity;
+package com.cocktailmasters.backend.report.domain;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
