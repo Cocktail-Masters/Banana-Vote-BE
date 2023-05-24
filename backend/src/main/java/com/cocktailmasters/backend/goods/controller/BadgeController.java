@@ -20,7 +20,7 @@ import com.cocktailmasters.backend.goods.controller.dto.BadgeResponse;
 import com.cocktailmasters.backend.goods.controller.dto.UserBadgeResponse;
 import com.cocktailmasters.backend.goods.service.BadgeService;
 import com.cocktailmasters.backend.goods.service.UserBadgeService;
-import static com.cocktailmasters.backend.SwaggerConfig.SECURITY_SCHEME_NAME;
+import static com.cocktailmasters.backend.config.SwaggerConfig.SECURITY_SCHEME_NAME;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;

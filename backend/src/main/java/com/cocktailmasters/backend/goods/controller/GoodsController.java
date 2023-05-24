@@ -22,7 +22,7 @@ import com.cocktailmasters.backend.goods.controller.dto.UserGoodsResponse;
 import com.cocktailmasters.backend.goods.domain.GoodsType;
 import com.cocktailmasters.backend.goods.service.GoodsService;
 import com.cocktailmasters.backend.goods.service.UserGoodsService;
-import static com.cocktailmasters.backend.SwaggerConfig.SECURITY_SCHEME_NAME;
+import static com.cocktailmasters.backend.config.SwaggerConfig.SECURITY_SCHEME_NAME;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;

@@ -17,7 +17,7 @@ import com.cocktailmasters.backend.point.controller.dto.PointLogResponse;
 import com.cocktailmasters.backend.point.controller.dto.PointRequest;
 import com.cocktailmasters.backend.point.service.PointLogService;
 import com.cocktailmasters.backend.point.service.PointService;
-import static com.cocktailmasters.backend.SwaggerConfig.SECURITY_SCHEME_NAME;
+import static com.cocktailmasters.backend.config.SwaggerConfig.SECURITY_SCHEME_NAME;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
