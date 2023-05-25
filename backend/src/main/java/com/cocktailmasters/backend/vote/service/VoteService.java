@@ -78,41 +78,44 @@ public class VoteService {
     public FindVotesResponse findVotes(User user,
                                        String keyword,
                                        boolean isTag,
-                                       Boolean isClosed,
+                                       boolean isClosed,
                                        int sortBy,
                                        Pageable pageable) {
         Page<Vote> votes;
         long totalCount;
+        if (keyword == null) keyword = "";
+        String sortType = VoteSortBy.valueOfNumber(sortBy);
         if (isTag) {
-            votes = voteRepository.findVotesByTagAndOption(keyword,
-                    (isClosed != null ? isClosed : null),
-                    VoteSortBy.valueOfNumber(sortBy),
-                    pageable);
-            totalCount = voteRepository.countVotesByTag(keyword,
-                    (isClosed != null ? isClosed : null));
+            votes = voteRepository.findVotesByTagAndOption(keyword, isClosed, sortType, pageable);
+            totalCount = voteRepository.countVotesByTag(keyword, isClosed, sortType);
         } else {
-            votes = voteRepository.findVotesByTitleAndOption(keyword,
-                    (isClosed != null ? isClosed : null),
-                    VoteSortBy.valueOfNumber(sortBy),
-                    pageable);
-            totalCount = voteRepository.countVotesByTitle(keyword,
-                    (isClosed != null ? isClosed : null));
+            votes = voteRepository.findVotesByTitleAndOption(keyword, isClosed, sortType, pageable);
+            totalCount = voteRepository.countVotesByTitle(keyword, isClosed, sortType);
         }
+
         return FindVotesResponse.builder()
                 .totalCount(totalCount)
-                .votes(votes.stream()
+                .votes(votes.getContent().stream()
                         .map(vote -> {
                             Opinion opinion = opinionRepository.findFirstByVoteIdOrderByAgreedNumberDesc(vote.getId())
                                     .orElse(null);
-                            Agreement agreement = agreementRepository.findByUserIdAndOpinionId(user.getId(), opinion.getId())
-                                    .orElse(null);
+                            OpinionDto bestOpinion = null;
+                            Boolean isAgree = null;
+                            if (opinion != null) {
+                                if (user != null) {
+                                    isAgree = agreementRepository.findByUserIdAndOpinionId(user.getId(), opinion.getId())
+                                            .orElse(null)
+                                            .getIsAgree();
+                                }
+                                bestOpinion = OpinionDto.createOpinionDto(opinion, isAgree);
+                            }
                             return VoteDto.builder()
                                     .vote(VoteDetailDto.createVoteDetailDto(vote))
                                     .writer(WriterDto.createWriterDto(vote.getUser()))
                                     .voteItems(vote.getVoteItems().stream()
                                             .map(voteItem -> VoteItemDto.createVoteItemDto(voteItem))
                                             .collect(Collectors.toList()))
-                                    .bestOpinion(OpinionDto.createOpinionDto(opinion, agreement.getIsAgree()))
+                                    .bestOpinion(bestOpinion)
                                     .build();
                         })
                         .collect(Collectors.toList()))
