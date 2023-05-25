@@ -5,11 +5,11 @@ import java.util.List;
 import com.cocktailmasters.backend.report.controller.dto.item.ReportItemDto;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-import lombok.Builder;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 @Getter
-@Builder
+@AllArgsConstructor
 public class ReportResponse {
     @JsonProperty("total_page")
     private long totalPage;

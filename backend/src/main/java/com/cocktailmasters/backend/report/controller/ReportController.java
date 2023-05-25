@@ -52,6 +52,11 @@ public class ReportController {
             @RequestParam(required = false, name = "page", defaultValue = "0") int page,
             @RequestParam(required = false, name = "size", defaultValue = "10") int pageSize) {
 
-        return null;
+        ReportResponse reportResponse = reportService.getReportListWitPage(page, pageSize);
+
+        if (reportResponse.getReportList().isEmpty())
+            return ResponseEntity.noContent().build();
+        else
+            return ResponseEntity.ok().body(reportResponse);
     }
 }
