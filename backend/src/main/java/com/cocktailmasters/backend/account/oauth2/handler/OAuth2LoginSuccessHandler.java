@@ -24,8 +24,8 @@ import java.io.IOException;
 @Component
 public class OAuth2LoginSuccessHandler extends SimpleUrlAuthenticationSuccessHandler implements AuthenticationSuccessHandler {
 
-    @Value("${front.redirect-url}")
-    private final String frontRedirectUri;
+    @Value("${front.redirect-uri}")
+    private String frontRedirectUri;
 
     private final JwtService jwtService;
     private final UserRepository userRepository;
