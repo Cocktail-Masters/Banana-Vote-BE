@@ -10,7 +10,7 @@ import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -61,20 +61,17 @@ public class VoteController {
             security = {@SecurityRequirement(name = SECURITY_SCHEME_NAME)})
     @GetMapping("/{page_index}/options")
     public ResponseEntity<FindVotesResponse> findVotes(@RequestHeader(name = "Authorization", required = false) String token,
-                                                       @PathVariable("page_index") int pageIndex,
+                                                       Pageable pageable,
                                                        @RequestParam("keyword") String keyword,
                                                        @RequestParam(value = "is-tag", defaultValue = "false") boolean isTag,
                                                        @RequestParam(value = "is-closed", defaultValue = "false") boolean isClosed,
                                                        @RequestParam(value = "sort-by", defaultValue = "1") int sortBy) {
-        User user;
-        if (token == null) {
-            user = null;
-        } else {
+        User user = null;
+        if (token != null) {
             user = jwtService.findUserByToken(token);
         }
-        PageRequest page = PageRequest.of(pageIndex, 10);
         return ResponseEntity.ok()
-                .body(voteService.findVotes(user, keyword, isTag, isClosed, sortBy, page));
+                .body(voteService.findVotes(user, keyword, isTag, isClosed, sortBy, pageable));
     }
 
     @Operation(summary = "투표글 상세 보기", description = "투표글 상세 보기, 투표 조회수 증가")
