@@ -11,34 +11,38 @@ import java.util.List;
 
 public interface VoteRepository extends JpaRepository<Vote, Long> {
 
-    String countVotesByTitleQuery = "SELECT COUNT(v.*) " +
-            "FROM vote v " +
-            "WHERE (:keyword IS NULL OR vote_title LIKE CONCAT('%', :keyword, '%')) " +
-            "AND (:is_closed IS NULL OR is_closed = :isClosed)";
+    String countVotesByTitleQuery = "SELECT COUNT(*) FROM vote v " +
+            "WHERE v.vote_title LIKE CONCAT('%', :keyword, '%') " +
+            "AND v.is_closed = :is_closed " +
+            "AND v.is_public = true " +
+            "ORDER BY :sort_by DESC";
 
-    String countVotesByTagQuery = "SELECT COUNT(v.*) " +
-            "FROM vote v " +
-            "INNER JOIN vote_tag vt " +
-            "ON v.vote_id = vt.vote_id " +
-            "WHERE vt.tag_id IN " +
-            "(SELECT tag_id " +
-            "FROM tag " +
-            "WHERE tag_name (:keyword IS NULL OR tag_name LIKE CONCAT('%', :keyword, '%')) " +
-            "AND (:is_closed IS NULL OR is_closed = :isClosed)";
+    String countVotesByTagQuery = "SELECT COUNT(*) FROM vote v " +
+            "INNER JOIN " +
+            "(SELECT vt.* FROM vote_tag vt " +
+            "INNER JOIN tag t " +
+            "ON vt.tag_tag_id = t.tag_id " +
+            "WHERE t.tag_name LIKE CONCAT('%', :keyword, '%')) vtt " +
+            "ON v.vote_id = vtt.vote_vote_id " +
+            "WHERE v.is_closed = :is_closed " +
+            "AND v.is_public = true " +
+            "ORDER BY :sort_by DESC";
 
     @Query(value = countVotesByTitleQuery, nativeQuery = true)
     long countVotesByTitle(@Param("keyword") String keyword,
-                           @Param("isClosed") boolean isClosed);
+                           @Param("is_closed") boolean isClosed,
+                           @Param("sort_by") String sortBy);
 
     @Query(value = countVotesByTagQuery, nativeQuery = true)
     long countVotesByTag(@Param("keyword") String keyword,
-                         @Param("isClosed") boolean isClosed);
+                         @Param("is_closed") boolean isClosed,
+                         @Param("sort_by") String sortBy);
 
-    @Query(value = "SELECT v.* " +
-            "FROM vote v " +
-            "WHERE (:keyword IS NULL OR vote_title LIKE CONCAT('%', :keyword, '%')) " +
-            "AND (:is_closed IS NULL OR is_closed = :is_closed) " +
-            "ORDER BY :sort_by",
+    @Query(value = "SELECT v.* FROM vote v " +
+            "WHERE v.vote_title LIKE CONCAT('%', :keyword, '%') " +
+            "AND v.is_closed = :is_closed " +
+            "AND v.is_public = true " +
+            "ORDER BY :sort_by DESC",
             countQuery = countVotesByTitleQuery,
             nativeQuery = true)
     Page<Vote> findVotesByTitleAndOption(@Param("keyword") String keyword,
@@ -46,16 +50,16 @@ public interface VoteRepository extends JpaRepository<Vote, Long> {
                                          @Param("sort_by") String sortBy,
                                          Pageable pageable);
 
-    @Query(value = "SELECT v.* " +
-            "FROM vote v " +
-            "INNER JOIN vote_tag vt " +
-            "ON v.vote_id = vt.vote_id " +
-            "WHERE vt.tag_id IN " +
-            "(SELECT tag_id " +
-            "FROM tag " +
-            "WHERE tag_name (:keyword IS NULL OR tag_name LIKE CONCAT('%', :keyword, '%')) " +
-            "AND (:is_closed IS NULL OR is_closed = :is_closed) " +
-            "ORDER BY :sort_by",
+    @Query(value = "SELECT v.* FROM vote v " +
+            "INNER JOIN " +
+            "(SELECT vt.* FROM vote_tag vt " +
+            "INNER JOIN tag t " +
+            "ON vt.tag_tag_id = t.tag_id " +
+            "WHERE t.tag_name LIKE CONCAT('%', :keyword, '%')) vtt " +
+            "ON v.vote_id = vtt.vote_vote_id " +
+            "WHERE v.is_closed = :is_closed " +
+            "AND v.is_public = true " +
+            "ORDER BY :sort_by DESC",
             countQuery = countVotesByTagQuery,
             nativeQuery = true)
     Page<Vote> findVotesByTagAndOption(@Param("keyword") String keyword,
@@ -72,7 +76,7 @@ public interface VoteRepository extends JpaRepository<Vote, Long> {
             "WHERE vt.tag_id IN " +
             "(SELECT tag_id " +
             "FROM tag " +
-            "WHERE tag_name (:keyword IS NULL OR tag_name LIKE CONCAT('%', :keyword, '%')) " +
+            "WHERE tag_name LIKE CONCAT('%', :keyword, '%')) " +
             "AND is_closed = false " +
             "ORDER BY created_date " +
             "limit 5",
