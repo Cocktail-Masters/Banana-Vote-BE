@@ -22,12 +22,12 @@ public class Report extends BaseEntity {
     private ReportedContentType reportedContentType;
 
     @NotNull
-    private Long reportedId;
+    private Long reportedContentId;
 
     @NotNull
     private ReportedReasonType reportedReasonType;
 
-    private String ReportDetail;
+    private String ReportedReasonDetail;
 
     @Builder.Default
     private boolean isAllow = false;
