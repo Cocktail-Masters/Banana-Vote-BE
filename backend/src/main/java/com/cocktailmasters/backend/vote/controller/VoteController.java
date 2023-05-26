@@ -2,6 +2,7 @@ package com.cocktailmasters.backend.vote.controller;
 
 import com.cocktailmasters.backend.account.jwt.service.JwtService;
 import com.cocktailmasters.backend.account.user.domain.entity.User;
+import com.cocktailmasters.backend.point.service.PointService;
 import com.cocktailmasters.backend.vote.controller.dto.item.VoteItemCreateDto;
 import com.cocktailmasters.backend.vote.controller.dto.vote.*;
 import com.cocktailmasters.backend.vote.service.VoteService;
@@ -28,6 +29,7 @@ import static com.cocktailmasters.backend.SwaggerConfig.SECURITY_SCHEME_NAME;
 public class VoteController {
 
     private final JwtService jwtService;
+    private final PointService pointService;
     private final VoteService voteService;
 
     @Operation(summary = "투표 생성", description = "새로운 투표 생성(투표 종료 날짜는 하루 이상부터)",
@@ -97,12 +99,15 @@ public class VoteController {
     @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
     @PostMapping("/vote")
     public ResponseEntity<String> createPrediction(@RequestHeader(name = "Authorization", required = false) String token,
-                                                   @RequestBody CreatePredictionRequest createPredictionRequest) throws Exception {
+                                                   @Valid @RequestBody CreatePredictionRequest createPredictionRequest) throws Exception {
         User user = jwtService.findUserByToken(token);
+        if (pointService.getPoint(user.getId()) < createPredictionRequest.getVote().getPoints()) {
+            return ResponseEntity.badRequest().build();
+        }
         if (voteService.createPrediction(user, createPredictionRequest)) {
             return ResponseEntity.created(null).build();
         }
-        throw new Exception();
+        return ResponseEntity.badRequest().build();
     }
 
     @Operation(summary = "투표 예측", description = "기존에 투표만 한 투표에 포인트 예측",
@@ -111,43 +116,43 @@ public class VoteController {
     @PatchMapping("/prediction")
     public ResponseEntity<String> updatePrediction(@RequestHeader(name = "Authorization", required = false) String token,
                                                    @RequestBody UpdatePredictionRequest updatePredictionRequest) throws Exception {
-        //TODO: 사용자 검사 및 예외처리
-        Long userId = 1L;
-        if (voteService.updatePrediction(userId, updatePredictionRequest)) {
+        User user = jwtService.findUserByToken(token);
+        if (pointService.getPoint(user.getId()) < updatePredictionRequest.getPrediction().getPoints()) {
+            return ResponseEntity.badRequest().build();
+        }
+        if (voteService.updatePrediction(user, updatePredictionRequest)) {
             return ResponseEntity.created(null).build();
         }
-        throw new Exception();
+        return ResponseEntity.badRequest().build();
     }
 
     @Operation(summary = "투표 삭제", description = "본인이 생성한 투표만 삭제 가능",
             security = {@SecurityRequirement(name = SECURITY_SCHEME_NAME)})
-    @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
+    @PreAuthorize("hasAnyRole('ADMIN')")
     @DeleteMapping("/{vote_id}")
     public ResponseEntity<String> deleteVote(@RequestHeader(name = "Authorization", required = false) String token,
                                              @PathVariable("vote_id") Long voteId) throws Exception {
-        //TODO: 사용자 검사 및 예외처리
-        Long userId = 1L;
-        if (voteService.deleteVote(userId, voteId)) {
+        jwtService.findUserByToken(token);
+        if (voteService.deleteVote(voteId)) {
             return ResponseEntity.created(null).build();
         }
-        throw new Exception();
+        return ResponseEntity.badRequest().build();
     }
 
     @Operation(summary = "진행중인 인기 투표 리스트 조회", description = "진행중인 인기 투표 리스트를 5개 반환")
     @GetMapping("/popular")
     public ResponseEntity<FindPopularVotesResponse> findPopularVotes() {
-        //TODO: 예외처리
         return ResponseEntity.ok()
                 .body(voteService.findPopularVotes());
     }
 
     @Operation(summary = "관심 있을만한 최신 투표 리스트 조회", description = "관심 있을만한 최신 투표 리스트를 최소 5개 반환")
+    @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
     @GetMapping("/interest")
-    public ResponseEntity<FindInterestVotesResponse> findInterestVotes() {
-        //TODO: 사용자 검사 및 예외처리
-        Long userId = 1L;
+    public ResponseEntity<FindInterestVotesResponse> findInterestVotes(@RequestHeader(name = "Authorization", required = false) String token) {
+        User user = jwtService.findUserByToken(token);
         return ResponseEntity.ok()
-                .body(voteService.findInterestVotes(userId));
+                .body(voteService.findInterestVotes(user));
     }
 
     @Operation(summary = "투표 예측 리스트 확인", description = "투표 예측 리스트 확인",
@@ -156,8 +161,7 @@ public class VoteController {
     @GetMapping("/{vote_id}/prediction/")
     public ResponseEntity<FindPredictionsResponse> findPredictions(@RequestHeader(name = "Authorization", required = false) String token,
                                                                    @PathVariable("vote_id") Long voteId) {
-        //TODO: 사용자 검사 및 예외처리
-        Long userId = 1L;
+        User user = jwtService.findUserByToken(token);
         return ResponseEntity.ok()
                 .body(voteService.findPredictions(voteId));
     }
