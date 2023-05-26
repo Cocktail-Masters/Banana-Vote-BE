@@ -47,4 +47,8 @@ public class Opinion extends BaseEntity {
     public void disagreeOpinion() {
         this.disagreedNumber++;
     }
+
+    public void deleteOpinion() {
+        super.delete();
+    }
 }
