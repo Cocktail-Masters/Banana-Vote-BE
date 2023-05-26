@@ -118,13 +118,6 @@ public class User extends BaseEntity {
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<Report> reports = new ArrayList<>();
 
-    public void usePoints(Long points) throws Exception {
-        // TODO: 예외처리
-        if (this.points < points) {
-            throw new Exception();
-        }
-        this.points -= points;
-    }
 
     public void encodePassword(PasswordEncoder passwordEncoder) {
         this.password = passwordEncoder.encode(this.password);
