@@ -22,4 +22,8 @@ public class Prediction extends BaseEntity {
 
     @ManyToOne(fetch = FetchType.LAZY)
     private VoteItem voteItem;
+
+    public void deletePrediction() {
+        super.delete();
+    }
 }
