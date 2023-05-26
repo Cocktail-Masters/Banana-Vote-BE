@@ -53,4 +53,10 @@ public class VoteItem extends BaseEntity {
     public void updateBestPoints(Long points) {
         if (this.bestPoints < points) this.bestPoints = points;
     }
+
+    public void deleteVoteItem() {
+        super.delete();
+        this.predictions.stream()
+                .forEach(Prediction::deletePrediction);
+    }
 }
