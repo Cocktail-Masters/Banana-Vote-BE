@@ -146,7 +146,8 @@ public class VoteController {
                 .body(voteService.findPopularVotes());
     }
 
-    @Operation(summary = "관심 있을만한 최신 투표 리스트 조회", description = "관심 있을만한 최신 투표 리스트를 최소 5개 반환")
+    @Operation(summary = "관심 있을만한 최신 투표 리스트 조회", description = "관심 있을만한 최신 투표 리스트를 최소 5개 반환",
+            security = {@SecurityRequirement(name = SECURITY_SCHEME_NAME)})
     @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
     @GetMapping("/interest")
     public ResponseEntity<FindInterestVotesResponse> findInterestVotes(@RequestHeader(name = "Authorization", required = false) String token) {
