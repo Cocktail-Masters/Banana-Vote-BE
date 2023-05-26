@@ -32,6 +32,13 @@ public class Report extends BaseEntity {
     @Builder.Default
     private boolean isAllow = false;
 
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @ManyToOne(fetch = FetchType.LAZY)
     private User user;
+
+    /**
+     * make isAllow flag true
+     */
+    public void checkReport() {
+        this.isAllow = true;
+    }
 }
