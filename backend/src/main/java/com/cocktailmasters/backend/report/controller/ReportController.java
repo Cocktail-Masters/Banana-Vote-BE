@@ -41,7 +41,22 @@ public class ReportController {
 
         long userId = jwtService.findUserByToken(token).getId();
 
-        return null;
+        if (reportService.reportContent(reportRequest, userId))
+            return ResponseEntity.ok().build();
+        else
+            return ResponseEntity.notFound().build();
+    }
+
+    @Operation(summary = "컨텐츠를 체크", description = "이미 체크되어 있는 경우엔 따로 변화 없음, 에러 반환 X (로그인 필요)", security = {
+            @SecurityRequirement(name = SECURITY_SCHEME_NAME) })
+    @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
+    @PostMapping()
+    public ResponseEntity<String> checkContent(@PathVariable long reportId) {
+
+        if (reportService.checkReport(reportId))
+            return ResponseEntity.ok().build();
+        else
+            return ResponseEntity.notFound().build();
     }
 
     @Operation(summary = "컨텐츠를 신고 내역을 조회(관리자용)", description = "(로그인 필요)", security = {
@@ -49,10 +64,14 @@ public class ReportController {
     @PreAuthorize("hasRole('ADMIN')")
     @GetMapping()
     public ResponseEntity<ReportResponse> getReports(
+            @RequestParam(required = false, name = "check-option", defaultValue = "0") int checkOption,
             @RequestParam(required = false, name = "page", defaultValue = "0") int page,
             @RequestParam(required = false, name = "size", defaultValue = "10") int pageSize) {
 
-        ReportResponse reportResponse = reportService.getReportListWitPage(page, pageSize);
+        if (checkOption < 0 || checkOption > 2)
+            checkOption = 0;
+
+        ReportResponse reportResponse = reportService.getReportListWitPage(checkOption, page, pageSize);
 
         if (reportResponse.getReportList().isEmpty())
             return ResponseEntity.noContent().build();

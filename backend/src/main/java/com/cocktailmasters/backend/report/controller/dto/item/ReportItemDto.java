@@ -30,6 +30,9 @@ public class ReportItemDto {
     @JsonProperty("reported_reason_detail")
     private String ReportedReasonDetail;
 
+    @JsonProperty("is_checked")
+    private boolean isChecked;
+
     public static ReportItemDto createReportItem(Report report) {
         return ReportItemDto.builder()
                 .reportId(report.getId())
@@ -38,6 +41,7 @@ public class ReportItemDto {
                 .reportedContentId(report.getReportedContentId())
                 .reportedContentType(report.getReportedContentType())
                 .reportedContentId(report.getReportedContentId())
+                .isChecked(report.isAllow())
                 .build();
     }
 }
