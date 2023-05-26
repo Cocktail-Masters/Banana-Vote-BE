@@ -30,6 +30,7 @@ public class VoteService {
     private static final long CREATE_VOTE_POINTS = 20;
     private static final long CREATE_VOTE_POINTS_PER_DAY = 5;
     private static final String CREATE_VOTE_POINT_LOG_DESCRIPTION = "Create a vote";
+    private static final String VOTE_PREDICTION_DESCRIPTION = "Create a prediction";
 
     private final OpinionRepository opinionRepository;
     private final PredictionRepository predictionRepository;
@@ -163,15 +164,14 @@ public class VoteService {
     public boolean createPrediction(User user,
                                     CreatePredictionRequest createPredictionRequest) throws Exception {
         PredictionDto predictionDto = createPredictionRequest.getVote();
-        //TODO: 포인트가 모자랄 시 예외 처리 적용
-        //TODO: 포인트 사용 시 로그 생성
-        user.usePoints(predictionDto.getPoints());
-        userRepository.save(user);
         VoteItem voteItem = findVoteItemById(predictionDto.getVoteItemId());
+        if (predictionRepository.findByUserIdAndVoteItemId(user.getId(), voteItem.getId())
+                .orElse(null) != null) {
+            return false;
+        }
         voteItem.updateVotedNumber();
         voteItem.updateTotalPoints(predictionDto.getPoints());
         voteItem.updateBestPoints(predictionDto.getPoints());
-        voteItemRepository.save(voteItem);
         Vote vote = voteItem.getVote();
         vote.updateVotedNumber();
         voteRepository.save(vote);
@@ -180,6 +180,7 @@ public class VoteService {
                 .voteItem(findVoteItemById(createPredictionRequest.getVote().getVoteItemId()))
                 .predictionPoints(createPredictionRequest.getVote().getPoints())
                 .build());
+        pointService.addPoint(-1 * createPredictionRequest.getVote().getPoints(), VOTE_PREDICTION_DESCRIPTION, user.getId());
         return true;
     }
 
@@ -187,27 +188,24 @@ public class VoteService {
     public boolean updatePrediction(User user,
                                     UpdatePredictionRequest updatePredictionRequest) throws Exception {
         PredictionDto predictionDto = updatePredictionRequest.getPrediction();
-        //TODO: 포인트가 모자랄 시 예외 처리 적용
-        //TODO: 포인트 사용 시 로그 생성
-        user.usePoints(predictionDto.getPoints());
-        userRepository.save(user);
         VoteItem voteItem = findVoteItemById(predictionDto.getVoteItemId());
-        voteItem.updateTotalPoints(predictionDto.getPoints());
-        voteItem.updateBestPoints(predictionDto.getPoints());
+        Prediction prediction = predictionRepository.findByUserIdAndVoteItemId(user.getId(), voteItem.getId())
+                .orElse(null);
+        if (prediction == null) {
+            return false;
+        }
+        Long predictionPoint = predictionDto.getPoints();
+        voteItem.updateTotalPoints(predictionPoint);
+        voteItem.updateBestPoints(predictionPoint);
+        prediction.updatePredictionPoints(predictionPoint);
         voteItemRepository.save(voteItem);
-        //TODO: 투표한 적이 없을 경우 예외처리
-        Prediction prediction = predictionRepository.findByUserIdAndVoteItemId(user.getId(), predictionDto.getVoteItemId())
-                .orElseThrow();
-        predictionRepository.save(prediction.builder()
-                .predictionPoints(updatePredictionRequest.getPrediction().getPoints())
-                .build());
+        pointService.addPoint(-1 * updatePredictionRequest.getPrediction().getPoints(), VOTE_PREDICTION_DESCRIPTION, user.getId());
         return true;
     }
 
     @Transactional
-    public boolean deleteVote(User user,
-                              Long voteId) {
-        Vote vote = voteRepository.findByIdAndUser(voteId, user)
+    public boolean deleteVote(Long voteId) {
+        Vote vote = voteRepository.findById(voteId)
                 .orElse(null);
         if (vote != null) {
             vote.deleteVote();
@@ -229,9 +227,10 @@ public class VoteService {
 
     @Transactional
     public FindInterestVotesResponse findInterestVotes(User user) {
-        List<UserTag> userTags = findUserById(user.getId()).getUserTags();
-        // TODO: 관심 태그 없을 시 예외처리
-        if (userTags.isEmpty()) return FindInterestVotesResponse.builder().build();
+        List<UserTag> userTags = user.getUserTags();
+        if (userTags.isEmpty()) {
+            return FindInterestVotesResponse.builder().build();
+        }
         List<Vote> votes = new ArrayList<>();
         for (UserTag userTag : userTags) {
             votes.addAll(voteRepository.findVoteByUserTag(userTag.getTag().getTagName()));
