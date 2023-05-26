@@ -1,5 +1,6 @@
 package com.cocktailmasters.backend.vote.domain.repository;
 
+import com.cocktailmasters.backend.account.user.domain.entity.User;
 import com.cocktailmasters.backend.vote.domain.entity.Vote;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -8,6 +9,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface VoteRepository extends JpaRepository<Vote, Long> {
 
@@ -15,6 +17,7 @@ public interface VoteRepository extends JpaRepository<Vote, Long> {
             "WHERE v.vote_title LIKE CONCAT('%', :keyword, '%') " +
             "AND v.is_closed = :is_closed " +
             "AND v.is_public = true " +
+            "AND v.is_active = true " +
             "ORDER BY :sort_by DESC";
 
     String countVotesByTagQuery = "SELECT COUNT(*) FROM vote v " +
@@ -26,6 +29,7 @@ public interface VoteRepository extends JpaRepository<Vote, Long> {
             "ON v.vote_id = vtt.vote_vote_id " +
             "WHERE v.is_closed = :is_closed " +
             "AND v.is_public = true " +
+            "AND v.is_active = true " +
             "ORDER BY :sort_by DESC";
 
     @Query(value = countVotesByTitleQuery, nativeQuery = true)
@@ -42,6 +46,7 @@ public interface VoteRepository extends JpaRepository<Vote, Long> {
             "WHERE v.vote_title LIKE CONCAT('%', :keyword, '%') " +
             "AND v.is_closed = :is_closed " +
             "AND v.is_public = true " +
+            "AND v.is_active = true " +
             "ORDER BY :sort_by DESC",
             countQuery = countVotesByTitleQuery,
             nativeQuery = true)
@@ -59,6 +64,7 @@ public interface VoteRepository extends JpaRepository<Vote, Long> {
             "ON v.vote_id = vtt.vote_vote_id " +
             "WHERE v.is_closed = :is_closed " +
             "AND v.is_public = true " +
+            "AND v.is_active = true " +
             "ORDER BY :sort_by DESC",
             countQuery = countVotesByTagQuery,
             nativeQuery = true)
@@ -78,8 +84,13 @@ public interface VoteRepository extends JpaRepository<Vote, Long> {
             "FROM tag " +
             "WHERE tag_name LIKE CONCAT('%', :keyword, '%')) " +
             "AND is_closed = false " +
+            "AND v.is_active = true " +
             "ORDER BY created_date " +
             "limit 5",
             nativeQuery = true)
     List<Vote> findVoteByUserTag(@Param("keyword") String keyword);
+
+    Optional<Vote> findByIdAndUser(Long voteId, User user);
+
+    boolean deleteByIdAndUser(Long voteId, User user);
 }
