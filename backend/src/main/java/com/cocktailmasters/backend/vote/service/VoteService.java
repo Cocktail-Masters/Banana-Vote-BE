@@ -184,12 +184,11 @@ public class VoteService {
     }
 
     @Transactional
-    public boolean updatePrediction(Long userId,
+    public boolean updatePrediction(User user,
                                     UpdatePredictionRequest updatePredictionRequest) throws Exception {
         PredictionDto predictionDto = updatePredictionRequest.getPrediction();
         //TODO: 포인트가 모자랄 시 예외 처리 적용
         //TODO: 포인트 사용 시 로그 생성
-        User user = findUserById(userId);
         user.usePoints(predictionDto.getPoints());
         userRepository.save(user);
         VoteItem voteItem = findVoteItemById(predictionDto.getVoteItemId());
@@ -197,7 +196,7 @@ public class VoteService {
         voteItem.updateBestPoints(predictionDto.getPoints());
         voteItemRepository.save(voteItem);
         //TODO: 투표한 적이 없을 경우 예외처리
-        Prediction prediction = predictionRepository.findByUserIdAndVoteItemId(userId, predictionDto.getVoteItemId())
+        Prediction prediction = predictionRepository.findByUserIdAndVoteItemId(user.getId(), predictionDto.getVoteItemId())
                 .orElseThrow();
         predictionRepository.save(prediction.builder()
                 .predictionPoints(updatePredictionRequest.getPrediction().getPoints())
@@ -206,11 +205,13 @@ public class VoteService {
     }
 
     @Transactional
-    public boolean deleteVote(Long userId,
+    public boolean deleteVote(User user,
                               Long voteId) {
-        Vote vote = findVoteById(voteId);
-        if (vote.getUser().getId() == userId) {
-            voteRepository.delete(vote);
+        Vote vote = voteRepository.findByIdAndUser(voteId, user)
+                .orElse(null);
+        if (vote != null) {
+            vote.deleteVote();
+            voteRepository.saveAndFlush(vote);
             return true;
         }
         return false;
@@ -227,8 +228,8 @@ public class VoteService {
     }
 
     @Transactional
-    public FindInterestVotesResponse findInterestVotes(Long userId) {
-        List<UserTag> userTags = findUserById(userId).getUserTags();
+    public FindInterestVotesResponse findInterestVotes(User user) {
+        List<UserTag> userTags = findUserById(user.getId()).getUserTags();
         // TODO: 관심 태그 없을 시 예외처리
         if (userTags.isEmpty()) return FindInterestVotesResponse.builder().build();
         List<Vote> votes = new ArrayList<>();
