@@ -20,7 +20,7 @@ import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Set;
 
-import static com.cocktailmasters.backend.SwaggerConfig.SECURITY_SCHEME_NAME;
+import static com.cocktailmasters.backend.config.SwaggerConfig.SECURITY_SCHEME_NAME;
 
 @Tag(name = "vote", description = "투표 관리")
 @RequiredArgsConstructor
