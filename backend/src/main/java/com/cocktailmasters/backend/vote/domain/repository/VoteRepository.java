@@ -91,6 +91,4 @@ public interface VoteRepository extends JpaRepository<Vote, Long> {
     List<Vote> findVoteByUserTag(@Param("keyword") String keyword);
 
     Optional<Vote> findByIdAndUser(Long voteId, User user);
-
-    boolean deleteByIdAndUser(Long voteId, User user);
 }
