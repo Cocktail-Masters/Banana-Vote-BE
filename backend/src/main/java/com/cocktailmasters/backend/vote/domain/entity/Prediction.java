@@ -17,9 +17,17 @@ public class Prediction extends BaseEntity {
     @Builder.Default
     private Long predictionPoints = 0L;
 
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @ManyToOne(fetch = FetchType.LAZY)
     private User user;
 
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @ManyToOne(fetch = FetchType.LAZY)
     private VoteItem voteItem;
+
+    public void updatePredictionPoints(Long predictionPoints) {
+        this.predictionPoints += predictionPoints;
+    }
+
+    public void deletePrediction() {
+        super.delete();
+    }
 }

@@ -1,5 +1,6 @@
 package com.cocktailmasters.backend.vote.controller.dto.item;
 
+import com.cocktailmasters.backend.vote.domain.entity.Vote;
 import com.cocktailmasters.backend.vote.domain.entity.VoteItem;
 import com.fasterxml.jackson.databind.PropertyNamingStrategy;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
@@ -16,12 +17,13 @@ public class VoteItemCreateDto {
     private String imageUrl;
     private String iframeLink;
 
-    public static VoteItem toVoteItemEntity(VoteItemCreateDto createVoteItemRequest) {
+    public static VoteItem toVoteItemEntity(VoteItemCreateDto createVoteItemRequest, Vote vote) {
         return VoteItem.builder()
                 .voteItemNumber(createVoteItemRequest.getItemNumber())
                 .voteItemTitle(createVoteItemRequest.getTitle())
                 .voteItemImageUrl(createVoteItemRequest.getImageUrl())
                 .iframeLink(createVoteItemRequest.getIframeLink())
+                .vote(vote)
                 .build();
     }
 }

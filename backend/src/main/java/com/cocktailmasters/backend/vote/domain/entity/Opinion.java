@@ -34,10 +34,10 @@ public class Opinion extends BaseEntity {
     @OneToMany(mappedBy = "opinion", cascade = CascadeType.ALL)
     private List<Agreement> agreements = new ArrayList<>();
 
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @ManyToOne(fetch = FetchType.LAZY)
     private User user;
 
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @ManyToOne(fetch = FetchType.LAZY)
     private Vote vote;
 
     public void agreeOpinion() {
@@ -46,5 +46,9 @@ public class Opinion extends BaseEntity {
 
     public void disagreeOpinion() {
         this.disagreedNumber++;
+    }
+
+    public void deleteOpinion() {
+        super.delete();
     }
 }

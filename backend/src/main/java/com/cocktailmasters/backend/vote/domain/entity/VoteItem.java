@@ -35,7 +35,7 @@ public class VoteItem extends BaseEntity {
     @Builder.Default
     private int votedNumber = 0;
 
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @ManyToOne(fetch = FetchType.LAZY)
     private Vote vote;
 
     @Builder.Default
@@ -52,5 +52,11 @@ public class VoteItem extends BaseEntity {
 
     public void updateBestPoints(Long points) {
         if (this.bestPoints < points) this.bestPoints = points;
+    }
+
+    public void deleteVoteItem() {
+        super.delete();
+        this.predictions.stream()
+                .forEach(Prediction::deletePrediction);
     }
 }
