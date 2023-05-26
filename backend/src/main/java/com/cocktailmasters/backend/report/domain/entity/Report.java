@@ -2,8 +2,9 @@ package com.cocktailmasters.backend.report.domain.entity;
 
 import com.cocktailmasters.backend.account.user.domain.entity.User;
 import com.cocktailmasters.backend.common.domain.entity.BaseEntity;
-import com.cocktailmasters.backend.common.domain.entity.ReportedContentType;
-import com.cocktailmasters.backend.common.domain.entity.ReportedReasonType;
+import com.cocktailmasters.backend.report.domain.ReportedContentType;
+import com.cocktailmasters.backend.report.domain.ReportedReasonType;
+
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
@@ -21,16 +22,23 @@ public class Report extends BaseEntity {
     private ReportedContentType reportedContentType;
 
     @NotNull
-    private Long reportedId;
+    private Long reportedContentId;
 
     @NotNull
     private ReportedReasonType reportedReasonType;
 
-    private String ReportDetail;
+    private String ReportedReasonDetail;
 
     @Builder.Default
     private boolean isAllow = false;
 
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @ManyToOne(fetch = FetchType.LAZY)
     private User user;
+
+    /**
+     * make isAllow flag true
+     */
+    public void checkReport() {
+        this.isAllow = true;
+    }
 }

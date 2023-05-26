@@ -1,4 +1,4 @@
-package com.cocktailmasters.backend.common.domain.entity;
+package com.cocktailmasters.backend.report.domain;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -9,7 +9,7 @@ public enum ReportedReasonType {
 
     ADVERTISEMENT("광고"),
     ADULT("음란물"),
-    VIOLENCE("비난"),
+    VIOLENCE("혐오"),
     ETC("기타");
 
     private final String type;
