@@ -87,4 +87,12 @@ public class Vote extends BaseEntity {
     public void addVoteTag(VoteTag voteTag) {
         voteTags.add(voteTag);
     }
+
+    public void deleteVote() {
+        super.delete();
+        this.voteItems.stream()
+                .forEach(VoteItem::deleteVoteItem);
+        this.opinions.stream()
+                .forEach(Opinion::deleteOpinion);
+    }
 }
