@@ -23,6 +23,10 @@ public class Prediction extends BaseEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     private VoteItem voteItem;
 
+    public void updatePredictionPoints(Long predictionPoints) {
+        this.predictionPoints += predictionPoints;
+    }
+
     public void deletePrediction() {
         super.delete();
     }
