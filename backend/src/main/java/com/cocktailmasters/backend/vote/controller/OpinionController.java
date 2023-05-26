@@ -1,17 +1,23 @@
 package com.cocktailmasters.backend.vote.controller;
 
+import com.cocktailmasters.backend.account.jwt.service.JwtService;
+import com.cocktailmasters.backend.account.user.domain.entity.User;
 import com.cocktailmasters.backend.vote.controller.dto.opinion.CreateAgreementRequest;
 import com.cocktailmasters.backend.vote.controller.dto.opinion.CreateOpinionRequest;
 import com.cocktailmasters.backend.vote.controller.dto.opinion.FindOpinionNumberResponse;
 import com.cocktailmasters.backend.vote.controller.dto.opinion.FindOpinionsResponse;
 import com.cocktailmasters.backend.vote.service.OpinionService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+
+import static com.cocktailmasters.backend.config.SwaggerConfig.SECURITY_SCHEME_NAME;
 
 @Tag(name = "opinion", description = "의견 관리")
 @RequiredArgsConstructor
@@ -19,17 +25,20 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/opinions")
 public class OpinionController {
 
+    private final JwtService jwtService;
     private final OpinionService opinionService;
 
-    @Operation(summary = "의견 작성", description = "투표 글에 의견 작성")
+    @Operation(summary = "의견 작성", description = "투표 글에 의견 작성",
+            security = {@SecurityRequirement(name = SECURITY_SCHEME_NAME)})
+    @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
     @PostMapping()
-    public ResponseEntity<String> createOpinion(@Valid @RequestBody CreateOpinionRequest createOpinionRequest) throws Exception {
-        // TODO: 토큰으로 사용자 검증
-        Long userId = 1L;
+    public ResponseEntity<String> createOpinion(@RequestHeader(name = "Authorization", required = false) String token,
+                                                @Valid @RequestBody CreateOpinionRequest createOpinionRequest) throws Exception {
+        User user = jwtService.findUserByToken(token);
         if (createOpinionRequest.getContent().trim().isEmpty()) {
             return ResponseEntity.badRequest().build();
         }
-        if (opinionService.createOpinion(userId, createOpinionRequest)) {
+        if (opinionService.createOpinion(user, createOpinionRequest)) {
             return ResponseEntity.created(null).build();
         }
         throw new Exception();
