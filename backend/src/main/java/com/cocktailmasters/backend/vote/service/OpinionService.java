@@ -32,8 +32,11 @@ public class OpinionService {
     private final UserRepository userRepository;
     private final VoteRepository voteRepository;
 
-    public boolean createOpinion(Long userId, CreateOpinionRequest createOpinionRequest) {
-        opinionRepository.save(createOpinionRequest.toOpinionEntity(findUserById(userId),
+    public boolean createOpinion(User user, CreateOpinionRequest createOpinionRequest) {
+        if (createOpinionRequest.getContent().trim().isEmpty()) {
+            return false;
+        }
+        opinionRepository.save(createOpinionRequest.toOpinionEntity(user,
                 findVoteById(createOpinionRequest.getVoteId())));
         return true;
     }
