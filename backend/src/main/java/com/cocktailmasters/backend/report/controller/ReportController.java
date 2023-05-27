@@ -3,6 +3,7 @@ package com.cocktailmasters.backend.report.controller;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -50,7 +51,7 @@ public class ReportController {
     @Operation(summary = "컨텐츠를 체크", description = "이미 체크되어 있는 경우엔 따로 변화 없음, 에러 반환 X (로그인 필요)", security = {
             @SecurityRequirement(name = SECURITY_SCHEME_NAME) })
     @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
-    @PostMapping()
+    @PatchMapping("/{reportId}")
     public ResponseEntity<String> checkContent(@PathVariable long reportId) {
 
         if (reportService.checkReport(reportId))
