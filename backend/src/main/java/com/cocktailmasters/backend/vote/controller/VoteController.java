@@ -61,7 +61,7 @@ public class VoteController {
     @Operation(summary = "투표 검색", description = "검색어를 사용하여 투표 검색," +
             "검색 옵션은 정렬기준, 종료유무, 페이지 인덱스, 10개 반환",
             security = {@SecurityRequirement(name = SECURITY_SCHEME_NAME)})
-    @GetMapping("/{page_index}/options")
+    @GetMapping("/options")
     public ResponseEntity<FindVotesResponse> findVotes(@RequestHeader(name = "Authorization", required = false) String token,
                                                        Pageable pageable,
                                                        @RequestParam("keyword") String keyword,
