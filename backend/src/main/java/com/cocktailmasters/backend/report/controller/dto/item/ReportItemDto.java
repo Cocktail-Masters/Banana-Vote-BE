@@ -24,7 +24,7 @@ public class ReportItemDto {
     @JsonProperty("reported_content_id")
     private Long reportedContentId;
 
-    @JsonProperty("reported_content_id")
+    @JsonProperty("reported_reason_type")
     private ReportedReasonType reportedReasonType;
 
     @JsonProperty("reported_reason_detail")
