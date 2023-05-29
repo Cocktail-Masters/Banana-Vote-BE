@@ -1,5 +1,6 @@
 package com.cocktailmasters.backend.vote.service;
 
+import com.cocktailmasters.backend.account.user.domain.entity.Role;
 import com.cocktailmasters.backend.account.user.domain.entity.User;
 import com.cocktailmasters.backend.account.user.domain.repository.UserRepository;
 import com.cocktailmasters.backend.vote.controller.dto.item.OpinionDto;
@@ -20,7 +21,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
@@ -75,10 +75,18 @@ public class OpinionService {
     }
 
     @Transactional
-    public boolean deleteOpinion(Long userId, Long opinionId) {
-        Optional<Opinion> opinion = opinionRepository.findByIdAndUserId(opinionId, userId);
-        if (opinion.isPresent()) {
-            opinionRepository.delete(opinion.get());
+    public boolean deleteOpinion(User user, Long opinionId) {
+        Opinion opinion;
+        if (user.getRole() == Role.ADMIN) {
+            opinion = opinionRepository.findById(opinionId)
+                    .orElse(null);
+        } else {
+            opinion = opinionRepository.findByIdAndUserId(opinionId, user.getId())
+                    .orElse(null);
+        }
+        if (opinion != null) {
+            opinion.deleteOpinion();
+            opinionRepository.save(opinion);
             return true;
         }
         return false;
@@ -101,24 +109,21 @@ public class OpinionService {
     }
 
     private User findUserById(Long userId) {
-        //TODO: 예외처리
         return userRepository.findById(userId)
-                .orElseThrow();
+                .orElse(null);
+    }
+
+    private Vote findVoteById(Long voteId) {
+        return voteRepository.findByIdAndIsActiveTrue(voteId)
+                .orElse(null);
     }
 
     private Opinion findOpinionById(Long opinionId) {
-        //TODO: 예외처리
         return opinionRepository.findById(opinionId)
-                .orElseThrow();
+                .orElse(null);
     }
 
     private int findOpinionNumberByVoteId(Long voteId) {
         return opinionRepository.countOpinionsByVoteId(voteId);
-    }
-
-    private Vote findVoteById(Long voteId) {
-        //TODO: 예외처리
-        return voteRepository.findByIdAndIsActiveTrue(voteId)
-                .orElse(null);
     }
 }

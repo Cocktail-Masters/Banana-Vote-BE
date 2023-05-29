@@ -70,7 +70,7 @@ public class OpinionController {
     public ResponseEntity<String> deleteOpinion(@RequestHeader(name = "Authorization", required = false) String token,
                                                 @PathVariable("opinion_id") Long opinionId) {
         User user = jwtService.findUserByToken(token);
-        if (opinionService.deleteOpinion(opinionId, user.getId())) {
+        if (opinionService.deleteOpinion(user, opinionId)) {
             return ResponseEntity.created(null).build();
         }
         return ResponseEntity.badRequest().build();
@@ -84,7 +84,7 @@ public class OpinionController {
                                                   @PathVariable("opinion_id") Long opinionId,
                                                   @Valid @RequestBody CreateAgreementRequest createAgreementRequest) {
         User user = jwtService.findUserByToken(token);
-        if (opinionService.createAgreement(opinionId, user.getId(), createAgreementRequest)) {
+        if (opinionService.createAgreement(user.getId(), opinionId, createAgreementRequest)) {
             return ResponseEntity.created(null).build();
         }
         return ResponseEntity.badRequest().build();
