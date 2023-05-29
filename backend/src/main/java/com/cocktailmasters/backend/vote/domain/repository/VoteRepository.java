@@ -89,5 +89,5 @@ public interface VoteRepository extends JpaRepository<Vote, Long> {
             nativeQuery = true)
     List<Vote> findVoteByUserTag(@Param("keyword") String keyword);
 
-    Optional<Vote> findBYIdAndIsActiveTrue(Long voteId);
+    Optional<Vote> findByIdAndIsActiveTrue(Long voteId);
 }

@@ -118,7 +118,7 @@ public class OpinionService {
 
     private Vote findVoteById(Long voteId) {
         //TODO: 예외처리
-        return voteRepository.findBYIdAndIsActiveTrue(voteId)
+        return voteRepository.findByIdAndIsActiveTrue(voteId)
                 .orElse(null);
     }
 }
