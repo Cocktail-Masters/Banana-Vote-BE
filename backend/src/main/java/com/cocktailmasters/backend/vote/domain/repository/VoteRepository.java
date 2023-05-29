@@ -1,6 +1,5 @@
 package com.cocktailmasters.backend.vote.domain.repository;
 
-import com.cocktailmasters.backend.account.user.domain.entity.User;
 import com.cocktailmasters.backend.vote.domain.entity.Vote;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -90,5 +89,5 @@ public interface VoteRepository extends JpaRepository<Vote, Long> {
             nativeQuery = true)
     List<Vote> findVoteByUserTag(@Param("keyword") String keyword);
 
-    Optional<Vote> findByIdAndUser(Long voteId, User user);
+    Optional<Vote> findBYIdAndIsActiveTrue(Long voteId);
 }

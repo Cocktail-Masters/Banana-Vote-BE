@@ -36,8 +36,11 @@ public class OpinionService {
         if (createOpinionRequest.getContent().trim().isEmpty()) {
             return false;
         }
-        opinionRepository.save(createOpinionRequest.toOpinionEntity(user,
-                findVoteById(createOpinionRequest.getVoteId())));
+        Vote vote = findVoteById(createOpinionRequest.getVoteId());
+        if (vote == null) {
+            return false;
+        }
+        opinionRepository.save(createOpinionRequest.toOpinionEntity(user, vote));
         return true;
     }
 
@@ -115,7 +118,7 @@ public class OpinionService {
 
     private Vote findVoteById(Long voteId) {
         //TODO: 예외처리
-        return voteRepository.findById(voteId)
-                .orElseThrow();
+        return voteRepository.findBYIdAndIsActiveTrue(voteId)
+                .orElse(null);
     }
 }
