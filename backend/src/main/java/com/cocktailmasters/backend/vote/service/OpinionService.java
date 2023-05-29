@@ -1,5 +1,6 @@
 package com.cocktailmasters.backend.vote.service;
 
+import com.cocktailmasters.backend.account.user.domain.entity.Role;
 import com.cocktailmasters.backend.account.user.domain.entity.User;
 import com.cocktailmasters.backend.account.user.domain.repository.UserRepository;
 import com.cocktailmasters.backend.vote.controller.dto.item.OpinionDto;
@@ -20,7 +21,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
@@ -40,12 +40,15 @@ public class OpinionService {
         if (vote == null) {
             return false;
         }
-        opinionRepository.save(createOpinionRequest.toOpinionEntity(user, vote));
+        Opinion opinion = createOpinionRequest.toOpinionEntity(user, vote);
+        vote.updateOpinionNumber();
+        vote.addOpinion(opinion);
+        voteRepository.save(vote);
         return true;
     }
 
     @Transactional
-    public FindOpinionsResponse findOpinions(Long userId, Long voteId, int sortBy, Pageable pageable) {
+    public FindOpinionsResponse findOpinions(User user, Long voteId, int sortBy, Pageable pageable) {
         Page<Opinion> opinions = opinionRepository.findOpinionsByVoteIdAndOption(voteId,
                 OpinionSortBy.valueOfNumber(sortBy),
                 pageable);
@@ -53,8 +56,8 @@ public class OpinionService {
         return FindOpinionsResponse.builder()
                 .opinions(opinions.stream()
                         .map(opinion -> {
-                            if (userId != null) {
-                                return OpinionDto.createOpinionDto(opinion, agreementRepository.findByUserIdAndOpinionId(userId, opinion.getId())
+                            if (user != null) {
+                                return OpinionDto.createOpinionDto(opinion, agreementRepository.findByUserIdAndOpinionId(user.getId(), opinion.getId())
                                         .get()
                                         .getIsAgree());
                             }
@@ -63,22 +66,30 @@ public class OpinionService {
                 .bestIds(bestOpinions.stream()
                         .map(opinion -> opinion.getId())
                         .collect(Collectors.toList()))
-                .opinionNumber(findOpinionNumberByVoteId(voteId))
+                .opinionNumber(findVoteById(voteId).getOpinionNumber())
                 .build();
     }
 
     @Transactional
     public FindOpinionNumberResponse findOpinionNumber(Long voteId) {
         return FindOpinionNumberResponse.builder()
-                .opinionNumber(findOpinionNumberByVoteId(voteId))
+                .opinionNumber(findVoteById(voteId).getOpinionNumber())
                 .build();
     }
 
     @Transactional
-    public boolean deleteOpinion(Long userId, Long opinionId) {
-        Optional<Opinion> opinion = opinionRepository.findByIdAndUserId(opinionId, userId);
-        if (opinion.isPresent()) {
-            opinionRepository.delete(opinion.get());
+    public boolean deleteOpinion(User user, Long opinionId) {
+        Opinion opinion;
+        if (user.getRole() == Role.ADMIN) {
+            opinion = opinionRepository.findByIdAndIsActiveTrue(opinionId)
+                    .orElse(null);
+        } else {
+            opinion = opinionRepository.findByIdAndUserIdAndIsActiveTrue(opinionId, user.getId())
+                    .orElse(null);
+        }
+        if (opinion != null) {
+            opinion.deleteOpinion();
+            opinionRepository.save(opinion);
             return true;
         }
         return false;
@@ -101,24 +112,17 @@ public class OpinionService {
     }
 
     private User findUserById(Long userId) {
-        //TODO: 예외처리
         return userRepository.findById(userId)
-                .orElseThrow();
-    }
-
-    private Opinion findOpinionById(Long opinionId) {
-        //TODO: 예외처리
-        return opinionRepository.findById(opinionId)
-                .orElseThrow();
-    }
-
-    private int findOpinionNumberByVoteId(Long voteId) {
-        return opinionRepository.countOpinionsByVoteId(voteId);
+                .orElse(null);
     }
 
     private Vote findVoteById(Long voteId) {
-        //TODO: 예외처리
         return voteRepository.findByIdAndIsActiveTrue(voteId)
+                .orElse(null);
+    }
+
+    private Opinion findOpinionById(Long opinionId) {
+        return opinionRepository.findById(opinionId)
                 .orElse(null);
     }
 }

@@ -53,7 +53,7 @@ public class OpinionController {
             user = jwtService.findUserByToken(token);
         }
         return ResponseEntity.ok()
-                .body(opinionService.findOpinions(user.getId(), voteId, sortBy, pageable));
+                .body(opinionService.findOpinions(user, voteId, sortBy, pageable));
     }
 
     @Operation(summary = "게시글 의견 개수 보기", description = "게시글의 의견 개수 보기")
@@ -70,7 +70,7 @@ public class OpinionController {
     public ResponseEntity<String> deleteOpinion(@RequestHeader(name = "Authorization", required = false) String token,
                                                 @PathVariable("opinion_id") Long opinionId) {
         User user = jwtService.findUserByToken(token);
-        if (opinionService.deleteOpinion(opinionId, user.getId())) {
+        if (opinionService.deleteOpinion(user, opinionId)) {
             return ResponseEntity.created(null).build();
         }
         return ResponseEntity.badRequest().build();
@@ -84,7 +84,7 @@ public class OpinionController {
                                                   @PathVariable("opinion_id") Long opinionId,
                                                   @Valid @RequestBody CreateAgreementRequest createAgreementRequest) {
         User user = jwtService.findUserByToken(token);
-        if (opinionService.createAgreement(opinionId, user.getId(), createAgreementRequest)) {
+        if (opinionService.createAgreement(user.getId(), opinionId, createAgreementRequest)) {
             return ResponseEntity.created(null).build();
         }
         return ResponseEntity.badRequest().build();

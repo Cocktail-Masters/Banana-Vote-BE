@@ -14,14 +14,15 @@ public interface OpinionRepository extends JpaRepository<Opinion, Long> {
 
     String countOpinionsQuery = "SELECT COUNT(o,*) " +
             "FROM OPINION o " +
-            "WHERE o.vote_id = :vote_id " +
-            "AND is_active = true";
+            "WHERE o.vote_vote_id = :vote_id " +
+            "AND is_active = true " +
+            "ORDER BY :sort_by";
 
     Optional<Opinion> findFirstByVoteIdOrderByAgreedNumberDesc(Long voteId);
 
     @Query(value = "SELECT o.* " +
             "FROM opinion o " +
-            "WHERE o.vote_id = :vote_id " +
+            "WHERE o.vote_vote_id = :vote_id " +
             "AND is_active = true " +
             "ORDER BY :sort_by",
             countQuery = "countOpinionsQuery",
@@ -30,10 +31,9 @@ public interface OpinionRepository extends JpaRepository<Opinion, Long> {
                                                 @Param("sort_by") String sortBy,
                                                 Pageable pageable);
 
-    @Query(value = countOpinionsQuery, nativeQuery = true)
-    int countOpinionsByVoteId(@Param("vote_id") Long voteId);
-
     List<Opinion> findTop3ByVoteIdAndAgreedNumberGreaterThanOrderByAgreedNumberDesc(Long voteId, int agreedNumber);
 
-    Optional<Opinion> findByIdAndUserId(Long opinionId, Long userId);
+    Optional<Opinion> findByIdAndIsActiveTrue(Long opinionId);
+
+    Optional<Opinion> findByIdAndUserIdAndIsActiveTrue(Long opinionId, Long userId);
 }
