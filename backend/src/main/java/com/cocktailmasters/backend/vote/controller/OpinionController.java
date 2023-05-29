@@ -53,7 +53,7 @@ public class OpinionController {
             user = jwtService.findUserByToken(token);
         }
         return ResponseEntity.ok()
-                .body(opinionService.findOpinions(user.getId(), voteId, sortBy, pageable));
+                .body(opinionService.findOpinions(user, voteId, sortBy, pageable));
     }
 
     @Operation(summary = "게시글 의견 개수 보기", description = "게시글의 의견 개수 보기")
