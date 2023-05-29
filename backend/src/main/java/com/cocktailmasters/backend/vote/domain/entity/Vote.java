@@ -57,16 +57,16 @@ public class Vote extends BaseEntity {
     private User user;
 
     @Builder.Default
-    @OneToMany(mappedBy = "vote", cascade = CascadeType.ALL)
-    private List<Opinion> opinions = new ArrayList<>();
-
-    @Builder.Default
     @OneToMany(mappedBy = "vote", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<VoteItem> voteItems = new ArrayList<>();
 
     @Builder.Default
     @OneToMany(mappedBy = "vote", cascade = CascadeType.ALL)
     private List<VoteTag> voteTags = new ArrayList<>();
+
+    @Builder.Default
+    @OneToMany(mappedBy = "vote", fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Opinion> opinions = new ArrayList<>();
 
     @Builder.Default
     @OneToMany(mappedBy = "vote", cascade = CascadeType.ALL)
@@ -80,12 +80,24 @@ public class Vote extends BaseEntity {
         this.voteHits++;
     }
 
+    public void updateOpinionNumber() {
+        this.opinionNumber++;
+    }
+
+    public void reduceOpinionNumber() {
+        this.opinionNumber--;
+    }
+
     public void addVoteItem(VoteItem voteItem) {
         voteItems.add(voteItem);
     }
 
     public void addVoteTag(VoteTag voteTag) {
         voteTags.add(voteTag);
+    }
+
+    public void addOpinion(Opinion opinion) {
+        opinions.add(opinion);
     }
 
     public void deleteVote() {
