@@ -40,12 +40,15 @@ public class OpinionService {
         if (vote == null) {
             return false;
         }
-        opinionRepository.save(createOpinionRequest.toOpinionEntity(user, vote));
+        Opinion opinion = createOpinionRequest.toOpinionEntity(user, vote);
+        vote.updateOpinionNumber();
+        vote.addOpinion(opinion);
+        voteRepository.save(vote);
         return true;
     }
 
     @Transactional
-    public FindOpinionsResponse findOpinions(Long userId, Long voteId, int sortBy, Pageable pageable) {
+    public FindOpinionsResponse findOpinions(User user, Long voteId, int sortBy, Pageable pageable) {
         Page<Opinion> opinions = opinionRepository.findOpinionsByVoteIdAndOption(voteId,
                 OpinionSortBy.valueOfNumber(sortBy),
                 pageable);
@@ -53,8 +56,8 @@ public class OpinionService {
         return FindOpinionsResponse.builder()
                 .opinions(opinions.stream()
                         .map(opinion -> {
-                            if (userId != null) {
-                                return OpinionDto.createOpinionDto(opinion, agreementRepository.findByUserIdAndOpinionId(userId, opinion.getId())
+                            if (user != null) {
+                                return OpinionDto.createOpinionDto(opinion, agreementRepository.findByUserIdAndOpinionId(user.getId(), opinion.getId())
                                         .get()
                                         .getIsAgree());
                             }
@@ -63,14 +66,14 @@ public class OpinionService {
                 .bestIds(bestOpinions.stream()
                         .map(opinion -> opinion.getId())
                         .collect(Collectors.toList()))
-                .opinionNumber(findOpinionNumberByVoteId(voteId))
+                .opinionNumber(findVoteById(voteId).getOpinionNumber())
                 .build();
     }
 
     @Transactional
     public FindOpinionNumberResponse findOpinionNumber(Long voteId) {
         return FindOpinionNumberResponse.builder()
-                .opinionNumber(findOpinionNumberByVoteId(voteId))
+                .opinionNumber(findVoteById(voteId).getOpinionNumber())
                 .build();
     }
 
@@ -78,10 +81,10 @@ public class OpinionService {
     public boolean deleteOpinion(User user, Long opinionId) {
         Opinion opinion;
         if (user.getRole() == Role.ADMIN) {
-            opinion = opinionRepository.findById(opinionId)
+            opinion = opinionRepository.findByIdAndIsActiveTrue(opinionId)
                     .orElse(null);
         } else {
-            opinion = opinionRepository.findByIdAndUserId(opinionId, user.getId())
+            opinion = opinionRepository.findByIdAndUserIdAndIsActiveTrue(opinionId, user.getId())
                     .orElse(null);
         }
         if (opinion != null) {
@@ -121,9 +124,5 @@ public class OpinionService {
     private Opinion findOpinionById(Long opinionId) {
         return opinionRepository.findById(opinionId)
                 .orElse(null);
-    }
-
-    private int findOpinionNumberByVoteId(Long voteId) {
-        return opinionRepository.countOpinionsByVoteId(voteId);
     }
 }
