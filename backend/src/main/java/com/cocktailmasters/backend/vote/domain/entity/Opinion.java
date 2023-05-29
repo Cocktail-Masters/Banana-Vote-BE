@@ -50,5 +50,6 @@ public class Opinion extends BaseEntity {
 
     public void deleteOpinion() {
         super.delete();
+        vote.reduceOpinionNumber();
     }
 }
