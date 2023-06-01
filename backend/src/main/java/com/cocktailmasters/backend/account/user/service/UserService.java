@@ -8,6 +8,7 @@ import com.cocktailmasters.backend.account.user.domain.entity.User;
 import com.cocktailmasters.backend.account.user.domain.repository.UserRepository;
 import com.cocktailmasters.backend.season.service.RankingService;
 import com.cocktailmasters.backend.util.exception.NotFoundUserException;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -33,6 +34,7 @@ public class UserService {
         return true;
     }
 
+    @Transactional
     public boolean signIn(SignInRequest signInRequest) {
         User user = userRepository.findByEmailAndIsActiveTrue(signInRequest.getEmail())
                 .orElse(null);
@@ -79,6 +81,7 @@ public class UserService {
                 .build();
     }
 
+    @Transactional
     public boolean updateNickname(User user, UpdateNicknameRequest updateNicknameRequest) {
         String newNickname = updateNicknameRequest.getNickname();
         if (!userRepository.findByNickname(newNickname).isEmpty()) {
