@@ -1,13 +1,13 @@
 package com.cocktailmasters.backend.account.user.domain.entity;
 
 import com.cocktailmasters.backend.achievement.domain.entity.UserAchievement;
+import com.cocktailmasters.backend.ban.domain.entity.BanLog;
 import com.cocktailmasters.backend.common.domain.entity.BaseEntity;
 import com.cocktailmasters.backend.goods.domain.entity.UserBadge;
 import com.cocktailmasters.backend.goods.domain.entity.UserGoods;
 import com.cocktailmasters.backend.megaphone.domain.entity.Megaphone;
 import com.cocktailmasters.backend.picket.domain.entity.Picket;
 import com.cocktailmasters.backend.point.domain.entity.PointLog;
-import com.cocktailmasters.backend.report.domain.entity.BanLog;
 import com.cocktailmasters.backend.report.domain.entity.Report;
 import com.cocktailmasters.backend.season.domain.entity.SeasonRanking;
 import com.cocktailmasters.backend.vote.domain.entity.*;
@@ -117,7 +117,6 @@ public class User extends BaseEntity {
     @Builder.Default
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<Report> reports = new ArrayList<>();
-
 
     public void encodePassword(PasswordEncoder passwordEncoder) {
         this.password = passwordEncoder.encode(this.password);
