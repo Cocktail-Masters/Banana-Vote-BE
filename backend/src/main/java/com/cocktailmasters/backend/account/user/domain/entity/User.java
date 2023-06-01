@@ -125,4 +125,9 @@ public class User extends BaseEntity {
     public void updateRefreshToken(String refreshToken) {
         this.refreshToken = refreshToken;
     }
+
+    public void addBanLog(BanLog banLog) {
+        if (banLog != null)
+            banLogs.add(banLog);
+    }
 }
