@@ -10,8 +10,9 @@ import lombok.Getter;
 public class FindUserInfoResponse {
 
     private String nickname;
+    private String equippedBadgeImageUrl;
     private int age;
     private Gender gender;
     private Long ranking;
-    private Long percentage;
+    private Long points;
 }
