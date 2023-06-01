@@ -21,6 +21,7 @@ public class UserService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
 
+    @Transactional
     public boolean signUp(SignUpRequest signUpRequest) {
         if (userRepository.findByEmail(signUpRequest.getEmail()).isPresent()) {
             return false;
@@ -52,6 +53,7 @@ public class UserService {
         return true;
     }
 
+    @Transactional
     public boolean withdrawal(User user) {
         user.deleteUser();
         userRepository.save(user);
