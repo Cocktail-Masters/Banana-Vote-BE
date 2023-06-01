@@ -10,7 +10,10 @@ import com.cocktailmasters.backend.picket.domain.entity.Picket;
 import com.cocktailmasters.backend.point.domain.entity.PointLog;
 import com.cocktailmasters.backend.report.domain.entity.Report;
 import com.cocktailmasters.backend.season.domain.entity.SeasonRanking;
-import com.cocktailmasters.backend.vote.domain.entity.*;
+import com.cocktailmasters.backend.vote.domain.entity.Agreement;
+import com.cocktailmasters.backend.vote.domain.entity.Opinion;
+import com.cocktailmasters.backend.vote.domain.entity.Prediction;
+import com.cocktailmasters.backend.vote.domain.entity.Vote;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
@@ -46,6 +49,8 @@ public class User extends BaseEntity {
     @Builder.Default
     private Gender gender = null;
 
+    private int age;
+
     @Builder.Default
     @Enumerated(EnumType.STRING)
     private Role role = Role.USER;
@@ -53,7 +58,7 @@ public class User extends BaseEntity {
     private String refreshToken;
 
     @Builder.Default
-    private Long points = 1000L;
+    private Long points = 100L;
 
     private LocalDateTime banReleaseDate;
 
@@ -129,5 +134,17 @@ public class User extends BaseEntity {
     public void addBanLog(BanLog banLog) {
         if (banLog != null)
             banLogs.add(banLog);
+    }
+
+    public void updateNickname(String nickname) {
+        this.nickname = nickname;
+    }
+
+    public void updateRoleGuestToUser() {
+        this.role = Role.USER;
+    }
+
+    public void deleteUser() {
+        super.delete();
     }
 }
