@@ -13,10 +13,8 @@ import java.util.Map;
 public class CustomOAuth2User extends DefaultOAuth2User {
 
     private String email;
-    private String nickname;
     private Gender gender;
     private Role role;
-
 
     /**
      * Constructs a {@code DefaultOAuth2User} using the provided parameters.
@@ -30,12 +28,10 @@ public class CustomOAuth2User extends DefaultOAuth2User {
                             Map<String, Object> attributes,
                             String nameAttributeKey,
                             String email,
-                            String nickname,
                             Gender gender,
                             Role role) {
         super(authorities, attributes, nameAttributeKey);
         this.email = email;
-        this.nickname = nickname;
         this.gender = gender;
         this.role = role;
     }
