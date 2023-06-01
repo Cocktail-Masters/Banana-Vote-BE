@@ -23,12 +23,14 @@ public class SignUpRequest {
     private String password;
 
     private String nickname;
+    private int age;
     private Gender gender;
 
     public User toUserEntity() {
         return User.builder()
                 .email(email)
                 .password(password)
+                .age(age)
                 .nickname(nickname)
                 .gender(gender)
                 .build();
