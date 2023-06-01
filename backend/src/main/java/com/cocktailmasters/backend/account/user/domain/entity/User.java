@@ -49,6 +49,8 @@ public class User extends BaseEntity {
     @Builder.Default
     private Gender gender = null;
 
+    private int age;
+
     @Builder.Default
     @Enumerated(EnumType.STRING)
     private Role role = Role.USER;
@@ -56,7 +58,7 @@ public class User extends BaseEntity {
     private String refreshToken;
 
     @Builder.Default
-    private Long points = 1000L;
+    private Long points = 100L;
 
     private LocalDateTime banReleaseDate;
 
@@ -127,5 +129,17 @@ public class User extends BaseEntity {
 
     public void updateRefreshToken(String refreshToken) {
         this.refreshToken = refreshToken;
+    }
+
+    public void updateNickname(String nickname) {
+        this.nickname = nickname;
+    }
+
+    public void updateRoleGuestToUser() {
+        this.role = Role.USER;
+    }
+
+    public void deleteUser() {
+        super.delete();
     }
 }
