@@ -1,10 +1,7 @@
 package com.cocktailmasters.backend.account.user.controller;
 
 import com.cocktailmasters.backend.account.jwt.service.JwtService;
-import com.cocktailmasters.backend.account.user.controller.dto.FindUserInfoResponse;
-import com.cocktailmasters.backend.account.user.controller.dto.SignInRequest;
-import com.cocktailmasters.backend.account.user.controller.dto.SignUpRequest;
-import com.cocktailmasters.backend.account.user.controller.dto.UpdateNicknameRequest;
+import com.cocktailmasters.backend.account.user.controller.dto.*;
 import com.cocktailmasters.backend.account.user.domain.entity.User;
 import com.cocktailmasters.backend.account.user.service.UserService;
 import com.nimbusds.oauth2.sdk.http.HTTPResponse;
@@ -95,6 +92,74 @@ public class UserController {
                                                  @RequestBody UpdateNicknameRequest updateNicknameRequest) {
         User user = jwtService.findUserByToken(token);
         if (userService.updateNickname(user, updateNicknameRequest)) {
+            return ResponseEntity.created(null).build();
+        }
+        return ResponseEntity.badRequest().build();
+    }
+
+    @Operation(summary = "나이 변경", description = "나이 변경",
+            security = {@SecurityRequirement(name = SECURITY_SCHEME_NAME)})
+    @PreAuthorize("hasAnyRole('ADMIN', 'USER', 'GUEST')")
+    @PatchMapping("/age")
+    public ResponseEntity<String> updateAge(@RequestHeader(name = "Authorization", required = false) String token,
+                                            @RequestBody @Valid UpdateAgeRequest updateNicknameRequest) {
+        User user = jwtService.findUserByToken(token);
+        if (userService.updateAge(user, updateNicknameRequest)) {
+            return ResponseEntity.created(null).build();
+        }
+        return ResponseEntity.badRequest().build();
+    }
+
+    @Operation(summary = "성별 변경", description = "성별 변경, 입력 예제 MALE or FEMALE",
+            security = {@SecurityRequirement(name = SECURITY_SCHEME_NAME)})
+    @PreAuthorize("hasAnyRole('ADMIN', 'USER', 'GUEST')")
+    @PatchMapping("/gender")
+    public ResponseEntity<String> updateGender(@RequestHeader(name = "Authorization", required = false) String token,
+                                               @RequestBody @Valid UpdateGenderRequest updateGenderRequest) {
+        User user = jwtService.findUserByToken(token);
+        if (userService.updateGender(user, updateGenderRequest)) {
+            return ResponseEntity.created(null).build();
+        }
+        return ResponseEntity.badRequest().build();
+    }
+
+    @Operation(summary = "관심 태그 조회", description = "관심 태그 조회",
+            security = {@SecurityRequirement(name = SECURITY_SCHEME_NAME)})
+    @PreAuthorize("hasAnyRole('ADMIN', 'USER', 'GUEST')")
+    @GetMapping("/tags")
+    public ResponseEntity<FindInterestTagsResponse> findInterestTags(@RequestHeader(name = "Authorization", required = false) String token) {
+        User user = jwtService.findUserByToken(token);
+        return ResponseEntity.ok()
+                .body(userService.findInterestTags(user));
+    }
+
+    @Operation(summary = "관심 태그 추가", description = "관심 태그 추가",
+            security = {@SecurityRequirement(name = SECURITY_SCHEME_NAME)})
+    @PreAuthorize("hasAnyRole('ADMIN', 'USER', 'GUEST')")
+    @PostMapping("/tags")
+    public ResponseEntity<String> createInterestTag(@RequestHeader(name = "Authorization", required = false) String token,
+                                                    @RequestBody @Valid CreateInterestTagRequest createInterestTagRequest) {
+        User user = jwtService.findUserByToken(token);
+        String tagName = createInterestTagRequest.getTag().getTagName();
+        if (tagName.trim().isBlank()) {
+            return ResponseEntity.badRequest().build();
+        }
+        userService.createInterestTag(user, tagName);
+        return ResponseEntity.created(null).build();
+    }
+
+    @Operation(summary = "관심 태그 삭제", description = "관심 태그 삭제",
+            security = {@SecurityRequirement(name = SECURITY_SCHEME_NAME)})
+    @PreAuthorize("hasAnyRole('ADMIN', 'USER', 'GUEST')")
+    @DeleteMapping("/tags")
+    public ResponseEntity<String> deleteInterestTag(@RequestHeader(name = "Authorization", required = false) String token,
+                                                    @RequestBody @Valid DeleteInterestTagRequest deleteInterestTagRequest) {
+        User user = jwtService.findUserByToken(token);
+        String tagName = deleteInterestTagRequest.getTag().getTagName();
+        if (tagName.trim().isBlank()) {
+            return ResponseEntity.noContent().build();
+        }
+        if (userService.deleteInterestTag(user, tagName)) {
             return ResponseEntity.created(null).build();
         }
         return ResponseEntity.badRequest().build();
