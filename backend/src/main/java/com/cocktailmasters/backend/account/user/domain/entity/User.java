@@ -145,6 +145,14 @@ public class User extends BaseEntity {
             this.role = Role.BANNED;
     }
 
+    public void updateGender(Gender gender) {
+        this.gender = gender;
+    }
+
+    public void updateAge(int age) {
+        this.age = age;
+    }
+
     public void deleteUser() {
         super.delete();
     }
