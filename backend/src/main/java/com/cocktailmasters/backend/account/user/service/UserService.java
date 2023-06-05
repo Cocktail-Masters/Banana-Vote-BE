@@ -97,7 +97,7 @@ public class UserService {
             return false;
         }
         user.updateNickname(updateNicknameRequest.getNickname());
-        user.updateRoleGuestToUser();
+        user.updateRoleToUser();
         userRepository.save(user);
         return true;
     }
