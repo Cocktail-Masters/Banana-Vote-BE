@@ -2,6 +2,7 @@ package com.cocktailmasters.backend.account.user.service;
 
 import com.cocktailmasters.backend.account.user.controller.dto.*;
 import com.cocktailmasters.backend.account.user.controller.dto.item.MyVoteDto;
+import com.cocktailmasters.backend.account.user.controller.dto.item.OpinionDto;
 import com.cocktailmasters.backend.account.user.controller.dto.item.VoteDto;
 import com.cocktailmasters.backend.account.user.domain.entity.Gender;
 import com.cocktailmasters.backend.account.user.domain.entity.User;
@@ -164,6 +165,7 @@ public class UserService {
         return true;
     }
 
+    @Transactional
     public FindParticipateVotesResponse findParticipateVotes(User user) {
         return FindParticipateVotesResponse.builder()
                 .votes(user.getPredictions()
@@ -181,6 +183,7 @@ public class UserService {
                 .build();
     }
 
+    @Transactional
     public FindMyVotesResponse findMyVotes(User user) {
         return FindMyVotesResponse.builder()
                 .votes(user.getVotes()
@@ -188,7 +191,24 @@ public class UserService {
                         .map(vote -> MyVoteDto.builder()
                                 .id(vote.getId())
                                 .title(vote.getVoteTitle())
-                                .isClosed(vote.isClosed()).build())
+                                .isClosed(vote.isClosed())
+                                .build())
+                        .collect(Collectors.toList()))
+                .build();
+    }
+
+    @Transactional
+    public FindMyOpinionsResponse findMyOpinions(User user) {
+        return FindMyOpinionsResponse.builder()
+                .opinions(user.getOpinions()
+                        .stream()
+                        .map(opinion -> OpinionDto.builder()
+                                .id(opinion.getId())
+                                .content(opinion.getOpinionContent())
+                                .nAgree(opinion.getAgreedNumber())
+                                .nDisAgree(opinion.getDisagreedNumber())
+                                .createdDate(opinion.getCreatedDate())
+                                .build())
                         .collect(Collectors.toList()))
                 .build();
     }
