@@ -72,7 +72,7 @@ public class User extends BaseEntity {
     private List<Vote> votes = new ArrayList<>();
 
     @Builder.Default
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private List<Opinion> opinions = new ArrayList<>();
 
     @Builder.Default
