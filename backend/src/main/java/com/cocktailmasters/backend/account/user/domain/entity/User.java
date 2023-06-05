@@ -1,13 +1,13 @@
 package com.cocktailmasters.backend.account.user.domain.entity;
 
 import com.cocktailmasters.backend.achievement.domain.entity.UserAchievement;
+import com.cocktailmasters.backend.ban.domain.entity.BanLog;
 import com.cocktailmasters.backend.common.domain.entity.BaseEntity;
 import com.cocktailmasters.backend.goods.domain.entity.UserBadge;
 import com.cocktailmasters.backend.goods.domain.entity.UserGoods;
 import com.cocktailmasters.backend.megaphone.domain.entity.Megaphone;
 import com.cocktailmasters.backend.picket.domain.entity.Picket;
 import com.cocktailmasters.backend.point.domain.entity.PointLog;
-import com.cocktailmasters.backend.report.domain.entity.BanLog;
 import com.cocktailmasters.backend.report.domain.entity.Report;
 import com.cocktailmasters.backend.season.domain.entity.SeasonRanking;
 import com.cocktailmasters.backend.vote.domain.entity.Agreement;
@@ -139,16 +139,22 @@ public class User extends BaseEntity {
         this.nickname = nickname;
     }
 
+    public void updateRoleToUser() {
+        if (this.role != Role.ADMIN)
+            this.role = Role.USER;
+    }
+
+    public void banUser() {
+        if (this.role != Role.ADMIN)
+            this.role = Role.BANNED;
+    }
+
     public void updateGender(Gender gender) {
         this.gender = gender;
     }
 
     public void updateAge(int age) {
         this.age = age;
-    }
-
-    public void updateRoleGuestToUser() {
-        this.role = Role.USER;
     }
 
     public void deleteUser() {

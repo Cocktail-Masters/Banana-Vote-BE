@@ -1,4 +1,4 @@
-package com.cocktailmasters.backend.report.domain.entity;
+package com.cocktailmasters.backend.ban.domain.entity;
 
 import com.cocktailmasters.backend.account.user.domain.entity.User;
 import com.cocktailmasters.backend.common.domain.entity.BaseEntity;
