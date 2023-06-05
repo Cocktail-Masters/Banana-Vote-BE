@@ -84,7 +84,7 @@ public class User extends BaseEntity {
     private List<Prediction> predictions = new ArrayList<>();
 
     @Builder.Default
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)
     private List<UserTag> userTags = new ArrayList<>();
 
     @Builder.Default
@@ -122,6 +122,10 @@ public class User extends BaseEntity {
     @Builder.Default
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<Report> reports = new ArrayList<>();
+
+    public void addUserTag(UserTag userTag) {
+        userTags.add(userTag);
+    }
 
     public void encodePassword(PasswordEncoder passwordEncoder) {
         this.password = passwordEncoder.encode(this.password);
