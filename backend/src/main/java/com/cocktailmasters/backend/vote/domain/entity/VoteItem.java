@@ -35,7 +35,7 @@ public class VoteItem extends BaseEntity {
     @Builder.Default
     private int votedNumber = 0;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     private Vote vote;
 
     @Builder.Default
