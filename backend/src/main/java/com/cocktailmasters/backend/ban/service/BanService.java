@@ -27,6 +27,7 @@ public class BanService {
      * 
      * @return ban log response list
      */
+    @Transactional
     public List<BanLogResponse> getBanLogs() {
         List<BanLog> banLogs = banLogRepository.findAll();
 

@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -17,7 +18,6 @@ import static com.cocktailmasters.backend.config.SwaggerConfig.SECURITY_SCHEME_N
 import java.util.List;
 
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.parameters.RequestBody;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
@@ -46,8 +46,9 @@ public class BanController {
     @Operation(summary = "사용자를 밴(관리자용)", description = "(관리자를 밴할 순 없음)", security = {
             @SecurityRequirement(name = SECURITY_SCHEME_NAME) })
     @PreAuthorize("hasRole('ADMIN')")
-    @PostMapping
+    @PostMapping("/{userId}")
     public ResponseEntity<String> banUser(@PathVariable long userId, @RequestBody BanRequest banRequest) {
+        System.out.println("ban : " + banRequest.getBanReason());
         if (banService.banUser(userId, banRequest.getBanReason()))
             return ResponseEntity.ok().build();
         else
@@ -57,8 +58,8 @@ public class BanController {
     @Operation(summary = "사용자를 밴 해제(관리자용)", description = "제곧내", security = {
             @SecurityRequirement(name = SECURITY_SCHEME_NAME) })
     @PreAuthorize("hasRole('ADMIN')")
-    @PatchMapping
-    public ResponseEntity<List<BanLogResponse>> banUser(@PathVariable long userId) {
+    @PatchMapping("/{userId}")
+    public ResponseEntity<List<BanLogResponse>> unbanUser(@PathVariable long userId) {
         if (banService.unbanUser(userId))
             return ResponseEntity.ok().build();
         else
