@@ -2,9 +2,13 @@ package com.cocktailmasters.backend.ban.service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import com.cocktailmasters.backend.account.user.domain.entity.User;
+import com.cocktailmasters.backend.account.user.domain.repository.UserRepository;
 import com.cocktailmasters.backend.ban.controller.dto.BanLogResponse;
 import com.cocktailmasters.backend.ban.domain.entity.BanLog;
 import com.cocktailmasters.backend.ban.domain.repository.BanLogRepository;
@@ -16,6 +20,7 @@ import lombok.RequiredArgsConstructor;
 public class BanService {
 
     private final BanLogRepository banLogRepository;
+    private final UserRepository userRepository;
 
     /**
      * get ban log list
@@ -30,5 +35,31 @@ public class BanService {
             banLogsDtos.add(BanLogResponse.createLogReponse(banLog));
 
         return banLogsDtos;
+    }
+
+    /**
+     * ban user
+     * 
+     * @return true or false(if user not found or user is admin)
+     */
+    @Transactional
+    public boolean banUser(long userId, String banReason) {
+        Optional<User> user = userRepository.findById(userId);
+
+        if (!user.isPresent())
+            return false;
+        else {
+            // change role
+            user.get().banUser();
+
+            // add log
+            BanLog banLog = BanLog.builder()
+                    .banReason(banReason)
+                    .user(user.get())
+                    .build();
+
+            banLogRepository.save(banLog);
+            return true;
+        }
     }
 }

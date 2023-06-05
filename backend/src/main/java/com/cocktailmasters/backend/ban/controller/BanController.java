@@ -20,6 +20,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.parameters.RequestBody;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.xml.ws.Response;
 import lombok.RequiredArgsConstructor;
 
 @Tag(name = "밴", description = "밴과 관련된 기능들(관리자용)")
@@ -47,9 +48,11 @@ public class BanController {
             @SecurityRequirement(name = SECURITY_SCHEME_NAME) })
     @PreAuthorize("hasRole('ADMIN')")
     @PostMapping
-    public ResponseEntity<List<BanLogResponse>> banUser(@PathVariable long userId, @RequestBody BanRequest banRequest) {
-
-        return null;
+    public ResponseEntity<String> banUser(@PathVariable long userId, @RequestBody BanRequest banRequest) {
+        if (banService.banUser(userId, banRequest.getBanReason()))
+            return ResponseEntity.ok().build();
+        else
+            return ResponseEntity.notFound().build();
     }
 
     @Operation(summary = "사용자를 밴 해제(관리자용)", description = "제곧내", security = {

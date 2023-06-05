@@ -131,17 +131,17 @@ public class User extends BaseEntity {
         this.refreshToken = refreshToken;
     }
 
-    public void addBanLog(BanLog banLog) {
-        if (banLog != null)
-            banLogs.add(banLog);
-    }
-
     public void updateNickname(String nickname) {
         this.nickname = nickname;
     }
 
     public void updateRoleGuestToUser() {
         this.role = Role.USER;
+    }
+
+    public void banUser() {
+        if (this.role != Role.ADMIN)
+            this.role = Role.BANNED;
     }
 
     public void deleteUser() {
