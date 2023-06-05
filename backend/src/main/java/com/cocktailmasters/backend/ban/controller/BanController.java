@@ -35,7 +35,12 @@ public class BanController {
     @PreAuthorize("hasRole('ADMIN')")
     @GetMapping
     public ResponseEntity<List<BanLogResponse>> getBanLogs() {
-        return null;
+        List<BanLogResponse> banLogResponses = banService.getBanLogs();
+
+        if (banLogResponses.size() == 0)
+            return ResponseEntity.noContent().build();
+        else
+            return ResponseEntity.ok().body(banLogResponses);
     }
 
     @Operation(summary = "사용자를 밴(관리자용)", description = "(관리자를 밴할 순 없음)", security = {

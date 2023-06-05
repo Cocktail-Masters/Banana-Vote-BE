@@ -22,7 +22,7 @@ public class BanLogResponse {
     @JsonProperty("ban_count")
     private long banCount;
 
-    public BanLogResponse createLogReponse(BanLog banLog) {
+    public static BanLogResponse createLogReponse(BanLog banLog) {
         User bannedUser = banLog.getUser();
 
         return BanLogResponse.builder()
