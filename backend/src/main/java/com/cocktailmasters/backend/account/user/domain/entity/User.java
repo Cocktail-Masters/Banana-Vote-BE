@@ -135,8 +135,9 @@ public class User extends BaseEntity {
         this.nickname = nickname;
     }
 
-    public void updateRoleGuestToUser() {
-        this.role = Role.USER;
+    public void updateRoleToUser() {
+        if (this.role != Role.ADMIN)
+            this.role = Role.USER;
     }
 
     public void banUser() {

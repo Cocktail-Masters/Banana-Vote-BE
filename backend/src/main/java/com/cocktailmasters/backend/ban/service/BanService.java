@@ -62,4 +62,24 @@ public class BanService {
             return true;
         }
     }
+
+    /**
+     * unban user
+     * 
+     * @param userId
+     * @return true or false(user not found)
+     */
+    @Transactional
+    public boolean unbanUser(long userId) {
+        Optional<User> user = userRepository.findById(userId);
+
+        if (!user.isPresent())
+            return false;
+        else {
+            // change role
+            user.get().updateRoleToUser();
+            userRepository.save(user.get());
+            return true;
+        }
+    }
 }
