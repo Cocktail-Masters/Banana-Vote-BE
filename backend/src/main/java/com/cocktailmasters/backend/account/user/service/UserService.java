@@ -1,6 +1,8 @@
 package com.cocktailmasters.backend.account.user.service;
 
 import com.cocktailmasters.backend.account.user.controller.dto.*;
+import com.cocktailmasters.backend.account.user.controller.dto.item.MyVoteDto;
+import com.cocktailmasters.backend.account.user.controller.dto.item.VoteDto;
 import com.cocktailmasters.backend.account.user.domain.entity.Gender;
 import com.cocktailmasters.backend.account.user.domain.entity.User;
 import com.cocktailmasters.backend.account.user.domain.entity.UserTag;
@@ -10,6 +12,7 @@ import com.cocktailmasters.backend.common.domain.entity.Tag;
 import com.cocktailmasters.backend.common.domain.repository.TagRepository;
 import com.cocktailmasters.backend.season.service.RankingService;
 import com.cocktailmasters.backend.util.exception.NotFoundUserException;
+import com.cocktailmasters.backend.vote.domain.entity.Vote;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -159,6 +162,35 @@ public class UserService {
         }
         userTagRepository.delete(userTag);
         return true;
+    }
+
+    public FindParticipateVotesResponse findParticipateVotes(User user) {
+        return FindParticipateVotesResponse.builder()
+                .votes(user.getPredictions()
+                        .stream()
+                        .map(prediction -> {
+                            Vote vote = prediction.getVoteItem().getVote();
+                            return VoteDto.builder()
+                                    .id(vote.getId())
+                                    .title(vote.getVoteTitle())
+                                    .isClosed(vote.isClosed())
+                                    .predictedPoint(prediction.getPredictionPoints())
+                                    .build();
+                        })
+                        .collect(Collectors.toList()))
+                .build();
+    }
+
+    public FindMyVotesResponse findMyVotes(User user) {
+        return FindMyVotesResponse.builder()
+                .votes(user.getVotes()
+                        .stream()
+                        .map(vote -> MyVoteDto.builder()
+                                .id(vote.getId())
+                                .title(vote.getVoteTitle())
+                                .isClosed(vote.isClosed()).build())
+                        .collect(Collectors.toList()))
+                .build();
     }
 
     private UserTag createUserTag(User user, Tag tag) {
