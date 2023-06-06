@@ -63,19 +63,19 @@ public class OAuth2LoginSuccessHandler extends SimpleUrlAuthenticationSuccessHan
     }
 
     private String makeRedirectUrlWithAccessAndRefresh(String accessToken, String refreshToken) {
-        return UriComponentsBuilder.fromUriString(frontRedirectUri + accessToken + "_" + refreshToken)
+        return UriComponentsBuilder.fromUriString(frontRedirectUri + accessToken + " " + refreshToken)
                 .build()
                 .toUriString();
     }
 
-    private String loginSuccess(HttpServletResponse response, CustomOAuth2User oAuth2User) throws IOException {
+    private String loginSuccess(HttpServletResponse response, CustomOAuth2User oAuth2User) {
         log.info("로그인 성공 및 토큰 생성");
         User user = findUserByEmail(oAuth2User.getEmail());
         String accessToken = jwtService.createAccessToken(user);
         String refreshToken = jwtService.createRefreshToken(user);
 
         log.info("access token : " + accessToken);
-        log.info("refresh token : " + accessToken);
+        log.info("refresh token : " + refreshToken);
 
         jwtService.setAccessTokenHeader(response, accessToken);
         jwtService.setRefreshTokenHeader(response, refreshToken);
