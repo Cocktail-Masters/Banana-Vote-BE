@@ -164,4 +164,34 @@ public class UserController {
         }
         return ResponseEntity.badRequest().build();
     }
+
+    @Operation(summary = "참여한 투표 리스트 조회", description = "회원이 참여한 투표 리스트 조회",
+            security = {@SecurityRequirement(name = SECURITY_SCHEME_NAME)})
+    @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
+    @GetMapping("/votes")
+    public ResponseEntity<FindParticipateVotesResponse> findParticipateVotes(@RequestHeader(name = "Authorization", required = false) String token) {
+        User user = jwtService.findUserByToken(token);
+        return ResponseEntity.ok()
+                .body(userService.findParticipateVotes(user));
+    }
+
+    @Operation(summary = "작성한 투표 리스트 조회", description = "회원이 작성한 투표 리스트 조회",
+            security = {@SecurityRequirement(name = SECURITY_SCHEME_NAME)})
+    @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
+    @GetMapping("/my/votes")
+    public ResponseEntity<FindMyVotesResponse> findMyVotes(@RequestHeader(name = "Authorization", required = false) String token) {
+        User user = jwtService.findUserByToken(token);
+        return ResponseEntity.ok()
+                .body(userService.findMyVotes(user));
+    }
+
+    @Operation(summary = "작성한 댓글 리스트 조회", description = "회원이 작성한 투표 리스트 조회",
+            security = {@SecurityRequirement(name = SECURITY_SCHEME_NAME)})
+    @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
+    @GetMapping("/opinions")
+    public ResponseEntity<FindMyOpinionsResponse> findMyOpinions(@RequestHeader(name = "Authorization", required = false) String token) {
+        User user = jwtService.findUserByToken(token);
+        return ResponseEntity.ok()
+                .body(userService.findMyOpinions(user));
+    }
 }

@@ -68,11 +68,11 @@ public class User extends BaseEntity {
     private String equippedBadgeImageUrl;
 
     @Builder.Default
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private List<Vote> votes = new ArrayList<>();
 
     @Builder.Default
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private List<Opinion> opinions = new ArrayList<>();
 
     @Builder.Default
@@ -80,7 +80,7 @@ public class User extends BaseEntity {
     private List<Agreement> agreements = new ArrayList<>();
 
     @Builder.Default
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private List<Prediction> predictions = new ArrayList<>();
 
     @Builder.Default
