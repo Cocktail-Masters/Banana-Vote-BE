@@ -91,4 +91,31 @@ public class UserBadgeService {
         userBadgeRepository.delete(userBadge.get());
         return true;
     }
+
+    /**
+     * equip badge
+     * 
+     * @param badgeId want to equip
+     * @param userId
+     * @return true or false(badge not found)
+     */
+    @Transactional
+    public boolean changeEquippedBadge(long badgeId, long userId) {
+        Optional<UserBadge> targetBadge = userBadgeRepository.findByBadgeIdAndUserId(badgeId, userId);
+        if (!targetBadge.isPresent())
+            return false;
+
+        List<UserBadge> userBadges = userBadgeRepository.findAllByUserId(userId);
+
+        // find user Badge to equip
+        for (UserBadge userBadge : userBadges) {
+            userBadge.unequipBadge();
+
+            if (userBadge.getId() == badgeId)
+                userBadge.equipBadge();
+        }
+        userBadgeRepository.saveAll(userBadges);
+
+        return true;
+    }
 }
