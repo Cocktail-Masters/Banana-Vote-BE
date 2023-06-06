@@ -4,13 +4,15 @@ import java.time.format.DateTimeFormatter;
 
 import com.cocktailmasters.backend.goods.domain.GoodsType;
 import com.cocktailmasters.backend.goods.domain.entity.Goods;
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.PropertyNamingStrategies;
+import com.fasterxml.jackson.databind.annotation.JsonNaming;
 
 import lombok.Builder;
 import lombok.Getter;
 
 @Getter
 @Builder
+@JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
 public class GoodsItemDto {
 
     private long id;
@@ -19,22 +21,16 @@ public class GoodsItemDto {
     private GoodsType type;
     private long price;
 
-    @JsonProperty("image_url")
     private String imageUrl;
 
-    @JsonProperty("start_date")
     private String startDate;
 
-    @JsonProperty("end_date")
     private String endDate;
 
-    @JsonProperty("sell_count")
     private long sellCount;
 
-    @JsonProperty("use_period")
     private long validPeriod;
 
-    @JsonProperty("remaining_quantity")
     private long remainingQuantity;
 
     public static GoodsItemDto createGoodItemDto(Goods goods) {

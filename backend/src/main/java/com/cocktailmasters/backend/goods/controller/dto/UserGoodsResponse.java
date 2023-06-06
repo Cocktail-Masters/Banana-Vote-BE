@@ -4,29 +4,31 @@ import java.time.format.DateTimeFormatter;
 
 import com.cocktailmasters.backend.goods.domain.GoodsType;
 import com.cocktailmasters.backend.goods.domain.entity.UserGoods;
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.PropertyNamingStrategies;
+import com.fasterxml.jackson.databind.annotation.JsonNaming;
 
 import lombok.Builder;
 import lombok.Getter;
 
 @Getter
 @Builder
+@JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
 public class UserGoodsResponse {
 
     private long id;
+
     private String name;
+
     private String description;
 
-    @JsonProperty("image_url")
     private String imageUrl;
 
     private GoodsType type;
+
     private long ea;
 
-    @JsonProperty("expiration_date")
     private String expirationDate;
 
-    @JsonProperty("is_using")
     private boolean isUsing;
 
     public static UserGoodsResponse createUserGoodsReponse(UserGoods userGoods) {

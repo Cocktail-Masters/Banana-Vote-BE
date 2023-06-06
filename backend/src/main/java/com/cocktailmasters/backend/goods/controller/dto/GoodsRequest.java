@@ -3,7 +3,8 @@ package com.cocktailmasters.backend.goods.controller.dto;
 import java.time.LocalDate;
 
 import com.cocktailmasters.backend.goods.domain.GoodsType;
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.PropertyNamingStrategies;
+import com.fasterxml.jackson.databind.annotation.JsonNaming;
 
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
@@ -14,6 +15,7 @@ import lombok.NoArgsConstructor;
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
+@JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
 public class GoodsRequest {
 
     @NotNull
@@ -29,18 +31,13 @@ public class GoodsRequest {
     @Min(value = 0, message = "음수 가격은 허용하지 않습니다")
     private long price;
 
-    @JsonProperty("image_url")
     private String imageUrl;
 
-    @JsonProperty("use_period")
     private long validPeriod;
 
-    @JsonProperty("start_date")
     private LocalDate startDate;
 
-    @JsonProperty("end_date")
     private LocalDate endDate;
 
-    @JsonProperty("remaining_quantity")
     private long remainingQuantity;
 }

@@ -3,34 +3,29 @@ package com.cocktailmasters.backend.report.controller.dto.item;
 import com.cocktailmasters.backend.report.domain.ReportedContentType;
 import com.cocktailmasters.backend.report.domain.ReportedReasonType;
 import com.cocktailmasters.backend.report.domain.entity.Report;
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.PropertyNamingStrategies;
+import com.fasterxml.jackson.databind.annotation.JsonNaming;
 
 import lombok.Builder;
 import lombok.Getter;
 
 @Getter
 @Builder
+@JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
 public class ReportItemDto {
 
-    @JsonProperty("report_id")
     private long reportId;
 
-    @JsonProperty("reporter_id")
     private Long reporterId;
 
-    @JsonProperty("reported_content_type")
     private ReportedContentType reportedContentType;
 
-    @JsonProperty("reported_content_id")
     private Long reportedContentId;
 
-    @JsonProperty("reported_reason_type")
     private ReportedReasonType reportedReasonType;
 
-    @JsonProperty("reported_reason_detail")
     private String ReportedReasonDetail;
 
-    @JsonProperty("is_checked")
     private boolean isChecked;
 
     public static ReportItemDto createReportItem(Report report) {
