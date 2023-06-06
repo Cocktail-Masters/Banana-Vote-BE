@@ -22,4 +22,12 @@ public class UserBadge extends BaseEntity {
 
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private Badge badge;
+
+    public void equipBadge() {
+        this.isEquipped = true;
+    }
+
+    public void unequipBadge() {
+        this.isEquipped = false;
+    }
 }
