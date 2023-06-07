@@ -106,15 +106,26 @@ public class UserBadgeService {
             return false;
 
         List<UserBadge> userBadges = userBadgeRepository.findAllByUserId(userId);
+        String equippedBadgeImageUrl = "";
 
         // find user Badge to equip
         for (UserBadge userBadge : userBadges) {
             userBadge.unequipBadge();
 
-            if (userBadge.getId() == badgeId)
+            if (userBadge.getId() == badgeId) {
                 userBadge.equipBadge();
+                equippedBadgeImageUrl = userBadge.getBadge().getBadgeImageUrl();
+            }
         }
         userBadgeRepository.saveAll(userBadges);
+
+        // change equipped badge image
+        Optional<User> user = userRepository.findById(userId);
+        if (!user.isPresent())
+            return false;
+
+        user.get().updateBadgeImage(equippedBadgeImageUrl);
+        userRepository.save(user.get());
 
         return true;
     }
