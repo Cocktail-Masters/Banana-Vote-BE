@@ -29,7 +29,13 @@ public class UserGoods extends BaseEntity {
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private Goods goods;
 
-    public void addQuantity(int quanity) {
-        goodsAmount += quanity;
+    public int addQuantity(int quanity) {
+        this.goodsAmount += quanity;
+        return this.goodsAmount;
+    }
+
+    public boolean toggleUsing() {
+        this.isUsing = !this.isUsing;
+        return this.isUsing;
     }
 }
