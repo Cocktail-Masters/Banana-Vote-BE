@@ -76,4 +76,43 @@ public class UserGoodsService {
         userGoodsRepository.save(userGoods);
         return true;
     }
+
+    /**
+     * use Goods
+     * 
+     * @param goodsId to use
+     * @param userId
+     * @return 1(success) or 0(not found) or -1(invalid request)
+     */
+    @Transactional
+    public int useGoods(long goodsId, long userId) {
+        Optional<UserGoods> userGoods = userGoodsRepository.findByGoodsIdAndUserId(goodsId, userId);
+
+        // if goods not found
+        if (!userGoods.isPresent())
+            return 0;
+
+        switch (userGoods.get().getGoods().getGoodsType()) {
+            case COSMETIC:
+                userGoods.get().toggleUsing();
+                userGoodsRepository.save(userGoods.get());
+                break;
+            case MEGAPHONE:
+                // invalid amount
+                if (userGoods.get().getGoodsAmount() < 0)
+                    return -1;
+
+                // apply megaphone
+                // TODO : add for megaphone logic
+
+                // update amount
+                if (userGoods.get().addQuantity(-1) == 0)
+                    userGoodsRepository.delete(userGoods.get());
+                break;
+            default:
+                // unknown type
+                return -1;
+        }
+        return 1;
+    }
 }
