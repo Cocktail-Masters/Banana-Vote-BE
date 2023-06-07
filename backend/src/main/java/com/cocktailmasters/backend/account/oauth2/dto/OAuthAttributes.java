@@ -70,8 +70,6 @@ public class OAuthAttributes {
                 .socialType(socialType)
                 .socialId(oAuth2UserInfo.getId())
                 .email(UUID.randomUUID() + "@social.com")
-                .nickname(oAuth2UserInfo.getNickname())
-                .gender(Gender.findByGenderName(oAuth2UserInfo.getGender()))
                 .role(Role.GUEST)
                 .build();
     }

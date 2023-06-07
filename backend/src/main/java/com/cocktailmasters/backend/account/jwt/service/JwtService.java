@@ -49,11 +49,27 @@ public class JwtService {
     private final UserRepository userRepository;
 
     public String createAccessToken(User user) {
-        return createToken(ACCESS_TOKEN_SUBJECT, user, accessTokenExpirationDate);
+        Claims claims = Jwts.claims();
+        claims.put(ID_CLAIM, user.getId());
+        claims.put(EMAIL_CLAIM, user.getEmail());
+        claims.put(ROLE_CLAIM, user.getRole());
+        return Jwts.builder()
+                .setSubject(ACCESS_TOKEN_SUBJECT)
+                .setClaims(claims)
+                .setExpiration(createExpireDate(accessTokenExpirationDate))
+                .signWith(SignatureAlgorithm.HS256, secretKey)
+                .compact();
     }
 
     public String createRefreshToken(User user) {
-        return createToken(REFRESH_TOKEN_SUBJECT, user, accessTokenExpirationDate);
+        Claims claims = Jwts.claims();
+        claims.put(ID_CLAIM, user.getId());
+        return Jwts.builder()
+                .setSubject(REFRESH_TOKEN_SUBJECT)
+                .setClaims(claims)
+                .setExpiration(createExpireDate(refreshTokenExpirationDate))
+                .signWith(SignatureAlgorithm.HS256, secretKey)
+                .compact();
     }
 
     public void setAccessTokenHeader(HttpServletResponse response, String accessToken) {
@@ -108,19 +124,6 @@ public class JwtService {
     public User findUserByToken(String token) {
         return userRepository.findByEmail((String) getPayload(token.replace(BEARER, "")).get(EMAIL_CLAIM))
                 .orElseThrow(() -> new NotFoundUserException());
-    }
-
-    private String createToken(String tokenType, User user, Long tokenExpirationDate) {
-        Claims claims = Jwts.claims();
-        claims.put(ID_CLAIM, user.getId());
-        claims.put(EMAIL_CLAIM, user.getEmail());
-        claims.put(ROLE_CLAIM, user.getRole());
-        return Jwts.builder()
-                .setSubject(tokenType)
-                .setClaims(claims)
-                .setExpiration(createExpireDate(tokenExpirationDate))
-                .signWith(SignatureAlgorithm.HS256, secretKey)
-                .compact();
     }
 
     private Date createExpireDate(Long tokenExpirationDate) {
