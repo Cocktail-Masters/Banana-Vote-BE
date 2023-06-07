@@ -189,7 +189,11 @@ public class UserController {
             @SecurityRequirement(name = SECURITY_SCHEME_NAME) })
     @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
     @PatchMapping("/goods/{goodsId}")
-    public ResponseEntity<String> useGoods(@PathVariable long goodsId) {
+    public ResponseEntity<String> useGoods(
+            @RequestHeader(name = "Authorization", required = false) String token,
+            @PathVariable long goodsId) {
+        User user = jwtService.findUserByToken(token);
+
         return null;
     }
 }
