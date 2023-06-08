@@ -20,7 +20,7 @@ public class Prediction extends BaseEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     private User user;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     private VoteItem voteItem;
 
     public void updatePredictionPoints(Long predictionPoints) {

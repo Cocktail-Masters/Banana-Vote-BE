@@ -2,13 +2,19 @@ package com.cocktailmasters.backend.account.user.controller.dto.item;
 
 import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
-import jakarta.validation.constraints.NotNull;
+import lombok.Builder;
 import lombok.Getter;
 
-@Getter
-@JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
-public class TagDto {
+import java.time.LocalDateTime;
 
-    @NotNull
-    private String tagName;
+@Getter
+@Builder
+@JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
+public class OpinionDto {
+
+    private long id;
+    private String content;
+    private int nAgree;
+    private int nDisAgree;
+    private LocalDateTime createdDate;
 }

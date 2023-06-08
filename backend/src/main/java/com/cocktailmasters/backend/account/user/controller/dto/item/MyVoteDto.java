@@ -1,18 +1,16 @@
-package com.cocktailmasters.backend.vote.controller.dto.vote;
+package com.cocktailmasters.backend.account.user.controller.dto.item;
 
-import com.cocktailmasters.backend.vote.controller.dto.item.VoteDto;
 import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
 import lombok.Builder;
 import lombok.Getter;
 
-import java.util.List;
-
 @Getter
 @Builder
 @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
-public class FindVotesResponse {
+public class MyVoteDto {
 
-    private Long totalCount;
-    private List<VoteDto> votes;
+    private long id;
+    private String title;
+    private boolean isClosed;
 }

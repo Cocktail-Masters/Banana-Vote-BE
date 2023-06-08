@@ -3,7 +3,7 @@ package com.cocktailmasters.backend.vote.controller.dto.opinion;
 import com.cocktailmasters.backend.account.user.domain.entity.User;
 import com.cocktailmasters.backend.vote.domain.entity.Agreement;
 import com.cocktailmasters.backend.vote.domain.entity.Opinion;
-import com.fasterxml.jackson.databind.PropertyNamingStrategy;
+import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
@@ -15,7 +15,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@JsonNaming(PropertyNamingStrategy.SnakeCaseStrategy.class)
+@JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
 public class CreateAgreementRequest {
 
     @NotNull

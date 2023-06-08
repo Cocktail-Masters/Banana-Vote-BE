@@ -170,30 +170,4 @@ public class UserController {
         return ResponseEntity.badRequest().build();
     }
 
-    @Operation(summary = "뱃지 사용하기(변경)", description = "장착할 뱃지를 소유하지 않았을 경우엔 Not found", security = {
-            @SecurityRequirement(name = SECURITY_SCHEME_NAME) })
-    @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
-    @PatchMapping("/badges/{badgeId}")
-    public ResponseEntity<String> useBadge(
-            @RequestHeader(name = "Authorization", required = false) String token,
-            @PathVariable long badgeId) {
-        User user = jwtService.findUserByToken(token);
-
-        if (userBadgeService.changeEquippedBadge(badgeId, user.getId()))
-            return ResponseEntity.ok().build();
-        else
-            return ResponseEntity.notFound().build();
-    }
-
-    @Operation(summary = "굿즈 사용 하기", description = "현재 굿즈 종류(코스메틱 + 확성기)", security = {
-            @SecurityRequirement(name = SECURITY_SCHEME_NAME) })
-    @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
-    @PatchMapping("/goods/{goodsId}")
-    public ResponseEntity<String> useGoods(
-            @RequestHeader(name = "Authorization", required = false) String token,
-            @PathVariable long goodsId) {
-        User user = jwtService.findUserByToken(token);
-
-        return null;
-    }
 }

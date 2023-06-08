@@ -1,6 +1,10 @@
 package com.cocktailmasters.backend.account.user.service;
 
 import com.cocktailmasters.backend.account.user.controller.dto.*;
+import com.cocktailmasters.backend.account.user.controller.dto.item.MyVoteDto;
+import com.cocktailmasters.backend.account.user.controller.dto.item.OpinionDto;
+import com.cocktailmasters.backend.account.user.controller.dto.item.UserDto;
+import com.cocktailmasters.backend.account.user.controller.dto.item.VoteDto;
 import com.cocktailmasters.backend.account.user.domain.entity.Gender;
 import com.cocktailmasters.backend.account.user.domain.entity.User;
 import com.cocktailmasters.backend.account.user.domain.entity.UserTag;
@@ -10,8 +14,10 @@ import com.cocktailmasters.backend.common.domain.entity.Tag;
 import com.cocktailmasters.backend.common.domain.repository.TagRepository;
 import com.cocktailmasters.backend.season.service.RankingService;
 import com.cocktailmasters.backend.util.exception.NotFoundUserException;
+import com.cocktailmasters.backend.vote.domain.entity.Vote;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -159,6 +165,75 @@ public class UserService {
         }
         userTagRepository.delete(userTag);
         return true;
+    }
+
+    @Transactional
+    public FindParticipateVotesResponse findParticipateVotes(User user) {
+        return FindParticipateVotesResponse.builder()
+                .votes(user.getPredictions()
+                        .stream()
+                        .map(prediction -> {
+                            Vote vote = prediction.getVoteItem().getVote();
+                            return VoteDto.builder()
+                                    .id(vote.getId())
+                                    .title(vote.getVoteTitle())
+                                    .isClosed(vote.isClosed())
+                                    .predictedPoint(prediction.getPredictionPoints())
+                                    .build();
+                        })
+                        .collect(Collectors.toList()))
+                .build();
+    }
+
+    @Transactional
+    public FindMyVotesResponse findMyVotes(User user) {
+        return FindMyVotesResponse.builder()
+                .votes(user.getVotes()
+                        .stream()
+                        .map(vote -> MyVoteDto.builder()
+                                .id(vote.getId())
+                                .title(vote.getVoteTitle())
+                                .isClosed(vote.isClosed())
+                                .build())
+                        .collect(Collectors.toList()))
+                .build();
+    }
+
+    @Transactional
+    public FindMyOpinionsResponse findMyOpinions(User user) {
+        return FindMyOpinionsResponse.builder()
+                .opinions(user.getOpinions()
+                        .stream()
+                        .map(opinion -> OpinionDto.builder()
+                                .id(opinion.getId())
+                                .content(opinion.getOpinionContent())
+                                .nAgree(opinion.getAgreedNumber())
+                                .nDisAgree(opinion.getDisagreedNumber())
+                                .createdDate(opinion.getCreatedDate())
+                                .build())
+                        .collect(Collectors.toList()))
+                .build();
+    }
+
+    public FindAllUsersResponse findAllUsers(Pageable pageable) {
+        userRepository.findAll(pageable);
+        return FindAllUsersResponse.builder()
+                .users(userRepository.findAll(pageable)
+                        .stream()
+                        .map(user -> UserDto.builder()
+                                .id(user.getId())
+                                .nickname(user.getNickname())
+                                .role(user.getRole())
+                                .isActive(user.isActive())
+                                .build())
+                        .collect(Collectors.toList()))
+                .build();
+    }
+
+    public FindRoleResponse findRole(User user) {
+        return FindRoleResponse.builder()
+                .role(user.getRole())
+                .build();
     }
 
     private UserTag createUserTag(User user, Tag tag) {
