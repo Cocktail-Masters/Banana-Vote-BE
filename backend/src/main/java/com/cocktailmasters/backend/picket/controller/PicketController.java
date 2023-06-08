@@ -6,6 +6,7 @@ import java.util.List;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -92,8 +93,10 @@ public class PicketController {
             return ResponseEntity.badRequest().build();
     }
 
-    @Operation(summary = "피켓 내리기(관리자용)", description = "해당 피켓 삭제, position은 필수 옵션")
+    @Operation(summary = "피켓 내리기(관리자용)", description = "해당 피켓 삭제, position은 필수 옵션", security = {
+            @SecurityRequirement(name = SECURITY_SCHEME_NAME) })
     @PreAuthorize("hasRole('ADMIN')")
+    @DeleteMapping("/{voteId}")
     public ResponseEntity<String> removePicket(@PathVariable long voteId,
             @RequestParam(required = true) int position) {
         if (picketService.deletePicket(voteId, position))

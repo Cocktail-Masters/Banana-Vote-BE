@@ -4,22 +4,22 @@ import java.time.format.DateTimeFormatter;
 
 import com.cocktailmasters.backend.megaphone.domain.dto.item.UserInfoItem;
 import com.cocktailmasters.backend.megaphone.domain.entity.Megaphone;
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.PropertyNamingStrategies;
+import com.fasterxml.jackson.databind.annotation.JsonNaming;
 
 import lombok.Builder;
 import lombok.Getter;
 
 @Getter
 @Builder
+@JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
 public class MegaphoneResponse {
     private long id;
 
-    @JsonProperty("end_date_time")
     private String endDateTime;
 
     private String content;
 
-    @JsonProperty("vote_link")
     private String voteLink;
 
     private UserInfoItem user;

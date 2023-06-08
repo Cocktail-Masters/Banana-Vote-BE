@@ -2,25 +2,25 @@ package com.cocktailmasters.backend.goods.controller.dto;
 
 import com.cocktailmasters.backend.goods.domain.entity.Badge;
 import com.cocktailmasters.backend.goods.domain.entity.UserBadge;
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.PropertyNamingStrategies;
+import com.fasterxml.jackson.databind.annotation.JsonNaming;
 
 import lombok.Builder;
 import lombok.Getter;
 
 @Getter
 @Builder
+@JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
 public class UserBadgeResponse {
 
     private long id;
 
     private String name;
 
-    @JsonProperty("image_url")
     private String imageUrl;
 
     private String description;
 
-    @JsonProperty("is_selling")
     private boolean isSelling;
 
     public static UserBadgeResponse createUserBadgeResponse(UserBadge userBadge) {

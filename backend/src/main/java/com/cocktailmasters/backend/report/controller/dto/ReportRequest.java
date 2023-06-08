@@ -2,6 +2,8 @@ package com.cocktailmasters.backend.report.controller.dto;
 
 import com.cocktailmasters.backend.report.domain.ReportedContentType;
 import com.cocktailmasters.backend.report.domain.ReportedReasonType;
+import com.fasterxml.jackson.databind.PropertyNamingStrategies;
+import com.fasterxml.jackson.databind.annotation.JsonNaming;
 
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
@@ -11,6 +13,7 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
+@JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
 public class ReportRequest {
 
     @NotNull

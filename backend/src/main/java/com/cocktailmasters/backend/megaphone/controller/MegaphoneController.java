@@ -3,6 +3,7 @@ package com.cocktailmasters.backend.megaphone.controller;
 import java.util.List;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -12,8 +13,10 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.cocktailmasters.backend.megaphone.domain.dto.MegaphoneResponse;
 import com.cocktailmasters.backend.megaphone.service.MegaphoneService;
+import static com.cocktailmasters.backend.config.SwaggerConfig.SECURITY_SCHEME_NAME;
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 
@@ -37,7 +40,9 @@ public class MegaphoneController {
             return ResponseEntity.ok().body(megaphoneResponses);
     }
 
-    @Operation(summary = "확성기 지우기(관리자용)", description = "확성기 목록 중에 삭제")
+    @Operation(summary = "확성기 지우기(관리자용)", description = "확성기 목록 중에 삭제", security = {
+            @SecurityRequirement(name = SECURITY_SCHEME_NAME) })
+    @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/{megaphoneId}")
     public ResponseEntity<String> deleteMegaphones(@PathVariable long megaphoneId) {
         if (!megaphoneService.deleteMegaphones(megaphoneId))
