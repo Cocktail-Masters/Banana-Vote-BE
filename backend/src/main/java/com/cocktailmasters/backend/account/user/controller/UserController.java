@@ -11,6 +11,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -18,7 +19,7 @@ import org.springframework.web.bind.annotation.*;
 import static com.cocktailmasters.backend.config.SwaggerConfig.SECURITY_SCHEME_NAME;
 
 @Slf4j
-@Tag(name = "user", description = "회원 관리")
+@Tag(name = "사용자", description = "회원 관리")
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/users")
@@ -193,5 +194,25 @@ public class UserController {
         User user = jwtService.findUserByToken(token);
         return ResponseEntity.ok()
                 .body(userService.findMyOpinions(user));
+    }
+
+    @Operation(summary = "회원 리스트 조회", description = "회원의 전체 리스트 조회 (관리자 전용)",
+            security = {@SecurityRequirement(name = SECURITY_SCHEME_NAME)})
+    @PreAuthorize("hasAnyRole('ADMIN')")
+    @GetMapping("")
+    public ResponseEntity<FindAllUsersResponse> findAllUsers(@RequestHeader(name = "Authorization", required = false) String token,
+                                                             Pageable pageable) {
+        return ResponseEntity.ok()
+                .body(userService.findAllUsers(pageable));
+    }
+
+    @Operation(summary = "회원의 역할(권환) 조회", description = "회원의 역할(role;권환) 조회",
+            security = {@SecurityRequirement(name = SECURITY_SCHEME_NAME)})
+    @PreAuthorize("hasAnyRole('ADMIN', 'USER', 'GUEST')")
+    @GetMapping("/role")
+    public ResponseEntity<FindRoleResponse> findRole(@RequestHeader(name = "Authorization", required = false) String token) {
+        User user = jwtService.findUserByToken(token);
+        return ResponseEntity.ok()
+                .body(userService.findRole(user));
     }
 }
