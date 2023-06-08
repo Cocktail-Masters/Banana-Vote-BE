@@ -5,6 +5,7 @@ import com.cocktailmasters.backend.account.user.controller.dto.*;
 import com.cocktailmasters.backend.account.user.domain.entity.User;
 import com.cocktailmasters.backend.account.user.service.UserService;
 import com.cocktailmasters.backend.goods.service.UserBadgeService;
+import com.cocktailmasters.backend.goods.service.UserGoodsService;
 import com.nimbusds.oauth2.sdk.http.HTTPResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
@@ -28,6 +29,7 @@ public class UserController {
     private final JwtService jwtService;
     private final UserService userService;
     private final UserBadgeService userBadgeService;
+    private final UserGoodsService userGoodsService;
 
     @Operation(summary = "일반 회원 가입", description = "일반 회원 가입")
     @PostMapping("/sign-up")
@@ -170,4 +172,37 @@ public class UserController {
         return ResponseEntity.badRequest().build();
     }
 
+    @Operation(summary = "뱃지 사용하기(변경)", description = "장착할 뱃지를 소유하지 않았을 경우엔 Not found", security = {
+            @SecurityRequirement(name = SECURITY_SCHEME_NAME) })
+    @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
+    @PatchMapping("/badges/{badgeId}")
+    public ResponseEntity<String> useBadge(
+            @RequestHeader(name = "Authorization", required = false) String token,
+            @PathVariable long badgeId) {
+        User user = jwtService.findUserByToken(token);
+
+        if (userBadgeService.changeEquippedBadge(badgeId, user.getId()))
+            return ResponseEntity.ok().build();
+        else
+            return ResponseEntity.notFound().build();
+    }
+
+    @Operation(summary = "굿즈 사용 하기", description = "현재 굿즈 종류(코스메틱 or 확성기), 확성기 사용 시에는 추가 정보 필요", security = {
+            @SecurityRequirement(name = SECURITY_SCHEME_NAME) })
+    @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
+    @PatchMapping("/goods/{goodsId}")
+    public ResponseEntity<String> useGoods(
+            @RequestHeader(name = "Authorization", required = false) String token,
+            @PathVariable long goodsId,
+            @RequestBody MegaphoneRequest megaphoneRequest) {
+        User user = jwtService.findUserByToken(token);
+
+        int result = userGoodsService.useGoods(goodsId, user.getId(), megaphoneRequest);
+        if (result == 1)
+            return ResponseEntity.ok().build();
+        else if (result == 0)
+            return ResponseEntity.notFound().build();
+        else
+            return ResponseEntity.badRequest().build();
+    }
 }
