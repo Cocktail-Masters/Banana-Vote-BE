@@ -34,10 +34,7 @@ public class Goods extends BaseEntity {
     private String goodsImageUrl;
 
     @Builder.Default
-    private long megaphonePeriod = 7L;
-
-    @Builder.Default
-    private Long goodsValidityPeriod = 30L;
+    private Long goodsUsingPeriod = 30L;
 
     @NotNull
     private Long goodsPrice;
@@ -74,7 +71,7 @@ public class Goods extends BaseEntity {
         this.goodsDescription = goodsRequest.getDescription();
         this.goodsImageUrl = goodsRequest.getImageUrl();
         this.goodsPrice = goodsRequest.getPrice();
-        this.goodsValidityPeriod = goodsRequest.getValidPeriod();
+        this.goodsUsingPeriod = goodsRequest.getValidPeriod();
         this.goodsRemainingQuantity = goodsRequest.getRemainingQuantity();
         this.goodsType = goodsRequest.getType();
         this.saleStartDate = goodsRequest.getStartDate();
