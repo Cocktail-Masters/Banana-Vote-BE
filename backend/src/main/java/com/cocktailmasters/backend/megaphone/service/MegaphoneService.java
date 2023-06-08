@@ -6,7 +6,11 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import com.cocktailmasters.backend.account.user.controller.dto.MegaphoneRequest;
+import com.cocktailmasters.backend.account.user.domain.entity.User;
+import com.cocktailmasters.backend.account.user.domain.repository.UserRepository;
 import com.cocktailmasters.backend.megaphone.domain.dto.MegaphoneResponse;
 import com.cocktailmasters.backend.megaphone.domain.entity.Megaphone;
 import com.cocktailmasters.backend.megaphone.domain.repository.MegaphoneRepository;
@@ -18,6 +22,7 @@ import lombok.RequiredArgsConstructor;
 public class MegaphoneService {
 
     private final MegaphoneRepository megaphoneRepository;
+    private final UserRepository userRepository;
 
     /**
      * get list of megaphone
@@ -51,6 +56,35 @@ public class MegaphoneService {
             return false;
 
         megaphoneRepository.delete(megaphone.get());
+        return true;
+    }
+
+    /**
+     * add megaphone to expose
+     * 
+     * @param megaphoneRequest
+     * @param userId
+     * @return true or false(invalid megaphone)
+     */
+    @Transactional
+    public boolean addMegaphone(MegaphoneRequest megaphoneRequest, long period, long userId) {
+        if (megaphoneRequest.getMegaphoneContent().equals(""))
+            return false;
+        if (period <= 0)
+            return false;
+
+        Optional<User> user = userRepository.findById(userId);
+        if (!user.isPresent())
+            return false;
+
+        Megaphone megaphone = Megaphone.builder()
+                .megaphoneContent(megaphoneRequest.getMegaphoneContent())
+                .voteLink(megaphoneRequest.getVoteLink())
+                .megaphoneEndDateTime(LocalDateTime.now().plusDays(period))
+                .user(user.get())
+                .build();
+
+        megaphoneRepository.save(megaphone);
         return true;
     }
 }
