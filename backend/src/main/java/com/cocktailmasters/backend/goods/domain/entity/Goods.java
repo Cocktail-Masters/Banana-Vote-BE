@@ -34,6 +34,9 @@ public class Goods extends BaseEntity {
     private String goodsImageUrl;
 
     @Builder.Default
+    private long megaphonePeriod = 7L;
+
+    @Builder.Default
     private Long goodsValidityPeriod = 30L;
 
     @NotNull
