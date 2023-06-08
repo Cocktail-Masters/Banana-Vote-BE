@@ -3,6 +3,7 @@ package com.cocktailmasters.backend.account.user.service;
 import com.cocktailmasters.backend.account.user.controller.dto.*;
 import com.cocktailmasters.backend.account.user.controller.dto.item.MyVoteDto;
 import com.cocktailmasters.backend.account.user.controller.dto.item.OpinionDto;
+import com.cocktailmasters.backend.account.user.controller.dto.item.UserDto;
 import com.cocktailmasters.backend.account.user.controller.dto.item.VoteDto;
 import com.cocktailmasters.backend.account.user.domain.entity.Gender;
 import com.cocktailmasters.backend.account.user.domain.entity.User;
@@ -16,6 +17,7 @@ import com.cocktailmasters.backend.util.exception.NotFoundUserException;
 import com.cocktailmasters.backend.vote.domain.entity.Vote;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -210,6 +212,27 @@ public class UserService {
                                 .createdDate(opinion.getCreatedDate())
                                 .build())
                         .collect(Collectors.toList()))
+                .build();
+    }
+
+    public FindAllUsersResponse findAllUsers(Pageable pageable) {
+        userRepository.findAll(pageable);
+        return FindAllUsersResponse.builder()
+                .users(userRepository.findAll(pageable)
+                        .stream()
+                        .map(user -> UserDto.builder()
+                                .id(user.getId())
+                                .nickname(user.getNickname())
+                                .role(user.getRole())
+                                .isActive(user.isActive())
+                                .build())
+                        .collect(Collectors.toList()))
+                .build();
+    }
+
+    public FindRoleResponse findRole(User user) {
+        return FindRoleResponse.builder()
+                .role(user.getRole())
                 .build();
     }
 
