@@ -1,24 +1,23 @@
 package com.cocktailmasters.backend.picket.controller.dto.item;
 
 import com.cocktailmasters.backend.picket.domain.entity.Picket;
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.PropertyNamingStrategies;
+import com.fasterxml.jackson.databind.annotation.JsonNaming;
 
 import lombok.Builder;
 import lombok.Getter;
 
 @Getter
 @Builder
+@JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
 public class PicketItem {
 
     private long id;
 
-    @JsonProperty("vote_id")
     private long voteId;
 
-    @JsonProperty("owner_id")
     private long ownerId;
 
-    @JsonProperty("picket_image_url")
     private String picketImageUrl;
 
     private int position;

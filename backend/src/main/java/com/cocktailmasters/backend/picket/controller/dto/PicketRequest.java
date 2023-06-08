@@ -1,6 +1,7 @@
 package com.cocktailmasters.backend.picket.controller.dto;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.PropertyNamingStrategies;
+import com.fasterxml.jackson.databind.annotation.JsonNaming;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -9,16 +10,14 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
+@JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
 public class PicketRequest {
 
     private int position = -1;
 
-    @JsonProperty("picket_image_url")
     private String picketImageUrl = "";
 
-    @JsonProperty("current_price")
     private long curPrice = -1;
 
-    @JsonProperty("paid_price")
     private long paidPrice = -1;
 }

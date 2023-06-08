@@ -2,24 +2,23 @@ package com.cocktailmasters.backend.ban.controller.dto;
 
 import com.cocktailmasters.backend.account.user.domain.entity.User;
 import com.cocktailmasters.backend.ban.domain.entity.BanLog;
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.PropertyNamingStrategies;
+import com.fasterxml.jackson.databind.annotation.JsonNaming;
 
 import lombok.Builder;
 import lombok.Getter;
 
 @Getter
 @Builder
+@JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
 public class BanLogResponse {
-    @JsonProperty("user_name")
+
     private String userName;
 
-    @JsonProperty("user_id")
     private long userId;
 
-    @JsonProperty("ban_reason")
     private String banReason;
 
-    @JsonProperty("ban_count")
     private long banCount;
 
     public static BanLogResponse createLogReponse(BanLog banLog) {
