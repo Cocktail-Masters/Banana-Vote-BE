@@ -2,14 +2,14 @@ package com.cocktailmasters.backend.vote.controller.dto.item;
 
 import com.cocktailmasters.backend.vote.domain.entity.Vote;
 import com.cocktailmasters.backend.vote.domain.entity.VoteItem;
-import com.fasterxml.jackson.databind.PropertyNamingStrategy;
+import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
 import lombok.Builder;
 import lombok.Getter;
 
 @Getter
 @Builder
-@JsonNaming(PropertyNamingStrategy.SnakeCaseStrategy.class)
+@JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
 public class VoteItemCreateDto {
 
     private int itemNumber;

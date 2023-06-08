@@ -1,7 +1,7 @@
 package com.cocktailmasters.backend.vote.controller.dto.item;
 
 import com.cocktailmasters.backend.vote.domain.entity.Vote;
-import com.fasterxml.jackson.databind.PropertyNamingStrategy;
+import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
 import lombok.Builder;
 import lombok.Getter;
@@ -12,7 +12,7 @@ import java.util.stream.Collectors;
 
 @Getter
 @Builder
-@JsonNaming(PropertyNamingStrategy.SnakeCaseStrategy.class)
+@JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
 public class VoteDetailDto {
 
     private Long id;

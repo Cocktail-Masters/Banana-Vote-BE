@@ -1,15 +1,14 @@
 package com.cocktailmasters.backend.vote.controller.dto.item;
 
 import com.cocktailmasters.backend.account.user.domain.entity.User;
-import com.fasterxml.jackson.databind.PropertyNamingStrategy;
+import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
-
 import lombok.Builder;
 import lombok.Getter;
 
 @Getter
 @Builder
-@JsonNaming(PropertyNamingStrategy.SnakeCaseStrategy.class)
+@JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
 public class WriterDto {
 
     private Long id;
