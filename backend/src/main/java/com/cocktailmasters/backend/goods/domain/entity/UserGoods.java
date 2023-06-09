@@ -34,8 +34,13 @@ public class UserGoods extends BaseEntity {
         return this.goodsAmount;
     }
 
-    public boolean toggleUsing() {
-        this.isUsing = !this.isUsing;
-        return this.isUsing;
+    public void startUsing(long date) {
+        this.isUsing = true;
+        this.goodsExpirationDate = LocalDate.now().plusDays(date);
+    }
+
+    public LocalDate extendDate(long date) {
+        this.goodsExpirationDate = this.goodsExpirationDate.plusDays(date);
+        return this.goodsExpirationDate;
     }
 }
