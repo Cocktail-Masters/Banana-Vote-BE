@@ -64,13 +64,15 @@ public class MegaphoneService {
      * 
      * @param megaphoneRequest
      * @param userId
-     * @return true or false(invalid megaphone)
+     * @return true or false(invalid megaphone or count over)
      */
     @Transactional
     public boolean addMegaphone(MegaphoneRequest megaphoneRequest, long period, long userId) {
         if (megaphoneRequest.getMegaphoneContent().equals(""))
             return false;
         if (period <= 0)
+            return false;
+        if (megaphoneRepository.countByUserId(userId) >= 3)
             return false;
 
         Optional<User> user = userRepository.findById(userId);
