@@ -39,7 +39,9 @@ public class UserGoodsResponse {
                 .imageUrl(userGoods.getGoods().getGoodsImageUrl())
                 .type(userGoods.getGoods().getGoodsType())
                 .ea(userGoods.getGoodsAmount())
-                .expirationDate(userGoods.getGoodsExpirationDate().format(DateTimeFormatter.ISO_LOCAL_DATE))
+                .expirationDate(userGoods.getGoodsExpirationDate() == null
+                        ? userGoods.getGoodsExpirationDate().format(DateTimeFormatter.ISO_LOCAL_DATE)
+                        : "")
                 .isUsing(userGoods.isUsing())
                 .build();
     }
