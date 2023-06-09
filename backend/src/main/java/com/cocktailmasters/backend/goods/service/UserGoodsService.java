@@ -8,6 +8,7 @@ import java.util.Optional;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.cocktailmasters.backend.account.user.controller.dto.MegaphoneRequest;
 import com.cocktailmasters.backend.account.user.domain.entity.User;
 import com.cocktailmasters.backend.account.user.domain.repository.UserRepository;
 import com.cocktailmasters.backend.goods.controller.dto.UserGoodsResponse;
@@ -15,6 +16,7 @@ import com.cocktailmasters.backend.goods.domain.entity.Goods;
 import com.cocktailmasters.backend.goods.domain.entity.UserGoods;
 import com.cocktailmasters.backend.goods.domain.repository.GoodsRepository;
 import com.cocktailmasters.backend.goods.domain.repository.UserGoodsRepository;
+import com.cocktailmasters.backend.megaphone.service.MegaphoneService;
 
 import lombok.RequiredArgsConstructor;
 
@@ -25,6 +27,8 @@ public class UserGoodsService {
     private final UserRepository userRepository;
     private final UserGoodsRepository userGoodsRepository;
     private final GoodsRepository goodsRepository;
+
+    private final MegaphoneService megaphoneService;
 
     /**
      * get list of user goods
@@ -67,7 +71,6 @@ public class UserGoodsService {
             userGoods = UserGoods.builder()
                     .goodsAmount(quanity)
                     .isUsing(false)
-                    .goodsExpirationDate(LocalDate.of(2100, 12, 31))
                     .user(targetUser.get())
                     .goods(addedGoods.get())
                     .build();
@@ -80,39 +83,48 @@ public class UserGoodsService {
     /**
      * use Goods
      * 
-     * @param goodsId to use
+     * @param goodsId          to use
      * @param userId
+     * @param megaphoneRequest if it using magaphone
      * @return 1(success) or 0(not found) or -1(invalid request)
      */
     @Transactional
-    public int useGoods(long goodsId, long userId) {
+    public int useGoods(long goodsId, long userId, MegaphoneRequest megaphoneRequest) {
         Optional<UserGoods> userGoods = userGoodsRepository.findByGoodsIdAndUserId(goodsId, userId);
 
         // if goods not found
         if (!userGoods.isPresent())
             return 0;
 
-        switch (userGoods.get().getGoods().getGoodsType()) {
+        // invalid amount
+        if (userGoods.get().getGoodsAmount() == 0)
+            return -1;
+
+        Goods goodsInfo = userGoods.get().getGoods();
+        long addedDate = goodsInfo.getGoodsUsingPeriod();
+
+        switch (goodsInfo.getGoodsType()) {
             case COSMETIC:
-                userGoods.get().toggleUsing();
-                userGoodsRepository.save(userGoods.get());
+                if (userGoods.get().isUsing())
+                    userGoods.get().extendDate(addedDate);
+                else
+                    userGoods.get().startUsing(addedDate);
                 break;
             case MEGAPHONE:
-                // invalid amount
-                if (userGoods.get().getGoodsAmount() < 0)
-                    return -1;
-
                 // apply megaphone
-                // TODO : add for megaphone logic
-
-                // update amount
-                if (userGoods.get().addQuantity(-1) == 0)
-                    userGoodsRepository.delete(userGoods.get());
+                if (!megaphoneService.addMegaphone(megaphoneRequest, addedDate, userId))
+                    return -1;
                 break;
             default:
                 // unknown type
                 return -1;
         }
+
+        // update amount
+        if (userGoods.get().addQuantity(-1) == 0)
+            userGoodsRepository.delete(userGoods.get());
+        else
+            userGoodsRepository.save(userGoods.get());
         return 1;
     }
 }
