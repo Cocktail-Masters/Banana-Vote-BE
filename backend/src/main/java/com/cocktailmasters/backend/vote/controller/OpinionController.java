@@ -19,7 +19,7 @@ import org.springframework.web.bind.annotation.*;
 
 import static com.cocktailmasters.backend.config.SwaggerConfig.SECURITY_SCHEME_NAME;
 
-@Tag(name = "opinion", description = "의견 관리")
+@Tag(name = "의견(댓글)", description = "의견 관리")
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/opinions")
