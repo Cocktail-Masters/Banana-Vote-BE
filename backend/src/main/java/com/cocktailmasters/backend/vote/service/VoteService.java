@@ -114,6 +114,7 @@ public class VoteService {
                                        String keyword,
                                        boolean isTag,
                                        boolean isClosed,
+                                       boolean isEvent,
                                        int sortBy,
                                        Pageable pageable) {
         Page<Vote> votes;
@@ -121,11 +122,11 @@ public class VoteService {
         if (keyword == null) keyword = "";
         String sortType = VoteSortBy.valueOfNumber(sortBy);
         if (isTag) {
-            votes = voteRepository.findVotesByTagAndOption(keyword, isClosed, sortType, pageable);
-            totalCount = voteRepository.countVotesByTag(keyword, isClosed, sortType);
+            votes = voteRepository.findVotesByTagAndOption(keyword, isClosed, isEvent, sortType, pageable);
+            totalCount = voteRepository.countVotesByTag(keyword, isClosed, isEvent, sortType);
         } else {
-            votes = voteRepository.findVotesByTitleAndOption(keyword, isClosed, sortType, pageable);
-            totalCount = voteRepository.countVotesByTitle(keyword, isClosed, sortType);
+            votes = voteRepository.findVotesByTitleAndOption(keyword, isClosed, isEvent, sortType, pageable);
+            totalCount = voteRepository.countVotesByTitle(keyword, isClosed, isEvent, sortType);
         }
 
         return FindVotesResponse.builder()
