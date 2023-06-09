@@ -1,5 +1,6 @@
 package com.cocktailmasters.backend.goods.service;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -35,8 +36,14 @@ public class UserGoodsService {
      * @param userId
      * @return list of user goods response
      */
-    public List<UserGoodsResponse> getUsersGoods(long userId) {
-        List<UserGoods> userGoodsList = userGoodsRepository.findByUserId(userId);
+    public List<UserGoodsResponse> getUsersGoods(long userId, boolean isUsing) {
+        List<UserGoods> userGoodsList;
+        if (isUsing)
+            userGoodsList = userGoodsRepository.findByUserIdAndIsUsingAndGoodsExpirationDateBefore(userId, isUsing,
+                    LocalDate.now());
+        else
+            userGoodsList = userGoodsRepository.findByUserId(userId);
+
         List<UserGoodsResponse> userGoodsDtos = new ArrayList<>();
 
         for (UserGoods userGoods : userGoodsList) {
