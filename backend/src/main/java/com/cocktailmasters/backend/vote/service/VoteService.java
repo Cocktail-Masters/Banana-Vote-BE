@@ -31,6 +31,7 @@ public class VoteService {
     private static final long CREATE_VOTE_POINTS_PER_DAY = 5;
     private static final String CREATE_VOTE_POINT_LOG_DESCRIPTION = "Create a vote";
     private static final String VOTE_PREDICTION_DESCRIPTION = "Create a prediction";
+    private static final String CANCEL_EVENT_VOTING = "Cancel event voting";
 
     private final OpinionRepository opinionRepository;
     private final PredictionRepository predictionRepository;
@@ -73,6 +74,39 @@ public class VoteService {
             pointService.addPoint(pointAmount, CREATE_VOTE_POINT_LOG_DESCRIPTION, user.getId());
         }
         return true;
+    }
+
+    @Transactional
+    public boolean updateEventVote(User user,
+                                   CreateVoteRequest createVoteRequest,
+                                   long voteId) {
+        Vote vote = voteRepository.findById(voteId)
+                .orElse(null);
+        if (vote == null) {
+            return false;
+        }
+        vote.getVoteItems()
+                .stream()
+                .forEach(voteItem -> {
+                    List<Prediction> predictions = predictionRepository.findByVoteItemId(voteItem.getId())
+                            .orElse(null);
+                    if (predictions != null) {
+                        predictions.stream()
+                                .forEach(prediction -> {
+                                    pointService.addPoint(prediction.getPredictionPoints(),
+                                            CANCEL_EVENT_VOTING,
+                                            prediction.getUser().getId());
+                                    prediction.deletePrediction();
+                                    predictionRepository.save(prediction);
+                                });
+                    }
+                });
+        vote.deleteVote();
+        voteRepository.save(vote);
+        if (createVote(user, createVoteRequest)) {
+            return true;
+        }
+        return false;
     }
 
     @Transactional
