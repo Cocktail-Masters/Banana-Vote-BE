@@ -1,6 +1,5 @@
 package com.cocktailmasters.backend.goods.service;
 
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -120,11 +119,7 @@ public class UserGoodsService {
                 return -1;
         }
 
-        // update amount
-        if (userGoods.get().addQuantity(-1) == 0)
-            userGoodsRepository.delete(userGoods.get());
-        else
-            userGoodsRepository.save(userGoods.get());
+        userGoodsRepository.save(userGoods.get());
         return 1;
     }
 }
