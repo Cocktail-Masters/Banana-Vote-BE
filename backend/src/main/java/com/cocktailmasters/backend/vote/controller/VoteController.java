@@ -1,6 +1,7 @@
 package com.cocktailmasters.backend.vote.controller;
 
 import com.cocktailmasters.backend.account.jwt.service.JwtService;
+import com.cocktailmasters.backend.account.user.domain.entity.Role;
 import com.cocktailmasters.backend.account.user.domain.entity.User;
 import com.cocktailmasters.backend.point.service.PointService;
 import com.cocktailmasters.backend.vote.controller.dto.item.VoteItemCreateDto;
@@ -37,8 +38,11 @@ public class VoteController {
     @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
     @PostMapping("")
     public ResponseEntity<String> createVote(@RequestHeader(name = "Authorization", required = false) String token,
-                                             @Valid @RequestBody CreateVoteRequest createVoteRequest) throws Exception {
+                                             @Valid @RequestBody CreateVoteRequest createVoteRequest) {
         User user = jwtService.findUserByToken(token);
+        if (createVoteRequest.getIsEvent() && user.getRole() != Role.ADMIN) {
+            return ResponseEntity.badRequest().build();
+        }
         if (createVoteRequest.getVoteItems().isEmpty()) {
             return ResponseEntity.badRequest().build();
         }
@@ -55,7 +59,37 @@ public class VoteController {
         if (voteService.createVote(user, createVoteRequest)) {
             return ResponseEntity.created(null).build();
         }
-        throw new Exception();
+        return ResponseEntity.badRequest().build();
+    }
+
+    @Operation(summary = "투표 수정", description = "이벤트 투표 수정(관리자 전용)",
+            security = {@SecurityRequirement(name = SECURITY_SCHEME_NAME)})
+    @PreAuthorize("hasAnyRole('ADMIN')")
+    @PatchMapping("/votes/{vote_id}")
+    public ResponseEntity<String> updateEventVote(@RequestHeader(name = "Authorization", required = false) String token,
+                                                  @RequestParam("vote_id") long voteId,
+                                                  @RequestBody CreateVoteRequest createVoteRequest) {
+        User user = jwtService.findUserByToken(token);
+        if (user.getRole() != Role.ADMIN) {
+            return ResponseEntity.badRequest().build();
+        }
+        if (createVoteRequest.getVoteItems().isEmpty()) {
+            return ResponseEntity.badRequest().build();
+        }
+        Set<Integer> voteItemSet = new HashSet<>();
+        for (VoteItemCreateDto voteItem : createVoteRequest.getVoteItems()) {
+            if (voteItemSet.contains(voteItem.getItemNumber())) {
+                return ResponseEntity.badRequest().build();
+            }
+            voteItemSet.add(voteItem.getItemNumber());
+        }
+        if (createVoteRequest.getVoteEndDate().isBefore(LocalDateTime.now())) {
+            return ResponseEntity.badRequest().build();
+        }
+        if (voteService.updateEventVote(user, createVoteRequest, voteId)) {
+            return ResponseEntity.created(null).build();
+        }
+        return ResponseEntity.badRequest().build();
     }
 
     @Operation(summary = "투표 검색", description = "검색어를 사용하여 투표 검색," +
