@@ -23,7 +23,7 @@ import java.util.Set;
 
 import static com.cocktailmasters.backend.config.SwaggerConfig.SECURITY_SCHEME_NAME;
 
-@Tag(name = "vote", description = "투표 관리")
+@Tag(name = "투표", description = "투표 관리")
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/votes")
@@ -33,7 +33,8 @@ public class VoteController {
     private final PointService pointService;
     private final VoteService voteService;
 
-    @Operation(summary = "투표 생성", description = "새로운 투표 생성(투표 종료 날짜는 하루 이상부터)",
+    @Operation(summary = "투표 생성",
+            description = "새로운 투표 생성(투표 종료 날짜는 하루 이상부터), 투표 항목 필수",
             security = {@SecurityRequirement(name = SECURITY_SCHEME_NAME)})
     @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
     @PostMapping("")
@@ -62,7 +63,8 @@ public class VoteController {
         return ResponseEntity.badRequest().build();
     }
 
-    @Operation(summary = "투표 수정", description = "이벤트 투표 수정(관리자 전용)",
+    @Operation(summary = "투표 수정",
+            description = "이벤트 투표 수정(관리자 전용), 투표 삭제 후 새로 생성, 투표한 포인트는 반환",
             security = {@SecurityRequirement(name = SECURITY_SCHEME_NAME)})
     @PreAuthorize("hasAnyRole('ADMIN')")
     @PatchMapping("/votes/{vote_id}")
@@ -101,13 +103,14 @@ public class VoteController {
                                                        @RequestParam("keyword") String keyword,
                                                        @RequestParam(value = "is-tag", defaultValue = "false") boolean isTag,
                                                        @RequestParam(value = "is-closed", defaultValue = "false") boolean isClosed,
+                                                       @RequestParam(value = "is-event", defaultValue = "false") boolean isEvent,
                                                        @RequestParam(value = "sort-by", defaultValue = "1") int sortBy) {
         User user = null;
         if (token != null) {
             user = jwtService.findUserByToken(token);
         }
         return ResponseEntity.ok()
-                .body(voteService.findVotes(user, keyword, isTag, isClosed, sortBy, pageable));
+                .body(voteService.findVotes(user, keyword, isTag, isClosed, isEvent, sortBy, pageable));
     }
 
     @Operation(summary = "투표글 상세 보기", description = "투표글 상세 보기, 투표 조회수 증가")
