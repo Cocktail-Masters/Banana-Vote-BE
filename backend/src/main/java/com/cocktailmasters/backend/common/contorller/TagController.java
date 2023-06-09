@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.*;
 
 import static com.cocktailmasters.backend.config.SwaggerConfig.SECURITY_SCHEME_NAME;
 
-@Tag(name = "tag", description = "태그 관리")
+@Tag(name = "태그", description = "태그 관리")
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/tags")
