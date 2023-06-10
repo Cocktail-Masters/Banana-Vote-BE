@@ -72,10 +72,7 @@ public class VoteController {
                                                   @RequestParam("vote_id") long voteId,
                                                   @RequestBody CreateVoteRequest createVoteRequest) {
         User user = jwtService.findUserByToken(token);
-        if (user.getRole() != Role.ADMIN) {
-            return ResponseEntity.badRequest().build();
-        }
-        if (createVoteRequest.getVoteItems().isEmpty()) {
+        if (createVoteRequest.getVoteItems().isEmpty() || createVoteRequest.getVoteEndDate().isBefore(LocalDateTime.now())) {
             return ResponseEntity.badRequest().build();
         }
         Set<Integer> voteItemSet = new HashSet<>();
@@ -84,9 +81,6 @@ public class VoteController {
                 return ResponseEntity.badRequest().build();
             }
             voteItemSet.add(voteItem.getItemNumber());
-        }
-        if (createVoteRequest.getVoteEndDate().isBefore(LocalDateTime.now())) {
-            return ResponseEntity.badRequest().build();
         }
         if (voteService.updateEventVote(user, createVoteRequest, voteId)) {
             return ResponseEntity.created(null).build();
