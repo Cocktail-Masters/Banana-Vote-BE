@@ -15,6 +15,7 @@ public interface VoteRepository extends JpaRepository<Vote, Long> {
     String countVotesByTitleQuery = "SELECT COUNT(*) FROM vote v " +
             "WHERE v.vote_title LIKE CONCAT('%', :keyword, '%') " +
             "AND v.is_closed = :is_closed " +
+            "AND v.is_event = :is_event " +
             "AND v.is_public = true " +
             "AND v.is_active = true " +
             "ORDER BY :sort_by DESC";
@@ -27,6 +28,7 @@ public interface VoteRepository extends JpaRepository<Vote, Long> {
             "WHERE t.tag_name LIKE CONCAT('%', :keyword, '%')) vtt " +
             "ON v.vote_id = vtt.vote_vote_id " +
             "WHERE v.is_closed = :is_closed " +
+            "AND v.is_event = :is_event " +
             "AND v.is_public = true " +
             "AND v.is_active = true " +
             "ORDER BY :sort_by DESC";
@@ -34,16 +36,19 @@ public interface VoteRepository extends JpaRepository<Vote, Long> {
     @Query(value = countVotesByTitleQuery, nativeQuery = true)
     long countVotesByTitle(@Param("keyword") String keyword,
                            @Param("is_closed") boolean isClosed,
+                           @Param("is_event") boolean isEvent,
                            @Param("sort_by") String sortBy);
 
     @Query(value = countVotesByTagQuery, nativeQuery = true)
     long countVotesByTag(@Param("keyword") String keyword,
                          @Param("is_closed") boolean isClosed,
+                         @Param("is_event") boolean isEvent,
                          @Param("sort_by") String sortBy);
 
     @Query(value = "SELECT v.* FROM vote v " +
             "WHERE v.vote_title LIKE CONCAT('%', :keyword, '%') " +
             "AND v.is_closed = :is_closed " +
+            "AND v.is_event = :is_event " +
             "AND v.is_public = true " +
             "AND v.is_active = true " +
             "ORDER BY :sort_by DESC",
@@ -51,6 +56,7 @@ public interface VoteRepository extends JpaRepository<Vote, Long> {
             nativeQuery = true)
     Page<Vote> findVotesByTitleAndOption(@Param("keyword") String keyword,
                                          @Param("is_closed") boolean isClosed,
+                                         @Param("is_event") boolean isEvent,
                                          @Param("sort_by") String sortBy,
                                          Pageable pageable);
 
@@ -62,6 +68,7 @@ public interface VoteRepository extends JpaRepository<Vote, Long> {
             "WHERE t.tag_name LIKE CONCAT('%', :keyword, '%')) vtt " +
             "ON v.vote_id = vtt.vote_vote_id " +
             "WHERE v.is_closed = :is_closed " +
+            "AND v.is_event = :is_event " +
             "AND v.is_public = true " +
             "AND v.is_active = true " +
             "ORDER BY :sort_by DESC",
@@ -69,6 +76,7 @@ public interface VoteRepository extends JpaRepository<Vote, Long> {
             nativeQuery = true)
     Page<Vote> findVotesByTagAndOption(@Param("keyword") String keyword,
                                        @Param("is_closed") boolean isClosed,
+                                       @Param("is_event") boolean isEvent,
                                        @Param("sort_by") String sortBy,
                                        Pageable pageable);
 

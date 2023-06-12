@@ -29,6 +29,9 @@ public class CreateVoteRequest {
     private Boolean isPublic;
 
     @NotNull
+    private Boolean isEvent;
+
+    @NotNull
     private Boolean isAnonymous;
 
     @NotNull
@@ -44,6 +47,7 @@ public class CreateVoteRequest {
                 .voteEndDate(voteEndDate)
                 .isAnonymous(isAnonymous)
                 .isPublic(isPublic)
+                .isEvent(isEvent)
                 .build();
     }
 }

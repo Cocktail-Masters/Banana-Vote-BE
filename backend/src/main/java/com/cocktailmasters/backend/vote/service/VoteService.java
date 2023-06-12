@@ -31,6 +31,7 @@ public class VoteService {
     private static final long CREATE_VOTE_POINTS_PER_DAY = 5;
     private static final String CREATE_VOTE_POINT_LOG_DESCRIPTION = "Create a vote";
     private static final String VOTE_PREDICTION_DESCRIPTION = "Create a prediction";
+    private static final String CANCEL_EVENT_VOTING = "Cancel event voting";
 
     private final OpinionRepository opinionRepository;
     private final PredictionRepository predictionRepository;
@@ -76,10 +77,44 @@ public class VoteService {
     }
 
     @Transactional
+    public boolean updateEventVote(User user,
+                                   CreateVoteRequest createVoteRequest,
+                                   long voteId) {
+        Vote vote = voteRepository.findById(voteId)
+                .orElse(null);
+        if (vote == null) {
+            return false;
+        }
+        vote.getVoteItems()
+                .stream()
+                .forEach(voteItem -> {
+                    List<Prediction> predictions = predictionRepository.findByVoteItemId(voteItem.getId())
+                            .orElse(null);
+                    if (predictions != null) {
+                        predictions.stream()
+                                .forEach(prediction -> {
+                                    pointService.addPoint(prediction.getPredictionPoints(),
+                                            CANCEL_EVENT_VOTING,
+                                            prediction.getUser().getId());
+                                    prediction.deletePrediction();
+                                    predictionRepository.save(prediction);
+                                });
+                    }
+                });
+        vote.deleteVote();
+        voteRepository.save(vote);
+        if (createVote(user, createVoteRequest)) {
+            return true;
+        }
+        return false;
+    }
+
+    @Transactional
     public FindVotesResponse findVotes(User user,
                                        String keyword,
                                        boolean isTag,
                                        boolean isClosed,
+                                       boolean isEvent,
                                        int sortBy,
                                        Pageable pageable) {
         Page<Vote> votes;
@@ -87,11 +122,11 @@ public class VoteService {
         if (keyword == null) keyword = "";
         String sortType = VoteSortBy.valueOfNumber(sortBy);
         if (isTag) {
-            votes = voteRepository.findVotesByTagAndOption(keyword, isClosed, sortType, pageable);
-            totalCount = voteRepository.countVotesByTag(keyword, isClosed, sortType);
+            votes = voteRepository.findVotesByTagAndOption(keyword, isClosed, isEvent, sortType, pageable);
+            totalCount = voteRepository.countVotesByTag(keyword, isClosed, isEvent, sortType);
         } else {
-            votes = voteRepository.findVotesByTitleAndOption(keyword, isClosed, sortType, pageable);
-            totalCount = voteRepository.countVotesByTitle(keyword, isClosed, sortType);
+            votes = voteRepository.findVotesByTitleAndOption(keyword, isClosed, isEvent, sortType, pageable);
+            totalCount = voteRepository.countVotesByTitle(keyword, isClosed, isEvent, sortType);
         }
 
         return FindVotesResponse.builder()
