@@ -6,7 +6,6 @@ import com.cocktailmasters.backend.account.user.domain.repository.UserRepository
 import com.cocktailmasters.backend.common.domain.entity.Tag;
 import com.cocktailmasters.backend.common.domain.repository.TagRepository;
 import com.cocktailmasters.backend.point.service.PointService;
-import com.cocktailmasters.backend.util.exception.NotFoundUserException;
 import com.cocktailmasters.backend.vote.controller.dto.item.*;
 import com.cocktailmasters.backend.vote.controller.dto.vote.*;
 import com.cocktailmasters.backend.vote.domain.entity.*;
@@ -288,6 +287,8 @@ public class VoteService {
                 .build();
     }
 
+//    private void executeVote(long vote)
+
     private VoteItem createVoteItem(VoteItemCreateDto createVoteItemRequest, Vote vote) {
         VoteItem voteItem = createVoteItemRequest.toVoteItemEntity(createVoteItemRequest, vote);
         return voteItem;
@@ -299,16 +300,6 @@ public class VoteService {
                 .vote(vote)
                 .build();
         return voteTag;
-    }
-
-    private User findUserById(Long userId) {
-        // TODO: 예외처리
-        try {
-            return userRepository.findById(userId)
-                    .orElseThrow(() -> new NotFoundUserException());
-        } catch (NotFoundUserException e) {
-            throw new RuntimeException(e);
-        }
     }
 
     private Vote findVoteById(Long voteId) {
