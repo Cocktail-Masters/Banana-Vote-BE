@@ -12,10 +12,10 @@ import java.util.Optional;
 
 public interface OpinionRepository extends JpaRepository<Opinion, Long> {
 
-    String countOpinionsQuery = "SELECT COUNT(o,*) " +
-            "FROM OPINION o " +
+    String countOpinionsQuery = "SELECT COUNT(*) " +
+            "FROM opinion o " +
             "WHERE o.vote_vote_id = :vote_id " +
-            "AND is_active = true " +
+            "AND o.is_active = true " +
             "ORDER BY :sort_by";
 
     Optional<Opinion> findFirstByVoteIdOrderByAgreedNumberDesc(Long voteId);
@@ -23,7 +23,7 @@ public interface OpinionRepository extends JpaRepository<Opinion, Long> {
     @Query(value = "SELECT o.* " +
             "FROM opinion o " +
             "WHERE o.vote_vote_id = :vote_id " +
-            "AND is_active = true " +
+            "AND o.is_active = true " +
             "ORDER BY :sort_by",
             countQuery = "countOpinionsQuery",
             nativeQuery = true)
