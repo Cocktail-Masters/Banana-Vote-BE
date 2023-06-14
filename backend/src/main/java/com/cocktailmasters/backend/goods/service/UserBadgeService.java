@@ -31,6 +31,7 @@ public class UserBadgeService {
      * @param userId
      * @return badge of user
      */
+    @Transactional
     public List<UserBadgeResponse> getUserBadgesList(long userId) {
         List<UserBadge> userBadges = userBadgeRepository.findAllByUserId(userId);
 
