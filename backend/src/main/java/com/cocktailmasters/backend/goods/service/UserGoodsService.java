@@ -36,6 +36,7 @@ public class UserGoodsService {
      * @param userId
      * @return list of user goods response
      */
+    @Transactional
     public List<UserGoodsResponse> getUsersGoods(long userId, boolean isUsing) {
         List<UserGoods> userGoodsList;
         if (isUsing)
