@@ -29,7 +29,7 @@ public class BadgeRequest {
     private String description;
 
     @Builder.Default
-    private boolean isSelling = true;
+    private Boolean isSelling = true;
 
     @Builder.Default
     private LocalDate badgeEndDate = LocalDate.of(2100, 12, 31);

@@ -45,7 +45,12 @@ public class Badge extends BaseEntity {
         this.badgeImageUrl = badge.getImageUrl();
         this.badgeDescription = badge.getDescription();
         this.badgePrice = badge.getPrice();
-        this.isSelling = badge.isSelling();
+        this.isSelling = badge.getIsSelling();
         this.badgeEndDate = badge.getBadgeEndDate();
+    }
+
+    public long soldBadge() {
+        this.badgeSoldNumber += 1;
+        return this.badgeSoldNumber;
     }
 }
