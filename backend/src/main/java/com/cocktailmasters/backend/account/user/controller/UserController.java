@@ -175,13 +175,13 @@ public class UserController {
     @Operation(summary = "뱃지 사용하기(변경)", description = "장착할 뱃지를 소유하지 않았을 경우엔 Not found", security = {
             @SecurityRequirement(name = SECURITY_SCHEME_NAME) })
     @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
-    @PatchMapping("/badges/{badgeId}")
+    @PatchMapping("/badges/{userBadgeId}")
     public ResponseEntity<String> useBadge(
             @RequestHeader(name = "Authorization", required = false) String token,
-            @PathVariable long badgeId) {
+            @PathVariable long userBadgeId) {
         User user = jwtService.findUserByToken(token);
 
-        if (userBadgeService.changeEquippedBadge(badgeId, user.getId()))
+        if (userBadgeService.changeEquippedBadge(userBadgeId, user.getId()))
             return ResponseEntity.ok().build();
         else
             return ResponseEntity.notFound().build();

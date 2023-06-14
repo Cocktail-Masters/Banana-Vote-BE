@@ -101,33 +101,26 @@ public class UserBadgeService {
      * @return true or false(badge not found)
      */
     @Transactional
-    public boolean changeEquippedBadge(long badgeId, long userId) {
-        Optional<UserBadge> targetBadge = userBadgeRepository.findByBadgeIdAndUserId(badgeId, userId);
-        if (!targetBadge.isPresent())
-            return false;
-
-        List<UserBadge> userBadges = userBadgeRepository.findAllByUserId(userId);
-        String equippedBadgeImageUrl = "";
-
-        // find user Badge to equip
-        for (UserBadge userBadge : userBadges) {
-            userBadge.unequipBadge();
-
-            if (userBadge.getId() == badgeId) {
-                userBadge.equipBadge();
-                equippedBadgeImageUrl = userBadge.getBadge().getBadgeImageUrl();
-            }
-        }
-        userBadgeRepository.saveAll(userBadges);
-
-        // change equipped badge image
+    public boolean changeEquippedBadge(long userBadgeId, long userId) {
+        Optional<UserBadge> targetBadge = userBadgeRepository.findById(userBadgeId);
         Optional<User> user = userRepository.findById(userId);
-        if (!user.isPresent())
+        if (!user.isPresent() || !targetBadge.isPresent())
             return false;
 
-        user.get().updateBadgeImage(equippedBadgeImageUrl);
-        userRepository.save(user.get());
+        // upequip badge
+        Optional<UserBadge> equippedBadge = userBadgeRepository.findByUserIdAndIsEquipped(userId, true);
+        if (equippedBadge.isPresent()) {
+            equippedBadge.get().unequipBadge();
+            userBadgeRepository.save(equippedBadge.get());
+        }
 
+        // equip badge
+        targetBadge.get().equipBadge();
+        userBadgeRepository.save(targetBadge.get());
+
+        // update badge image
+        user.get().updateBadgeImage(targetBadge.get().getBadge().getBadgeImageUrl());
+        userRepository.save(user.get());
         return true;
     }
 }
