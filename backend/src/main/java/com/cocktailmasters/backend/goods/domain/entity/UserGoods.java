@@ -23,10 +23,10 @@ public class UserGoods extends BaseEntity {
 
     private boolean isUsing;
 
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @ManyToOne(fetch = FetchType.LAZY)
     private User user;
 
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @ManyToOne(fetch = FetchType.LAZY)
     private Goods goods;
 
     public int addQuantity(int quanity) {
