@@ -11,6 +11,7 @@ import lombok.Getter;
 @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
 public class VoteItemDto {
 
+    private long id;
     private int itemNumber;
     private String title;
     private String iframeLink;
@@ -20,6 +21,7 @@ public class VoteItemDto {
 
     public static VoteItemDto createVoteItemDto(VoteItem voteItem) {
         return VoteItemDto.builder()
+                .id(voteItem.getId())
                 .itemNumber(voteItem.getVoteItemNumber())
                 .title(voteItem.getVoteItemTitle())
                 .iframeLink(voteItem.getIframeLink())
