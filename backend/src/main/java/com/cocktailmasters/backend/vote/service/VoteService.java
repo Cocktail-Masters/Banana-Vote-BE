@@ -17,6 +17,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.Period;
 import java.util.ArrayList;
 import java.util.List;
@@ -132,6 +133,7 @@ public class VoteService {
                 .totalCount(totalCount)
                 .votes(votes.getContent().stream()
                         .map(vote -> {
+                            checkVoteCloseDate(vote);
                             Opinion opinion = opinionRepository.findFirstByVoteIdOrderByAgreedNumberDesc(vote.getId())
                                     .orElse(null);
                             OpinionDto bestOpinion = null;
@@ -161,6 +163,7 @@ public class VoteService {
     public FindVoteDetailResponse findVoteDetail(Long voteId) {
         Vote vote = findVoteById(voteId);
         vote.updateVoteHits();
+        checkVoteCloseDate(vote);
         voteRepository.save(vote);
         User writer = vote.getUser();
         return FindVoteDetailResponse.builder()
@@ -287,6 +290,14 @@ public class VoteService {
                 .build();
     }
 
+    private boolean checkVoteCloseDate(Vote vote) {
+        if (vote.getVoteEndDate().isBefore(LocalDateTime.now())) {
+            vote.closeVote();
+            voteRepository.save(vote);
+            return true;
+        }
+        return false;
+    }
 //    private void executeVote(long vote)
 
     private VoteItem createVoteItem(VoteItemCreateDto createVoteItemRequest, Vote vote) {
