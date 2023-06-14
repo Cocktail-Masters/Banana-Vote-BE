@@ -202,7 +202,7 @@ public class UserController {
             return ResponseEntity.ok().build();
         else if (result == 0)
             return ResponseEntity.notFound().build();
-        else
+        else // result == -1
             return ResponseEntity.badRequest().build();
     }
 }
