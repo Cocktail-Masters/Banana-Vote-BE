@@ -298,7 +298,6 @@ public class VoteService {
         }
         return false;
     }
-//    private void executeVote(long vote)
 
     private VoteItem createVoteItem(VoteItemCreateDto createVoteItemRequest, Vote vote) {
         VoteItem voteItem = createVoteItemRequest.toVoteItemEntity(createVoteItemRequest, vote);
