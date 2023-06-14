@@ -21,7 +21,7 @@ public class UserBadgeResponse {
 
     private String description;
 
-    private boolean isSelling;
+    private boolean isEquipped;
 
     public static UserBadgeResponse createUserBadgeResponse(UserBadge userBadge) {
         Badge badgeInfo = userBadge.getBadge();
@@ -31,7 +31,7 @@ public class UserBadgeResponse {
                 .name(badgeInfo.getBadgeName())
                 .imageUrl(badgeInfo.getBadgeImageUrl())
                 .description(badgeInfo.getBadgeDescription())
-                .isSelling(badgeInfo.isSelling())
+                .isEquipped(userBadge.isEquipped())
                 .build();
     }
 }
