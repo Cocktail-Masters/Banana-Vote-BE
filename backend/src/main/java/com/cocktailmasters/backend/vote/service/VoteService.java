@@ -6,7 +6,6 @@ import com.cocktailmasters.backend.account.user.domain.repository.UserRepository
 import com.cocktailmasters.backend.common.domain.entity.Tag;
 import com.cocktailmasters.backend.common.domain.repository.TagRepository;
 import com.cocktailmasters.backend.point.service.PointService;
-import com.cocktailmasters.backend.util.exception.NotFoundUserException;
 import com.cocktailmasters.backend.vote.controller.dto.item.*;
 import com.cocktailmasters.backend.vote.controller.dto.vote.*;
 import com.cocktailmasters.backend.vote.domain.entity.*;
@@ -18,6 +17,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.Period;
 import java.util.ArrayList;
 import java.util.List;
@@ -133,6 +133,7 @@ public class VoteService {
                 .totalCount(totalCount)
                 .votes(votes.getContent().stream()
                         .map(vote -> {
+                            checkVoteCloseDate(vote);
                             Opinion opinion = opinionRepository.findFirstByVoteIdOrderByAgreedNumberDesc(vote.getId())
                                     .orElse(null);
                             OpinionDto bestOpinion = null;
@@ -162,6 +163,7 @@ public class VoteService {
     public FindVoteDetailResponse findVoteDetail(Long voteId) {
         Vote vote = findVoteById(voteId);
         vote.updateVoteHits();
+        checkVoteCloseDate(vote);
         voteRepository.save(vote);
         User writer = vote.getUser();
         return FindVoteDetailResponse.builder()
@@ -288,6 +290,15 @@ public class VoteService {
                 .build();
     }
 
+    private boolean checkVoteCloseDate(Vote vote) {
+        if (vote.getVoteEndDate().isBefore(LocalDateTime.now())) {
+            vote.closeVote();
+            voteRepository.save(vote);
+            return true;
+        }
+        return false;
+    }
+
     private VoteItem createVoteItem(VoteItemCreateDto createVoteItemRequest, Vote vote) {
         VoteItem voteItem = createVoteItemRequest.toVoteItemEntity(createVoteItemRequest, vote);
         return voteItem;
@@ -299,16 +310,6 @@ public class VoteService {
                 .vote(vote)
                 .build();
         return voteTag;
-    }
-
-    private User findUserById(Long userId) {
-        // TODO: 예외처리
-        try {
-            return userRepository.findById(userId)
-                    .orElseThrow(() -> new NotFoundUserException());
-        } catch (NotFoundUserException e) {
-            throw new RuntimeException(e);
-        }
     }
 
     private Vote findVoteById(Long voteId) {

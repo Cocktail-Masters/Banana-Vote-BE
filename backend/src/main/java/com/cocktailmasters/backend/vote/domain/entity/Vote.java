@@ -100,6 +100,10 @@ public class Vote extends BaseEntity {
         opinions.add(opinion);
     }
 
+    public void closeVote() {
+        this.isClosed = true;
+    }
+
     public void deleteVote() {
         super.delete();
         this.voteItems.stream()
