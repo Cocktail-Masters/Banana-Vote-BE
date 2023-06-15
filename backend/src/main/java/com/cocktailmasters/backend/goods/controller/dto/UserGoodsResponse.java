@@ -46,8 +46,8 @@ public class UserGoodsResponse {
                 .type(goodsInfo.getGoodsType())
                 .ea(userGoods.getGoodsAmount())
                 .expirationDate(userGoods.getGoodsExpirationDate() == null
-                        ? userGoods.getGoodsExpirationDate().format(DateTimeFormatter.ISO_LOCAL_DATE)
-                        : "")
+                        ? ""
+                        : userGoods.getGoodsExpirationDate().format(DateTimeFormatter.ISO_LOCAL_DATE))
                 .isUsing(userGoods.isUsing())
                 .build();
     }
