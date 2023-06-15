@@ -96,8 +96,8 @@ public class UserGoodsService {
      * @return 1(success) or 0(not found) or -1(invalid request)
      */
     @Transactional
-    public int useGoods(long goodsId, long userId, MegaphoneRequest megaphoneRequest) {
-        Optional<UserGoods> userGoods = userGoodsRepository.findByGoodsIdAndUserId(goodsId, userId);
+    public int useGoods(long userGoodsId, long userId, MegaphoneRequest megaphoneRequest) {
+        Optional<UserGoods> userGoods = userGoodsRepository.findById(userGoodsId);
 
         // if goods not found
         if (!userGoods.isPresent())

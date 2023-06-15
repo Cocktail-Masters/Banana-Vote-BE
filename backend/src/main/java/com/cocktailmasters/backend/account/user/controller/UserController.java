@@ -190,14 +190,14 @@ public class UserController {
     @Operation(summary = "굿즈 사용 하기", description = "현재 굿즈 종류(코스메틱 or 확성기), 확성기 사용 시에는 추가 정보 필요", security = {
             @SecurityRequirement(name = SECURITY_SCHEME_NAME) })
     @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
-    @PatchMapping("/goods/{goodsId}")
+    @PatchMapping("/goods/{userGoodsId}")
     public ResponseEntity<String> useGoods(
             @RequestHeader(name = "Authorization", required = false) String token,
-            @PathVariable long goodsId,
+            @PathVariable long userGoodsId,
             @RequestBody MegaphoneRequest megaphoneRequest) {
         User user = jwtService.findUserByToken(token);
 
-        int result = userGoodsService.useGoods(goodsId, user.getId(), megaphoneRequest);
+        int result = userGoodsService.useGoods(userGoodsId, user.getId(), megaphoneRequest);
         if (result == 1)
             return ResponseEntity.ok().build();
         else if (result == 0)
