@@ -23,13 +23,32 @@ public class UserGoods extends BaseEntity {
 
     private boolean isUsing;
 
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @ManyToOne(fetch = FetchType.LAZY)
     private User user;
 
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @ManyToOne(fetch = FetchType.LAZY)
     private Goods goods;
 
-    public void addQuantity(int quanity) {
-        goodsAmount += quanity;
+    public int addQuantity(int quanity) {
+        this.goodsAmount += quanity;
+        return this.goodsAmount;
+    }
+
+    public void setNotUsing() {
+        this.isUsing = false;
+    }
+
+    public int use(long date) {
+        this.goodsAmount--;
+
+        if (!this.isUsing) {
+            this.isUsing = true;
+            this.goodsExpirationDate = LocalDate.now().plusDays(date);
+        } else {
+            // extend date
+            this.goodsExpirationDate = this.goodsExpirationDate.plusDays(date);
+        }
+
+        return this.goodsAmount;
     }
 }

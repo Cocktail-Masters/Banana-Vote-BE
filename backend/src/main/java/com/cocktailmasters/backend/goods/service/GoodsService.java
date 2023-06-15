@@ -185,7 +185,7 @@ public class GoodsService {
                 .goodsDescription(goodsRequest.getDescription())
                 .goodsType(goodsRequest.getType())
                 .goodsImageUrl(goodsRequest.getImageUrl())
-                .goodsValidityPeriod(goodsRequest.getValidPeriod())
+                .goodsUsingPeriod(goodsRequest.getValidPeriod())
                 .goodsPrice(goodsRequest.getPrice())
                 .goodsRemainingQuantity(goodsRequest.getRemainingQuantity())
                 .saleStartDate(goodsRequest.getStartDate())

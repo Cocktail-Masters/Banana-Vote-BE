@@ -44,7 +44,7 @@ public class GoodsItemDto {
                 .startDate(goods.getSaleStartDate().format(DateTimeFormatter.ISO_LOCAL_DATE))
                 .endDate(goods.getSaleEndDate().format(DateTimeFormatter.ISO_LOCAL_DATE))
                 .sellCount(goods.getGoodsSoldNumber())
-                .validPeriod(goods.getGoodsValidityPeriod())
+                .validPeriod(goods.getGoodsUsingPeriod())
                 .remainingQuantity(goods.getGoodsRemainingQuantity())
                 .build();
     }
