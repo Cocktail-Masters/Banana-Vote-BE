@@ -40,7 +40,7 @@ public class UserGoodsService {
     public List<UserGoodsResponse> getUsersGoods(long userId, boolean isUsing) {
         List<UserGoods> userGoodsList;
         if (isUsing)
-            userGoodsList = userGoodsRepository.findByUserIdAndIsUsingAndGoodsExpirationDateBefore(userId, isUsing,
+            userGoodsList = userGoodsRepository.findByUserIdAndIsUsingAndGoodsExpirationDateAfter(userId, true,
                     LocalDate.now());
         else
             userGoodsList = userGoodsRepository.findByUserId(userId);
@@ -52,6 +52,25 @@ public class UserGoodsService {
         }
 
         return userGoodsDtos;
+    }
+
+    /**
+     * set expired userGoods isUsing false
+     * 
+     * @param userId
+     * @return updated userGoods EA
+     */
+    @Transactional
+    public int updateIsUsing(long userId) {
+        List<UserGoods> userGoodsList = userGoodsRepository.findByUserIdAndIsUsingAndGoodsExpirationDateBefore(userId,
+                true,
+                LocalDate.now());
+
+        for (UserGoods userGoods : userGoodsList)
+            userGoods.setNotUsing();
+        userGoodsRepository.saveAll(userGoodsList);
+
+        return userGoodsList.size();
     }
 
     /**

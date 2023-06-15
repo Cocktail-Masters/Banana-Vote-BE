@@ -34,6 +34,10 @@ public class UserGoods extends BaseEntity {
         return this.goodsAmount;
     }
 
+    public void setNotUsing() {
+        this.isUsing = false;
+    }
+
     public int use(long date) {
         this.goodsAmount--;
 

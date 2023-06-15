@@ -11,6 +11,9 @@ import com.cocktailmasters.backend.goods.domain.entity.UserGoods;
 public interface UserGoodsRepository extends JpaRepository<UserGoods, Long> {
     List<UserGoods> findByUserId(long userId);
 
+    List<UserGoods> findByUserIdAndIsUsingAndGoodsExpirationDateAfter(long userId, boolean isUsing,
+            LocalDate after);
+
     List<UserGoods> findByUserIdAndIsUsingAndGoodsExpirationDateBefore(long userId, boolean isUsing,
             LocalDate before);
 
