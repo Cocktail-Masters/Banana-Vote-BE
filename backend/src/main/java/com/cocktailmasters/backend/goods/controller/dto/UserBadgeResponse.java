@@ -15,6 +15,8 @@ public class UserBadgeResponse {
 
     private long id;
 
+    private Long badgeId;
+
     private String name;
 
     private String imageUrl;
@@ -27,7 +29,8 @@ public class UserBadgeResponse {
         Badge badgeInfo = userBadge.getBadge();
 
         return UserBadgeResponse.builder()
-                .id(badgeInfo.getId())
+                .id(userBadge.getId())
+                .badgeId(badgeInfo.getId())
                 .name(badgeInfo.getBadgeName())
                 .imageUrl(badgeInfo.getBadgeImageUrl())
                 .description(badgeInfo.getBadgeDescription())
