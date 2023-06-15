@@ -13,5 +13,5 @@ public interface TagRepository extends JpaRepository<Tag, Long> {
 
     List<Tag> deleteAllByTagNameContaining(String tagName);
 
-    List<Tag> findTop10ByLastModifiedDateBetweenOrderByTagUsedNumber(LocalDateTime start, LocalDateTime end);
+    List<Tag> findTop10ByLastModifiedDateBetweenOrderByTagUsedNumberDesc(LocalDateTime start, LocalDateTime end);
 }

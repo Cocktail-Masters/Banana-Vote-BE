@@ -16,7 +16,7 @@ public interface OpinionRepository extends JpaRepository<Opinion, Long> {
             "FROM opinion o " +
             "WHERE o.vote_vote_id = :vote_id " +
             "AND o.is_active = true " +
-            "ORDER BY :sort_by";
+            "ORDER BY :sort_by DESC";
 
     Optional<Opinion> findFirstByVoteIdOrderByAgreedNumberDesc(Long voteId);
 
@@ -24,8 +24,8 @@ public interface OpinionRepository extends JpaRepository<Opinion, Long> {
             "FROM opinion o " +
             "WHERE o.vote_vote_id = :vote_id " +
             "AND o.is_active = true " +
-            "ORDER BY :sort_by",
-            countQuery = "countOpinionsQuery",
+            "ORDER BY :sort_by DESC",
+            countQuery = countOpinionsQuery,
             nativeQuery = true)
     Page<Opinion> findOpinionsByVoteIdAndOption(@Param("vote_id") Long voteId,
                                                 @Param("sort_by") String sortBy,
