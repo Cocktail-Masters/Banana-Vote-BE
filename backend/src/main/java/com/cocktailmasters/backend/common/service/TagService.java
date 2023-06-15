@@ -47,9 +47,9 @@ public class TagService {
         LocalDateTime startDate = LocalDateTime.now().minusDays(7);
         LocalDateTime endDate = LocalDateTime.now();
         return FindTop10TagsResponse.builder()
-                .tags(tagRepository.findTop10ByLastModifiedDateBetweenOrderByTagUsedNumber(startDate, endDate)
+                .tags(tagRepository.findTop10ByLastModifiedDateBetweenOrderByTagUsedNumberDesc(startDate, endDate)
                         .stream()
-                        .map(tag -> TagDto.createTagDto(tag))
+                        .map(tag -> tag.getTagName())
                         .collect(Collectors.toList()))
                 .build();
     }
