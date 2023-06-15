@@ -106,8 +106,8 @@ public class GoodsController {
             return ResponseEntity.badRequest().body("invalud date");
 
         // type check
-        if (goodsRequest.getType() == GoodsType.BADGE)
-            return ResponseEntity.badRequest().body("use badge api for creating badge");
+        // if (goodsRequest.getType() == GoodsType.BADGE)
+        // return ResponseEntity.badRequest().body("use badge api for creating badge");
 
         if (goodsService.addGoods(goodsRequest))
             return ResponseEntity.created(null).build();
@@ -137,8 +137,8 @@ public class GoodsController {
             return ResponseEntity.badRequest().body("invalud date");
 
         // type check
-        if (goodsRequest.getType() == GoodsType.BADGE)
-            return ResponseEntity.badRequest().body("use badge api for creating badge");
+        // if (goodsRequest.getType() == GoodsType.BADGE)
+        // return ResponseEntity.badRequest().body("use badge api for creating badge");
 
         if (goodsService.modifyGoods(goodsId, goodsRequest))
             return ResponseEntity.ok().build();
