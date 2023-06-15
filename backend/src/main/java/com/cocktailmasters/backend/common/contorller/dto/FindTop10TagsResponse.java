@@ -10,5 +10,5 @@ import java.util.List;
 @Builder
 public class FindTop10TagsResponse {
 
-    private List<TagDto> tags;
+    private List<String> tags;
 }
