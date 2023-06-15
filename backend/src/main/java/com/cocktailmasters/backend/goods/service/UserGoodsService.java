@@ -112,12 +112,16 @@ public class UserGoodsService {
 
         switch (goodsInfo.getGoodsType()) {
             case COSMETIC:
-                if (userGoods.get().isUsing())
-                    userGoods.get().extendDate(addedDate);
-                else
-                    userGoods.get().startUsing(addedDate);
+                userGoods.get().use(addedDate);
+                userGoodsRepository.save(userGoods.get());
                 break;
             case MEGAPHONE:
+                // update EA
+                if (userGoods.get().use(addedDate) == 0) {
+                    userGoodsRepository.delete(userGoods.get());
+                } else {
+                    userGoodsRepository.save(userGoods.get());
+                }
                 // apply megaphone
                 if (!megaphoneService.addMegaphone(megaphoneRequest, addedDate, userId))
                     return -1;
@@ -127,7 +131,6 @@ public class UserGoodsService {
                 return -1;
         }
 
-        userGoodsRepository.save(userGoods.get());
         return 1;
     }
 }
