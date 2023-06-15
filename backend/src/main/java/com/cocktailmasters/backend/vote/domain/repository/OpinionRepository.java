@@ -25,7 +25,7 @@ public interface OpinionRepository extends JpaRepository<Opinion, Long> {
             "WHERE o.vote_vote_id = :vote_id " +
             "AND o.is_active = true " +
             "ORDER BY :sort_by",
-            countQuery = "countOpinionsQuery",
+            countQuery = countOpinionsQuery,
             nativeQuery = true)
     Page<Opinion> findOpinionsByVoteIdAndOption(@Param("vote_id") Long voteId,
                                                 @Param("sort_by") String sortBy,
