@@ -8,6 +8,7 @@ import com.cocktailmasters.backend.vote.controller.dto.opinion.CreateAgreementRe
 import com.cocktailmasters.backend.vote.controller.dto.opinion.CreateOpinionRequest;
 import com.cocktailmasters.backend.vote.controller.dto.opinion.FindOpinionNumberResponse;
 import com.cocktailmasters.backend.vote.controller.dto.opinion.FindOpinionsResponse;
+import com.cocktailmasters.backend.vote.domain.entity.Agreement;
 import com.cocktailmasters.backend.vote.domain.entity.Opinion;
 import com.cocktailmasters.backend.vote.domain.entity.OpinionSortBy;
 import com.cocktailmasters.backend.vote.domain.entity.Vote;
@@ -57,9 +58,11 @@ public class OpinionService {
                 .opinions(opinions.stream()
                         .map(opinion -> {
                             if (user != null) {
-                                return OpinionDto.createOpinionDto(opinion, agreementRepository.findByUserIdAndOpinionId(user.getId(), opinion.getId())
-                                        .get()
-                                        .getIsAgree());
+                                Agreement agreement = agreementRepository.findByUserIdAndOpinionId(user.getId(), opinion.getId())
+                                        .orElse(null);
+                                if (agreement != null) {
+                                    return OpinionDto.createOpinionDto(opinion, agreement.getIsAgree());
+                                }
                             }
                             return OpinionDto.createOpinionDto(opinion, null);
                         }).collect(Collectors.toList()))
