@@ -9,4 +9,6 @@ import com.cocktailmasters.backend.megaphone.domain.entity.Megaphone;
 
 public interface MegaphoneRepository extends JpaRepository<Megaphone, Long> {
     public List<Megaphone> findByMegaphoneEndDateTimeAfter(LocalDateTime date);
+
+    public Long countByUserId(long userId);
 }

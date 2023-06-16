@@ -17,9 +17,17 @@ public class UserBadge extends BaseEntity {
     @Builder.Default
     private boolean isEquipped = false;
 
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @ManyToOne(fetch = FetchType.LAZY)
     private User user;
 
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @ManyToOne(fetch = FetchType.LAZY)
     private Badge badge;
+
+    public void equipBadge() {
+        this.isEquipped = true;
+    }
+
+    public void unequipBadge() {
+        this.isEquipped = false;
+    }
 }

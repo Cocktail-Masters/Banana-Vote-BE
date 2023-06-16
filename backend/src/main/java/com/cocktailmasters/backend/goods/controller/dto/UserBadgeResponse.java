@@ -15,23 +15,26 @@ public class UserBadgeResponse {
 
     private long id;
 
+    private Long badgeId;
+
     private String name;
 
     private String imageUrl;
 
     private String description;
 
-    private boolean isSelling;
+    private boolean isEquipped;
 
     public static UserBadgeResponse createUserBadgeResponse(UserBadge userBadge) {
         Badge badgeInfo = userBadge.getBadge();
 
         return UserBadgeResponse.builder()
-                .id(badgeInfo.getId())
+                .id(userBadge.getId())
+                .badgeId(badgeInfo.getId())
                 .name(badgeInfo.getBadgeName())
                 .imageUrl(badgeInfo.getBadgeImageUrl())
                 .description(badgeInfo.getBadgeDescription())
-                .isSelling(badgeInfo.isSelling())
+                .isEquipped(userBadge.isEquipped())
                 .build();
     }
 }

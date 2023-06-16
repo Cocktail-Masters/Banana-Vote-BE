@@ -158,4 +158,8 @@ public class User extends BaseEntity {
     public void deleteUser() {
         super.delete();
     }
+
+    public void updateBadgeImage(String badgeImageUrl) {
+        this.equippedBadgeImageUrl = badgeImageUrl;
+    }
 }

@@ -31,6 +31,7 @@ public class UserBadgeService {
      * @param userId
      * @return badge of user
      */
+    @Transactional
     public List<UserBadgeResponse> getUserBadgesList(long userId) {
         List<UserBadge> userBadges = userBadgeRepository.findAllByUserId(userId);
 
@@ -89,6 +90,37 @@ public class UserBadgeService {
             return false;
 
         userBadgeRepository.delete(userBadge.get());
+        return true;
+    }
+
+    /**
+     * equip badge
+     * 
+     * @param badgeId want to equip
+     * @param userId
+     * @return true or false(badge not found)
+     */
+    @Transactional
+    public boolean changeEquippedBadge(long userBadgeId, long userId) {
+        Optional<UserBadge> targetBadge = userBadgeRepository.findById(userBadgeId);
+        Optional<User> user = userRepository.findById(userId);
+        if (!user.isPresent() || !targetBadge.isPresent())
+            return false;
+
+        // upequip badge
+        Optional<UserBadge> equippedBadge = userBadgeRepository.findByUserIdAndIsEquipped(userId, true);
+        if (equippedBadge.isPresent()) {
+            equippedBadge.get().unequipBadge();
+            userBadgeRepository.save(equippedBadge.get());
+        }
+
+        // equip badge
+        targetBadge.get().equipBadge();
+        userBadgeRepository.save(targetBadge.get());
+
+        // update badge image
+        user.get().updateBadgeImage(targetBadge.get().getBadge().getBadgeImageUrl());
+        userRepository.save(user.get());
         return true;
     }
 }
