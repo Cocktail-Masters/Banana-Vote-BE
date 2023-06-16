@@ -1,15 +1,5 @@
 package com.cocktailmasters.backend.season.service;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
 import com.cocktailmasters.backend.account.user.domain.entity.User;
 import com.cocktailmasters.backend.account.user.domain.repository.UserRepository;
 import com.cocktailmasters.backend.season.controller.dto.RankingResponse;
@@ -18,8 +8,16 @@ import com.cocktailmasters.backend.season.domain.entity.Season;
 import com.cocktailmasters.backend.season.domain.entity.SeasonRanking;
 import com.cocktailmasters.backend.season.domain.repository.RankingRepository;
 import com.cocktailmasters.backend.season.domain.repository.SeasonRepository;
-
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 
 @RequiredArgsConstructor
 @Service

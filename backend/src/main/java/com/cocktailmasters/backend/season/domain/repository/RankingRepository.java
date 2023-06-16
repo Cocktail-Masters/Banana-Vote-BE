@@ -1,14 +1,13 @@
 package com.cocktailmasters.backend.season.domain.repository;
 
-import java.util.Optional;
-
+import com.cocktailmasters.backend.season.domain.entity.SeasonRanking;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
-import com.cocktailmasters.backend.season.domain.entity.SeasonRanking;
+import java.util.Optional;
 
 public interface RankingRepository extends JpaRepository<SeasonRanking, Long> {
     long countBySeasonId(long seasonId);
