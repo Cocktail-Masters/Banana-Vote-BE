@@ -1,29 +1,22 @@
 package com.cocktailmasters.backend.season.controller;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-
-import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PatchMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
-
 import com.cocktailmasters.backend.season.controller.dto.SeasonDto;
 import com.cocktailmasters.backend.season.domain.entity.Season;
 import com.cocktailmasters.backend.season.service.SeasonService;
-import static com.cocktailmasters.backend.config.SwaggerConfig.SECURITY_SCHEME_NAME;
-
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
+import static com.cocktailmasters.backend.config.SwaggerConfig.SECURITY_SCHEME_NAME;
 
 @Tag(name = "시즌", description = "시즌과 관련된 기능")
 @RequiredArgsConstructor
@@ -61,7 +54,7 @@ public class SeasonController {
     }
 
     @Operation(summary = "시즌 정보를 추가(관리자용) - id는 신경 안써도 됨", description = "현재 시즌의 정보에 대해 추가, 만약 일자가 겹칠 경우엔 에러 발생", security = {
-            @SecurityRequirement(name = SECURITY_SCHEME_NAME) })
+            @SecurityRequirement(name = SECURITY_SCHEME_NAME)})
     @PreAuthorize("hasRole('ADMIN')")
     @PostMapping
     public ResponseEntity<String> addSeasonInfo(@Valid @RequestBody SeasonDto season) {

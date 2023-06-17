@@ -1,7 +1,6 @@
 package com.cocktailmasters.backend.season.domain.entity;
 
 import com.cocktailmasters.backend.common.domain.entity.BaseEntity;
-
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
