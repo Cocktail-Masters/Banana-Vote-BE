@@ -2,6 +2,7 @@ package com.cocktailmasters.backend.account.user.controller;
 
 import com.cocktailmasters.backend.account.jwt.service.JwtService;
 import com.cocktailmasters.backend.account.user.controller.dto.*;
+import com.cocktailmasters.backend.account.user.controller.dto.MegaphoneRequest;
 import com.cocktailmasters.backend.account.user.domain.entity.User;
 import com.cocktailmasters.backend.account.user.service.UserService;
 import com.cocktailmasters.backend.goods.service.UserBadgeService;
