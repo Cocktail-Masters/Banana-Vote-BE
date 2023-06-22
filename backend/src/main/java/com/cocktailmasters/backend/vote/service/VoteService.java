@@ -122,11 +122,21 @@ public class VoteService {
         if (keyword == null) keyword = "";
         String sortType = VoteSortBy.valueOfNumber(sortBy);
         if (isTag) {
-            votes = voteRepository.findVotesByTagAndOption(keyword, isClosed, isEvent, sortType, pageable);
-            totalCount = voteRepository.countVotesByTag(keyword, isClosed, isEvent, sortType);
+            if (!isClosed) {
+                votes = voteRepository.findVotesIsClosedByTagAndOption(keyword, isEvent, sortType, pageable);
+                totalCount = voteRepository.countVotesIsClosedByTag(keyword, isEvent, sortType);
+            } else {
+                votes = voteRepository.findVotesByTagAndOption(keyword, isEvent, sortType, pageable);
+                totalCount = voteRepository.countVotesByTag(keyword, isEvent, sortType);
+            }
         } else {
-            votes = voteRepository.findVotesByTitleAndOption(keyword, isClosed, isEvent, sortType, pageable);
-            totalCount = voteRepository.countVotesByTitle(keyword, isClosed, isEvent, sortType);
+            if (!isClosed) {
+                votes = voteRepository.findVotesIsClosedByTitleAndOption(keyword, isEvent, sortType, pageable);
+                totalCount = voteRepository.countVotesIsClosedByTitle(keyword, isEvent, sortType);
+            } else {
+                votes = voteRepository.findVotesByTitleAndOption(keyword, isEvent, sortType, pageable);
+                totalCount = voteRepository.countVotesByTitle(keyword, isEvent, sortType);
+            }
         }
 
         return FindVotesResponse.builder()
