@@ -150,9 +150,11 @@ public class VoteService {
                             Boolean isAgree = null;
                             if (opinion != null) {
                                 if (user != null) {
-                                    isAgree = agreementRepository.findByUserIdAndOpinionId(user.getId(), opinion.getId())
-                                            .orElse(null)
-                                            .getIsAgree();
+                                    Agreement agreement = agreementRepository.findByUserIdAndOpinionId(user.getId(), opinion.getId())
+                                            .orElse(null);
+                                    if (agreement != null) {
+                                        isAgree = agreement.getIsAgree();
+                                    }
                                 }
                                 bestOpinion = OpinionDto.createOpinionDto(opinion, isAgree);
                             }
