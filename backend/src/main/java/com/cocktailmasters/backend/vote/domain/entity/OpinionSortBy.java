@@ -10,8 +10,8 @@ import java.util.Map;
 @AllArgsConstructor
 public enum OpinionSortBy {
 
-    LATEST(1, "created_date", "최신순"),
-    AGREE(2, "agreed_number", "공감순");
+    AGREE(1, "agreed_number", "공감순"),
+    LATEST(2, "created_date", "최신순");
 
     private final int number;
     private final String value;
