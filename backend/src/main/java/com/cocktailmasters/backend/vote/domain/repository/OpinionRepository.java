@@ -15,8 +15,7 @@ public interface OpinionRepository extends JpaRepository<Opinion, Long> {
     String countOpinionsQuery = "SELECT COUNT(*) " +
             "FROM opinion o " +
             "WHERE o.vote_vote_id = :vote_id " +
-            "AND o.is_active = true " +
-            "ORDER BY :sort_by DESC";
+            "AND o.is_active = true";
 
     Optional<Opinion> findFirstByVoteIdOrderByAgreedNumberDesc(Long voteId);
 
