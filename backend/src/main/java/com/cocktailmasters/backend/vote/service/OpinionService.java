@@ -49,10 +49,8 @@ public class OpinionService {
     }
 
     @Transactional
-    public FindOpinionsResponse findOpinions(User user, Long voteId, int sortBy, Pageable pageable) {
-        Page<Opinion> opinions = opinionRepository.findOpinionsByVoteIdAndOption(voteId,
-                OpinionSortBy.valueOfNumber(sortBy),
-                pageable);
+    public FindOpinionsResponse findOpinions(User user, Long voteId, Pageable pageable) {
+        Page<Opinion> opinions = opinionRepository.findOpinionsByVoteIdAndOption(voteId, pageable);
         List<Opinion> bestOpinions = opinionRepository.findTop3ByVoteIdAndAgreedNumberGreaterThanOrderByAgreedNumberDesc(voteId, 9);
         return FindOpinionsResponse.builder()
                 .opinions(opinions.stream()
