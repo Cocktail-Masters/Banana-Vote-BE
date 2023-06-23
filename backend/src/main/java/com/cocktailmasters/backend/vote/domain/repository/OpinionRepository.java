@@ -23,12 +23,10 @@ public interface OpinionRepository extends JpaRepository<Opinion, Long> {
     @Query(value = "SELECT o.* " +
             "FROM opinion o " +
             "WHERE o.vote_vote_id = :vote_id " +
-            "AND o.is_active = true " +
-            "ORDER BY :sort_by DESC",
+            "AND o.is_active = true",
             countQuery = countOpinionsQuery,
             nativeQuery = true)
     Page<Opinion> findOpinionsByVoteIdAndOption(@Param("vote_id") Long voteId,
-                                                @Param("sort_by") String sortBy,
                                                 Pageable pageable);
 
     List<Opinion> findTop3ByVoteIdAndAgreedNumberGreaterThanOrderByAgreedNumberDesc(Long voteId, int agreedNumber);

@@ -6,13 +6,15 @@ import com.cocktailmasters.backend.vote.controller.dto.opinion.CreateAgreementRe
 import com.cocktailmasters.backend.vote.controller.dto.opinion.CreateOpinionRequest;
 import com.cocktailmasters.backend.vote.controller.dto.opinion.FindOpinionNumberResponse;
 import com.cocktailmasters.backend.vote.controller.dto.opinion.FindOpinionsResponse;
+import com.cocktailmasters.backend.vote.domain.entity.OpinionSortBy;
 import com.cocktailmasters.backend.vote.service.OpinionService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -27,6 +29,8 @@ public class OpinionController {
 
     private final JwtService jwtService;
     private final OpinionService opinionService;
+
+    private final String DEFAULT_PAGE_SIZE = "10";
 
     @Operation(summary = "의견 작성", description = "투표 글에 의견 작성",
             security = {@SecurityRequirement(name = SECURITY_SCHEME_NAME)})
@@ -46,14 +50,16 @@ public class OpinionController {
     @GetMapping("/{vote_id}/options")
     public ResponseEntity<FindOpinionsResponse> findOpinions(@RequestHeader(name = "Authorization", required = false) String token,
                                                              @PathVariable("vote_id") Long voteId,
-                                                             Pageable pageable,
+                                                             @RequestParam(required = false, name = "page", defaultValue = "0") int page,
+                                                             @RequestParam(required = false, name = "size", defaultValue = DEFAULT_PAGE_SIZE) int size,
                                                              @RequestParam(value = "sort-by", defaultValue = "1") int sortBy) {
+        PageRequest pageRequest = PageRequest.of(page, size, Sort.by(OpinionSortBy.valueOfNumber(sortBy)).descending());
         User user = null;
         if (token != null) {
             user = jwtService.findUserByToken(token);
         }
         return ResponseEntity.ok()
-                .body(opinionService.findOpinions(user, voteId, sortBy, pageable));
+                .body(opinionService.findOpinions(user, voteId, pageRequest));
     }
 
     @Operation(summary = "게시글 의견 개수 보기", description = "게시글의 의견 개수 보기")
