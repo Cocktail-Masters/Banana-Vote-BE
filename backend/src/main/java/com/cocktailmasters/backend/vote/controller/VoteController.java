@@ -6,13 +6,15 @@ import com.cocktailmasters.backend.account.user.domain.entity.User;
 import com.cocktailmasters.backend.point.service.PointService;
 import com.cocktailmasters.backend.vote.controller.dto.item.VoteItemCreateDto;
 import com.cocktailmasters.backend.vote.controller.dto.vote.*;
+import com.cocktailmasters.backend.vote.domain.entity.VoteSortBy;
 import com.cocktailmasters.backend.vote.service.VoteService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -32,6 +34,8 @@ public class VoteController {
     private final JwtService jwtService;
     private final PointService pointService;
     private final VoteService voteService;
+
+    private final String DEFAULT_PAGE_SIZE = "10";
 
     @Operation(summary = "투표 생성",
             description = "새로운 투표 생성(투표 종료 날짜는 하루 이상부터), 투표 항목 필수",
@@ -90,18 +94,20 @@ public class VoteController {
             security = {@SecurityRequirement(name = SECURITY_SCHEME_NAME)})
     @GetMapping("/options")
     public ResponseEntity<FindVotesResponse> findVotes(@RequestHeader(name = "Authorization", required = false) String token,
-                                                       Pageable pageable,
                                                        @RequestParam("keyword") String keyword,
                                                        @RequestParam(value = "is-tag", defaultValue = "false") boolean isTag,
                                                        @RequestParam(value = "is-closed", defaultValue = "false") boolean isClosed,
                                                        @RequestParam(value = "is-event", defaultValue = "false") boolean isEvent,
+                                                       @RequestParam(required = false, name = "page", defaultValue = "0") int page,
+                                                       @RequestParam(required = false, name = "size", defaultValue = DEFAULT_PAGE_SIZE) int size,
                                                        @RequestParam(value = "sort-by", defaultValue = "1") int sortBy) {
+        PageRequest pageRequest = PageRequest.of(page, size, Sort.by(VoteSortBy.valueOfNumber(sortBy)).descending());
         User user = null;
         if (token != null) {
             user = jwtService.findUserByToken(token);
         }
         return ResponseEntity.ok()
-                .body(voteService.findVotes(user, keyword, isTag, isClosed, isEvent, sortBy, pageable));
+                .body(voteService.findVotes(user, keyword, isTag, isClosed, isEvent, pageRequest));
     }
 
     @Operation(summary = "투표글 상세 보기", description = "투표글 상세 보기, 투표 조회수 증가")

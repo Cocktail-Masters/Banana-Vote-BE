@@ -10,7 +10,7 @@ import java.util.Map;
 @AllArgsConstructor
 public enum VoteSortBy {
 
-    LATEST(1, "created_date", "최신순"),
+    LATEST(1, "vote_id", "최신순"),
     POPULARITY(2, "voted_number", "참여순"),
     HITS(3, "vote_hits", "조회순"),
     OPINION(4, "opinion_number", "댓글순");

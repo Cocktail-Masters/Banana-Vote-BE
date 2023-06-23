@@ -115,18 +115,26 @@ public class VoteService {
                                        boolean isTag,
                                        boolean isClosed,
                                        boolean isEvent,
-                                       int sortBy,
                                        Pageable pageable) {
         Page<Vote> votes;
         long totalCount;
         if (keyword == null) keyword = "";
-        String sortType = VoteSortBy.valueOfNumber(sortBy);
         if (isTag) {
-            votes = voteRepository.findVotesByTagAndOption(keyword, isClosed, isEvent, sortType, pageable);
-            totalCount = voteRepository.countVotesByTag(keyword, isClosed, isEvent, sortType);
+            if (!isClosed) {
+                votes = voteRepository.findVotesIsClosedByTagAndOption(keyword, isEvent, pageable);
+                totalCount = voteRepository.countVotesIsClosedByTag(keyword, isEvent );
+            } else {
+                votes = voteRepository.findVotesByTagAndOption(keyword, isEvent, pageable);
+                totalCount = voteRepository.countVotesByTag(keyword, isEvent);
+            }
         } else {
-            votes = voteRepository.findVotesByTitleAndOption(keyword, isClosed, isEvent, sortType, pageable);
-            totalCount = voteRepository.countVotesByTitle(keyword, isClosed, isEvent, sortType);
+            if (!isClosed) {
+                votes = voteRepository.findVotesIsClosedByTitleAndOption(keyword, isEvent, pageable);
+                totalCount = voteRepository.countVotesIsClosedByTitle(keyword, isEvent);
+            } else {
+                votes = voteRepository.findVotesByTitleAndOption(keyword, isEvent, pageable);
+                totalCount = voteRepository.countVotesByTitle(keyword, isEvent);
+            }
         }
 
         return FindVotesResponse.builder()
@@ -140,9 +148,11 @@ public class VoteService {
                             Boolean isAgree = null;
                             if (opinion != null) {
                                 if (user != null) {
-                                    isAgree = agreementRepository.findByUserIdAndOpinionId(user.getId(), opinion.getId())
-                                            .orElse(null)
-                                            .getIsAgree();
+                                    Agreement agreement = agreementRepository.findByUserIdAndOpinionId(user.getId(), opinion.getId())
+                                            .orElse(null);
+                                    if (agreement != null) {
+                                        isAgree = agreement.getIsAgree();
+                                    }
                                 }
                                 bestOpinion = OpinionDto.createOpinionDto(opinion, isAgree);
                             }
