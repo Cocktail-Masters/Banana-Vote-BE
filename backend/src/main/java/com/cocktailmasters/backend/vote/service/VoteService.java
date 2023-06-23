@@ -115,27 +115,25 @@ public class VoteService {
                                        boolean isTag,
                                        boolean isClosed,
                                        boolean isEvent,
-                                       int sortBy,
                                        Pageable pageable) {
         Page<Vote> votes;
         long totalCount;
         if (keyword == null) keyword = "";
-        String sortType = VoteSortBy.valueOfNumber(sortBy);
         if (isTag) {
             if (!isClosed) {
-                votes = voteRepository.findVotesIsClosedByTagAndOption(keyword, isEvent, sortType, pageable);
-                totalCount = voteRepository.countVotesIsClosedByTag(keyword, isEvent, sortType);
+                votes = voteRepository.findVotesIsClosedByTagAndOption(keyword, isEvent, pageable);
+                totalCount = voteRepository.countVotesIsClosedByTag(keyword, isEvent );
             } else {
-                votes = voteRepository.findVotesByTagAndOption(keyword, isEvent, sortType, pageable);
-                totalCount = voteRepository.countVotesByTag(keyword, isEvent, sortType);
+                votes = voteRepository.findVotesByTagAndOption(keyword, isEvent, pageable);
+                totalCount = voteRepository.countVotesByTag(keyword, isEvent);
             }
         } else {
             if (!isClosed) {
-                votes = voteRepository.findVotesIsClosedByTitleAndOption(keyword, isEvent, sortType, pageable);
-                totalCount = voteRepository.countVotesIsClosedByTitle(keyword, isEvent, sortType);
+                votes = voteRepository.findVotesIsClosedByTitleAndOption(keyword, isEvent, pageable);
+                totalCount = voteRepository.countVotesIsClosedByTitle(keyword, isEvent);
             } else {
-                votes = voteRepository.findVotesByTitleAndOption(keyword, isEvent, sortType, pageable);
-                totalCount = voteRepository.countVotesByTitle(keyword, isEvent, sortType);
+                votes = voteRepository.findVotesByTitleAndOption(keyword, isEvent, pageable);
+                totalCount = voteRepository.countVotesByTitle(keyword, isEvent);
             }
         }
 
