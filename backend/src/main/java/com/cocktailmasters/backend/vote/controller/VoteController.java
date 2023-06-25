@@ -73,20 +73,23 @@ public class VoteController {
                                                   @RequestParam("vote_id") long voteId,
                                                   @RequestBody CreateVoteRequest createVoteRequest) {
         User user = jwtService.findUserByToken(token);
-        if (createVoteRequest.getVoteItems().isEmpty() || createVoteRequest.getVoteEndDate().isBefore(LocalDateTime.now())) {
-            return ResponseEntity.badRequest().build();
+        if(createVoteRequest.getVoteItems().isEmpty()) {
+            return ResponseEntity.badRequest().body("There are no voting items.");
+        }
+        if ( createVoteRequest.getVoteEndDate().isBefore(LocalDateTime.now())) {
+            return ResponseEntity.badRequest().body("The voting end time is invalid.");
         }
         Set<Integer> voteItemSet = new HashSet<>();
         for (VoteItemCreateDto voteItem : createVoteRequest.getVoteItems()) {
             if (voteItemSet.contains(voteItem.getItemNumber())) {
-                return ResponseEntity.badRequest().build();
+                return ResponseEntity.badRequest().body("Duplicate voting item number.");
             }
             voteItemSet.add(voteItem.getItemNumber());
         }
         if (voteService.updateEventVote(user, createVoteRequest, voteId)) {
             return ResponseEntity.created(null).build();
         }
-        return ResponseEntity.badRequest().build();
+        return ResponseEntity.badRequest().body("Please contact administrator.");
     }
 
     @Operation(summary = "투표 검색", description = "검색어를 사용하여 투표 검색," +
