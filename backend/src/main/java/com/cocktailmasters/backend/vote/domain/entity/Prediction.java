@@ -17,6 +17,9 @@ public class Prediction extends BaseEntity {
     @Builder.Default
     private Long predictionPoints = 0L;
 
+    @Builder.Default
+    private boolean isReceivePoints = false;
+
     @ManyToOne(fetch = FetchType.LAZY)
     private User user;
 
