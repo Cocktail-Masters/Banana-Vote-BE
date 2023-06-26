@@ -122,7 +122,7 @@ public class VoteService {
         if (isTag) {
             if (!isClosed) {
                 votes = voteRepository.findVotesIsClosedByTagAndOption(keyword, isEvent, pageable);
-                totalCount = voteRepository.countVotesIsClosedByTag(keyword, isEvent );
+                totalCount = voteRepository.countVotesIsClosedByTag(keyword, isEvent);
             } else {
                 votes = voteRepository.findVotesByTagAndOption(keyword, isEvent, pageable);
                 totalCount = voteRepository.countVotesByTag(keyword, isEvent);
@@ -247,6 +247,22 @@ public class VoteService {
         prediction.updatePredictionPoints(predictionPoint);
         voteItemRepository.save(voteItem);
         pointService.addPoint(-1 * updatePredictionRequest.getPrediction().getPoints(), VOTE_PREDICTION_DESCRIPTION, user.getId());
+        return true;
+    }
+
+    @Transactional
+    public boolean getVoteResultPoints(long predictionId) {
+
+        Prediction prediction = predictionRepository.findById(predictionId)
+                .orElse(null);
+        if (prediction == null) {
+            return false;
+        }
+        if (prediction.isReceivePoints()) {
+            return false;
+        }
+        
+
         return true;
     }
 
