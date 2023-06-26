@@ -73,10 +73,10 @@ public class VoteController {
                                                   @RequestParam("vote_id") long voteId,
                                                   @RequestBody CreateVoteRequest createVoteRequest) {
         User user = jwtService.findUserByToken(token);
-        if(createVoteRequest.getVoteItems().isEmpty()) {
+        if (createVoteRequest.getVoteItems().isEmpty()) {
             return ResponseEntity.badRequest().body("There are no voting items.");
         }
-        if ( createVoteRequest.getVoteEndDate().isBefore(LocalDateTime.now())) {
+        if (createVoteRequest.getVoteEndDate().isBefore(LocalDateTime.now())) {
             return ResponseEntity.badRequest().body("The voting end time is invalid.");
         }
         Set<Integer> voteItemSet = new HashSet<>();
@@ -163,12 +163,22 @@ public class VoteController {
         return ResponseEntity.badRequest().build();
     }
 
-    @Operation(summary = "투표 삭제", description = "본인이 생성한 투표만 삭제 가능",
+    @Operation(summary = "투표 종료 후 포인트 획득", description = "투표 종료 후 포인트 획득, 예측 실패 시 0포인트 획득",
+            security = {@SecurityRequirement(name = SECURITY_SCHEME_NAME)})
+    @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
+    @PatchMapping("/{prediction_id}")
+    public ResponseEntity<String> getVoteResultPoints(@RequestHeader(name = "Authorization", required = false) String token,
+                                                      @PathVariable("prediction_id") long predictionId) {
+        User user = jwtService.findUserByToken(token);
+        return ResponseEntity.badRequest().build();
+    }
+
+    @Operation(summary = "투표 삭제", description = "관리자만 생성한 투표만 삭제 가능",
             security = {@SecurityRequirement(name = SECURITY_SCHEME_NAME)})
     @PreAuthorize("hasAnyRole('ADMIN')")
     @DeleteMapping("/{vote_id}")
     public ResponseEntity<String> deleteVote(@RequestHeader(name = "Authorization", required = false) String token,
-                                             @PathVariable("vote_id") Long voteId) throws Exception {
+                                             @PathVariable("vote_id") Long voteId) {
         jwtService.findUserByToken(token);
         if (voteService.deleteVote(voteId)) {
             return ResponseEntity.created(null).build();
