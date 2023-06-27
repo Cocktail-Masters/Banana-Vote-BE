@@ -61,9 +61,8 @@ public class UserService {
         return false;
     }
 
-    public boolean signOut(User user) {
-        user.updateRefreshToken("");
-        return true;
+    public void signOut(User user) {
+        user.updateRefreshToken(null);
     }
 
     @Transactional
