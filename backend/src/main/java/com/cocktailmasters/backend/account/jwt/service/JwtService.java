@@ -56,6 +56,7 @@ public class JwtService {
         return Jwts.builder()
                 .setSubject(ACCESS_TOKEN_SUBJECT)
                 .setClaims(claims)
+                .setIssuedAt(new Date(System.currentTimeMillis()))
                 .setExpiration(createExpireDate(accessTokenExpirationDate))
                 .signWith(SignatureAlgorithm.HS256, secretKey)
                 .compact();
@@ -67,6 +68,7 @@ public class JwtService {
         return Jwts.builder()
                 .setSubject(REFRESH_TOKEN_SUBJECT)
                 .setClaims(claims)
+                .setIssuedAt(new Date(System.currentTimeMillis()))
                 .setExpiration(createExpireDate(refreshTokenExpirationDate))
                 .signWith(SignatureAlgorithm.HS256, secretKey)
                 .compact();
@@ -127,8 +129,7 @@ public class JwtService {
     }
 
     private Date createExpireDate(Long tokenExpirationDate) {
-        Date now = new Date();
-        return new Date(now.getTime() + tokenExpirationDate);
+        return new Date(System.currentTimeMillis() + tokenExpirationDate);
     }
 
     private Optional<String> extractToken(HttpServletRequest request, String tokenHeader) {
