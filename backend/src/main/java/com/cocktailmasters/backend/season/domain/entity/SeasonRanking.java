@@ -17,9 +17,9 @@ public class SeasonRanking extends BaseEntity {
     @Builder.Default
     private Long score = 0L;
 
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @ManyToOne(fetch = FetchType.LAZY)
     private User user;
 
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @ManyToOne(fetch = FetchType.LAZYL)
     private Season season;
 }

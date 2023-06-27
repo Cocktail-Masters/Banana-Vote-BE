@@ -28,6 +28,6 @@ public class Megaphone extends BaseEntity {
     @Builder.Default
     private int megaphoneReportedNumber = 0;
 
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @ManyToOne(fetch = FetchType.LAZY)
     private User user;
 }

@@ -27,10 +27,10 @@ public class Picket extends BaseEntity {
     @Builder.Default
     private int picketReportedNumber = 0;
 
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @ManyToOne(fetch = FetchType.LAZY)
     private User user;
 
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @ManyToOne(fetch = FetchType.LAZY)
     private Vote vote;
 
     public void buyPicket(String url, long price) {

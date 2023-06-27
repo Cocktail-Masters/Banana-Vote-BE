@@ -21,6 +21,6 @@ public class BanLog extends BaseEntity {
     @NotNull
     private String banReason;
 
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @ManyToOne(fetch = FetchType.LAZY)
     private User user;
 }

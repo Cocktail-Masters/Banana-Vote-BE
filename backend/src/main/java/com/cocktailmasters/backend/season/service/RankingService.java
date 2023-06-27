@@ -37,6 +37,7 @@ public class RankingService {
      * @param pageSize
      * @return UserRankings
      */
+    @Transactional
     public RankingResponse getRankingListWithPage(long seasonId, int page, int pageSize) {
         Pageable pageable = PageRequest.of(page, pageSize);
         Page<SeasonRanking> rankingsWithPage = rankingRepository.findBySeasonIdOrderByScoreDesc(seasonId, pageable);
