@@ -20,6 +20,6 @@ public class SeasonRanking extends BaseEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     private User user;
 
-    @ManyToOne(fetch = FetchType.LAZYL)
+    @ManyToOne(fetch = FetchType.LAZY)
     private Season season;
 }
