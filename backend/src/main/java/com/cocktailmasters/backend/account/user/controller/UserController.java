@@ -2,7 +2,6 @@ package com.cocktailmasters.backend.account.user.controller;
 
 import com.cocktailmasters.backend.account.jwt.service.JwtService;
 import com.cocktailmasters.backend.account.user.controller.dto.*;
-import com.cocktailmasters.backend.account.user.controller.dto.MegaphoneRequest;
 import com.cocktailmasters.backend.account.user.domain.entity.User;
 import com.cocktailmasters.backend.account.user.service.UserService;
 import com.cocktailmasters.backend.goods.service.UserBadgeService;
@@ -14,6 +13,8 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -205,5 +206,58 @@ public class UserController {
             return ResponseEntity.notFound().build();
         else // result == -1
             return ResponseEntity.badRequest().build();
+    }
+
+    @Operation(summary = "참여한 투표 리스트 조회", description = "회원이 참여한 투표 리스트 조회", security = {
+            @SecurityRequirement(name = SECURITY_SCHEME_NAME) })
+    @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
+    @GetMapping("/votes")
+    public ResponseEntity<FindParticipateVotesResponse> findParticipateVotes(
+            @RequestHeader(name = "Authorization", required = false) String token) {
+        User user = jwtService.findUserByToken(token);
+
+        return ResponseEntity.ok().body(userService.findParticipateVotes(user));
+    }
+
+    @Operation(summary = "작성한 투표 리스트 조회", description = "회원이 작성한 투표 리스트 조회", security = {
+            @SecurityRequirement(name = SECURITY_SCHEME_NAME) })
+    @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
+    @GetMapping("/my/votes")
+    public ResponseEntity<FindMyVotesResponse> findMyVotes(
+            @RequestHeader(name = "Authorization", required = false) String token) {
+        User user = jwtService.findUserByToken(token);
+
+        return ResponseEntity.ok().body(userService.findMyVotes(user));
+    }
+
+    @Operation(summary = "작성한 댓글 리스트 조회", description = "회원이 작성한 투표 리스트 조회", security = {
+            @SecurityRequirement(name = SECURITY_SCHEME_NAME) })
+    @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
+    @GetMapping("/opinions")
+    public ResponseEntity<FindMyOpinionsResponse> findMyOpinions(
+            @RequestHeader(name = "Authorization", required = false) String token) {
+        User user = jwtService.findUserByToken(token);
+
+        return ResponseEntity.ok().body(userService.findMyOpinions(user));
+    }
+
+    @Operation(summary = "회원 리스트 조회", description = "회원의 전체 리스트 조회 (관리자 전용)", security = {
+            @SecurityRequirement(name = SECURITY_SCHEME_NAME) })
+    @PreAuthorize("hasAnyRole('ADMIN')")
+    @GetMapping("")
+    public ResponseEntity<FindAllUsersResponse> findAllUsers(
+            @RequestHeader(name = "Authorization", required = false) String token, Pageable pageable) {
+        return ResponseEntity.ok().body(userService.findAllUsers(pageable));
+    }
+
+    @Operation(summary = "회원의 역할(권환) 조회", description = "회원의 역할(role;권환) 조회", security = {
+            @SecurityRequirement(name = SECURITY_SCHEME_NAME) })
+    @PreAuthorize("hasAnyRole('ADMIN', 'USER', 'GUEST')")
+    @GetMapping("/role")
+    public ResponseEntity<FindRoleResponse> findRole(
+            @RequestHeader(name = "Authorization", required = false) String token) {
+        User user = jwtService.findUserByToken(token);
+
+        return ResponseEntity.ok().body(userService.findRole(user));
     }
 }
