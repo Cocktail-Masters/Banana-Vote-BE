@@ -251,18 +251,28 @@ public class VoteService {
     }
 
     @Transactional
-    public boolean getVoteResultPoints(long predictionId) {
+    public boolean getVoteResultPoints(long predictionId, long voteId) {
 
         Prediction prediction = predictionRepository.findById(predictionId)
                 .orElse(null);
-        if (prediction == null) {
+        Vote vote = voteRepository.findById(voteId)
+                .orElse(null);
+        if (prediction == null || vote == null) {
             return false;
         }
-        if (prediction.isReceivePoints()) {
+        if (prediction.isReceivePoints() || vote.getVoteEndDate().isBefore(LocalDateTime.now())) {
             return false;
         }
-        
-
+        int electedItem;
+        int maxVotedNumber = 0;
+        vote.getVoteItems()
+                .forEach(voteItem -> {
+//                    if (voteItem.getVotedNumber() < maxVotedNumber) {
+//                        maxVotedNumber = voteItem.getVotedNumber();
+//                        electedItem = voteItem.getVoteItemNumber();
+//                    }
+                });
+        prediction.getPredictionPoints();
         return true;
     }
 
