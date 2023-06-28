@@ -122,7 +122,7 @@ public class VoteService {
         if (isTag) {
             if (!isClosed) {
                 votes = voteRepository.findVotesIsClosedByTagAndOption(keyword, isEvent, pageable);
-                totalCount = voteRepository.countVotesIsClosedByTag(keyword, isEvent );
+                totalCount = voteRepository.countVotesIsClosedByTag(keyword, isEvent);
             } else {
                 votes = voteRepository.findVotesByTagAndOption(keyword, isEvent, pageable);
                 totalCount = voteRepository.countVotesByTag(keyword, isEvent);
@@ -247,6 +247,43 @@ public class VoteService {
         prediction.updatePredictionPoints(predictionPoint);
         voteItemRepository.save(voteItem);
         pointService.addPoint(-1 * updatePredictionRequest.getPrediction().getPoints(), VOTE_PREDICTION_DESCRIPTION, user.getId());
+        return true;
+    }
+
+    @Transactional
+    public boolean getVoteResultPoints(long userId, long predictionId, long voteId) {
+
+        Prediction prediction = predictionRepository.findById(predictionId)
+                .orElse(null);
+        Vote vote = voteRepository.findById(voteId)
+                .orElse(null);
+        if (prediction == null || vote == null) {
+            return false;
+        }
+        if (prediction.isReceivePoints() || vote.getVoteEndDate().isBefore(LocalDateTime.now())) {
+            return false;
+        }
+
+        long totalPoints = 0;
+        VoteItem electedVoteItem = vote.getVoteItems().get(0);
+        for (VoteItem voteItem : vote.getVoteItems()) {
+            totalPoints += voteItem.getTotalPoints();
+            if (voteItem.getVotedNumber() < electedVoteItem.getVotedNumber()) {
+                electedVoteItem = voteItem;
+            } else if (voteItem.getVotedNumber() == electedVoteItem.getVotedNumber()
+                    && voteItem.getTotalPoints() < electedVoteItem.getTotalPoints()) {
+                electedVoteItem = voteItem;
+            }
+        }
+
+        prediction.setPredictionEnd();
+        predictionRepository.save(prediction);
+        if (electedVoteItem.getVotedNumber() == prediction.getVoteItem().getVotedNumber()) {
+            long myPoints = prediction.getPredictionPoints() +
+                    (prediction.getPredictionPoints() * electedVoteItem.getTotalPoints()
+                            / (totalPoints - electedVoteItem.getTotalPoints()));
+            pointService.addPoint(myPoints, "Vote prediction succeeded.", userId);
+        }
         return true;
     }
 

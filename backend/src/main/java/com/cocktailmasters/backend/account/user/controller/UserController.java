@@ -52,20 +52,21 @@ public class UserController {
         return ResponseEntity.ok().build();
     }
 
-    @Operation(summary = "로그아웃", description = "로그아웃", security = { @SecurityRequirement(name = SECURITY_SCHEME_NAME) })
+    @Operation(summary = "로그아웃", description = "로그아웃", security = {@SecurityRequirement(name = SECURITY_SCHEME_NAME)})
     @PreAuthorize("hasAnyRole('ADMIN', 'USER', 'GUEST')")
     @PostMapping("/sign-out")
-    public ResponseEntity<String> signOut(@RequestHeader(name = "Authorization", required = false) String accessToken,
-            @RequestHeader(name = "Authorization-refresh", required = false) String refreshToken) {
+    public ResponseEntity<String> signOut(@RequestHeader(name = "Authorization", required = false) String accessToken) {
         User user = jwtService.findUserByToken(accessToken);
-        if (userService.signOut(user)) {
-            return ResponseEntity.created(null).build();
+        if (user == null) {
+            return ResponseEntity.status(HTTPResponse.SC_UNAUTHORIZED).build();
         }
-        return ResponseEntity.status(HTTPResponse.SC_UNAUTHORIZED).build();
+        userService.signOut(user);
+        return ResponseEntity.created(null).build();
+
     }
 
     @Operation(summary = "회원 탈퇴", description = "회원 탈퇴", security = {
-            @SecurityRequirement(name = SECURITY_SCHEME_NAME) })
+            @SecurityRequirement(name = SECURITY_SCHEME_NAME)})
     @PreAuthorize("hasAnyRole('ADMIN', 'USER', 'GUEST')")
     @DeleteMapping("")
     public ResponseEntity<String> withdrawal(@RequestHeader(name = "Authorization", required = false) String token) {
@@ -91,11 +92,11 @@ public class UserController {
     }
 
     @Operation(summary = "닉네임 변경", description = "닉네임 변경", security = {
-            @SecurityRequirement(name = SECURITY_SCHEME_NAME) })
+            @SecurityRequirement(name = SECURITY_SCHEME_NAME)})
     @PreAuthorize("hasAnyRole('ADMIN', 'USER', 'GUEST')")
     @PatchMapping("/nickname")
     public ResponseEntity<String> updateNickname(@RequestHeader(name = "Authorization", required = false) String token,
-            @RequestBody UpdateNicknameRequest updateNicknameRequest) {
+                                                 @RequestBody UpdateNicknameRequest updateNicknameRequest) {
         User user = jwtService.findUserByToken(token);
         if (userService.updateNickname(user, updateNicknameRequest)) {
             return ResponseEntity.created(null).build();
@@ -104,11 +105,11 @@ public class UserController {
     }
 
     @Operation(summary = "나이 변경", description = "나이 변경", security = {
-            @SecurityRequirement(name = SECURITY_SCHEME_NAME) })
+            @SecurityRequirement(name = SECURITY_SCHEME_NAME)})
     @PreAuthorize("hasAnyRole('ADMIN', 'USER', 'GUEST')")
     @PatchMapping("/age")
     public ResponseEntity<String> updateAge(@RequestHeader(name = "Authorization", required = false) String token,
-            @RequestBody @Valid UpdateAgeRequest updateNicknameRequest) {
+                                            @RequestBody @Valid UpdateAgeRequest updateNicknameRequest) {
         User user = jwtService.findUserByToken(token);
         if (userService.updateAge(user, updateNicknameRequest)) {
             return ResponseEntity.created(null).build();
@@ -117,11 +118,11 @@ public class UserController {
     }
 
     @Operation(summary = "성별 변경", description = "성별 변경, 입력 예제 MALE or FEMALE", security = {
-            @SecurityRequirement(name = SECURITY_SCHEME_NAME) })
+            @SecurityRequirement(name = SECURITY_SCHEME_NAME)})
     @PreAuthorize("hasAnyRole('ADMIN', 'USER', 'GUEST')")
     @PatchMapping("/gender")
     public ResponseEntity<String> updateGender(@RequestHeader(name = "Authorization", required = false) String token,
-            @RequestBody @Valid UpdateGenderRequest updateGenderRequest) {
+                                               @RequestBody @Valid UpdateGenderRequest updateGenderRequest) {
         User user = jwtService.findUserByToken(token);
         if (userService.updateGender(user, updateGenderRequest)) {
             return ResponseEntity.created(null).build();
@@ -130,7 +131,7 @@ public class UserController {
     }
 
     @Operation(summary = "관심 태그 조회", description = "관심 태그 조회", security = {
-            @SecurityRequirement(name = SECURITY_SCHEME_NAME) })
+            @SecurityRequirement(name = SECURITY_SCHEME_NAME)})
     @PreAuthorize("hasAnyRole('ADMIN', 'USER', 'GUEST')")
     @GetMapping("/tags")
     public ResponseEntity<FindInterestTagsResponse> findInterestTags(
@@ -141,7 +142,7 @@ public class UserController {
     }
 
     @Operation(summary = "관심 태그 추가", description = "관심 태그 추가", security = {
-            @SecurityRequirement(name = SECURITY_SCHEME_NAME) })
+            @SecurityRequirement(name = SECURITY_SCHEME_NAME)})
     @PreAuthorize("hasAnyRole('ADMIN', 'USER', 'GUEST')")
     @PostMapping("/tags")
     public ResponseEntity<String> createInterestTag(
@@ -157,7 +158,7 @@ public class UserController {
     }
 
     @Operation(summary = "관심 태그 삭제", description = "관심 태그 삭제", security = {
-            @SecurityRequirement(name = SECURITY_SCHEME_NAME) })
+            @SecurityRequirement(name = SECURITY_SCHEME_NAME)})
     @PreAuthorize("hasAnyRole('ADMIN', 'USER', 'GUEST')")
     @DeleteMapping("/tags")
     public ResponseEntity<String> deleteInterestTag(
@@ -175,7 +176,7 @@ public class UserController {
     }
 
     @Operation(summary = "뱃지 사용하기(변경)", description = "장착할 뱃지를 소유하지 않았을 경우엔 Not found", security = {
-            @SecurityRequirement(name = SECURITY_SCHEME_NAME) })
+            @SecurityRequirement(name = SECURITY_SCHEME_NAME)})
     @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
     @PatchMapping("/badges/{userBadgeId}")
     public ResponseEntity<String> useBadge(
@@ -190,7 +191,7 @@ public class UserController {
     }
 
     @Operation(summary = "굿즈 사용 하기", description = "현재 굿즈 종류(코스메틱 or 확성기), 확성기 사용 시에는 추가 정보 필요", security = {
-            @SecurityRequirement(name = SECURITY_SCHEME_NAME) })
+            @SecurityRequirement(name = SECURITY_SCHEME_NAME)})
     @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
     @PatchMapping("/goods/{userGoodsId}")
     public ResponseEntity<String> useGoods(

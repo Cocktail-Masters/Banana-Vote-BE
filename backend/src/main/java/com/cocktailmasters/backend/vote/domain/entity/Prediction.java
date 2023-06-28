@@ -17,6 +17,9 @@ public class Prediction extends BaseEntity {
     @Builder.Default
     private Long predictionPoints = 0L;
 
+    @Builder.Default
+    private boolean isReceivePoints = false;
+
     @ManyToOne(fetch = FetchType.LAZY)
     private User user;
 
@@ -25,6 +28,10 @@ public class Prediction extends BaseEntity {
 
     public void updatePredictionPoints(Long predictionPoints) {
         this.predictionPoints += predictionPoints;
+    }
+
+    public void setPredictionEnd() {
+        this.isReceivePoints = true;
     }
 
     public void deletePrediction() {
