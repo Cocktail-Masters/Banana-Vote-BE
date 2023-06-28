@@ -206,7 +206,7 @@ public class VoteController {
     @Operation(summary = "투표 예측 리스트 확인", description = "투표 예측 리스트 확인",
             security = {@SecurityRequirement(name = SECURITY_SCHEME_NAME)})
     @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
-    @GetMapping("/{vote_id}/prediction/")
+    @GetMapping("/{vote_id}/prediction")
     public ResponseEntity<FindPredictionsResponse> findPredictions(@RequestHeader(name = "Authorization", required = false) String token,
                                                                    @PathVariable("vote_id") Long voteId) {
         User user = jwtService.findUserByToken(token);
