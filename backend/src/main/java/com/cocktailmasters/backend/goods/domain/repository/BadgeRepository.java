@@ -10,10 +10,10 @@ import com.cocktailmasters.backend.goods.domain.entity.Badge;
 
 public interface BadgeRepository extends JpaRepository<Badge, Long> {
 
-        Page<Badge> findByBadgeEndDateAfterAndIsSellingOrderByBadgeEndDateAsc(LocalDate date, boolean isSelling,
+        Page<Badge> findByBadgeEndDateAfterAndIsSellingOrderByBadgeEndDateDesc(LocalDate date, boolean isSelling,
                         Pageable pageable);
 
-        Page<Badge> findByBadgeEndDateAfterAndIsSellingOrderByBadgeSoldNumberAsc(LocalDate date, boolean isSelling,
+        Page<Badge> findByBadgeEndDateAfterAndIsSellingOrderByBadgeSoldNumberDesc(LocalDate date, boolean isSelling,
                         Pageable pageable);
 
         Page<Badge> findByBadgeEndDateAfterAndIsSellingOrderByBadgePriceAsc(LocalDate date, boolean isSelling,
@@ -22,9 +22,9 @@ public interface BadgeRepository extends JpaRepository<Badge, Long> {
         Page<Badge> findByBadgeEndDateAfterAndIsSellingOrderByBadgePriceDesc(LocalDate date, boolean isSelling,
                         Pageable pageable);
 
-        Page<Badge> findAllByOrderByBadgeEndDateAsc(Pageable pageable);
+        Page<Badge> findAllByOrderByBadgeEndDateDesc(Pageable pageable);
 
-        Page<Badge> findAllByOrderByBadgeSoldNumberAsc(Pageable pageable);
+        Page<Badge> findAllByOrderByBadgeSoldNumberDesc(Pageable pageable);
 
         Page<Badge> findAllByOrderByBadgePriceAsc(Pageable pageable);
 

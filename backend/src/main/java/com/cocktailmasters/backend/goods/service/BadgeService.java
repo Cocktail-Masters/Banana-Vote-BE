@@ -143,12 +143,12 @@ public class BadgeService {
                 case 1:
                 default:
                     badgeList = badgeRepository
-                            .findByBadgeEndDateAfterAndIsSellingOrderByBadgeEndDateAsc(LocalDate.now(), true, pageable)
+                            .findByBadgeEndDateAfterAndIsSellingOrderByBadgeEndDateDesc(LocalDate.now(), true, pageable)
                             .getContent();
                     break;
                 case 2:
                     badgeList = badgeRepository
-                            .findByBadgeEndDateAfterAndIsSellingOrderByBadgeSoldNumberAsc(LocalDate.now(), true,
+                            .findByBadgeEndDateAfterAndIsSellingOrderByBadgeSoldNumberDesc(LocalDate.now(), true,
                                     pageable)
                             .getContent();
                     break;
@@ -170,10 +170,10 @@ public class BadgeService {
             switch (sortBy) {
                 case 1:
                 default:
-                    badgeList = badgeRepository.findAllByOrderByBadgeEndDateAsc(pageable).getContent();
+                    badgeList = badgeRepository.findAllByOrderByBadgeEndDateDesc(pageable).getContent();
                     break;
                 case 2:
-                    badgeList = badgeRepository.findAllByOrderByBadgeSoldNumberAsc(pageable).getContent();
+                    badgeList = badgeRepository.findAllByOrderByBadgeSoldNumberDesc(pageable).getContent();
                     break;
                 case 3:
                     badgeList = badgeRepository.findAllByOrderByBadgePriceAsc(pageable).getContent();

@@ -9,17 +9,17 @@ import com.cocktailmasters.backend.goods.domain.entity.Goods;
 
 public interface GoodsRepository extends JpaRepository<Goods, Long> {
 
-    Page<Goods> findByGoodsTypeOrderBySaleStartDateAsc(GoodsType goodstype, Pageable pageable);
+    Page<Goods> findByGoodsTypeOrderBySaleStartDateDesc(GoodsType goodstype, Pageable pageable);
 
-    Page<Goods> findByGoodsTypeOrderByGoodsSoldNumberAsc(GoodsType goodstype, Pageable pageable);
+    Page<Goods> findByGoodsTypeOrderByGoodsSoldNumberDesc(GoodsType goodstype, Pageable pageable);
 
     Page<Goods> findByGoodsTypeOrderByGoodsPriceAsc(GoodsType goodstype, Pageable pageable);
 
     Page<Goods> findByGoodsTypeOrderByGoodsPriceDesc(GoodsType goodstype, Pageable pageable);
 
-    Page<Goods> findAllByOrderBySaleStartDateAsc(Pageable pageable);
+    Page<Goods> findAllByOrderBySaleStartDateDesc(Pageable pageable);
 
-    Page<Goods> findAllByOrderByGoodsSoldNumberAsc(Pageable pageable);
+    Page<Goods> findAllByOrderByGoodsSoldNumberDesc(Pageable pageable);
 
     Page<Goods> findAllByOrderByGoodsPriceAsc(Pageable pageable);
 

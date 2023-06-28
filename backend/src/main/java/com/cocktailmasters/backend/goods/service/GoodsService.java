@@ -73,10 +73,10 @@ public class GoodsService {
             switch (sortBy) {
                 case 1: // newly first
                 default:
-                    goodsList = goodsRepository.findAllByOrderBySaleStartDateAsc(pageable).getContent();
+                    goodsList = goodsRepository.findAllByOrderBySaleStartDateDesc(pageable).getContent();
                     break;
                 case 2: // popular first
-                    goodsList = goodsRepository.findAllByOrderByGoodsSoldNumberAsc(pageable).getContent();
+                    goodsList = goodsRepository.findAllByOrderByGoodsSoldNumberDesc(pageable).getContent();
                     break;
                 case 3: // upper price
                     goodsList = goodsRepository.findAllByOrderByGoodsPriceAsc(pageable).getContent();
@@ -90,10 +90,10 @@ public class GoodsService {
             switch (sortBy) {
                 case 1: // newly first
                 default:
-                    goodsList = goodsRepository.findByGoodsTypeOrderBySaleStartDateAsc(type, pageable).getContent();
+                    goodsList = goodsRepository.findByGoodsTypeOrderBySaleStartDateDesc(type, pageable).getContent();
                     break;
                 case 2: // popular first
-                    goodsList = goodsRepository.findByGoodsTypeOrderByGoodsSoldNumberAsc(type, pageable).getContent();
+                    goodsList = goodsRepository.findByGoodsTypeOrderByGoodsSoldNumberDesc(type, pageable).getContent();
                     break;
                 case 3: // upper price
                     goodsList = goodsRepository.findByGoodsTypeOrderByGoodsPriceAsc(type, pageable).getContent();
