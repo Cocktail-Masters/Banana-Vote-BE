@@ -178,6 +178,7 @@ public class UserService {
                                     .title(vote.getVoteTitle())
                                     .isClosed(vote.isClosed())
                                     .predictedPoint(prediction.getPredictionPoints())
+                                    .predictionId(prediction.getId())
                                     .build();
                         })
                         .collect(Collectors.toList()))
