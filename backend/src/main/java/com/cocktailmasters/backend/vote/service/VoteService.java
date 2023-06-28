@@ -251,7 +251,7 @@ public class VoteService {
     }
 
     @Transactional
-    public boolean getVoteResultPoints(long predictionId, long voteId) {
+    public boolean getVoteResultPoints(long userId, long predictionId, long voteId) {
 
         Prediction prediction = predictionRepository.findById(predictionId)
                 .orElse(null);
@@ -263,16 +263,27 @@ public class VoteService {
         if (prediction.isReceivePoints() || vote.getVoteEndDate().isBefore(LocalDateTime.now())) {
             return false;
         }
-        int electedItem;
-        int maxVotedNumber = 0;
-        vote.getVoteItems()
-                .forEach(voteItem -> {
-//                    if (voteItem.getVotedNumber() < maxVotedNumber) {
-//                        maxVotedNumber = voteItem.getVotedNumber();
-//                        electedItem = voteItem.getVoteItemNumber();
-//                    }
-                });
-        prediction.getPredictionPoints();
+
+        long totalPoints = 0;
+        VoteItem electedVoteItem = vote.getVoteItems().get(0);
+        for (VoteItem voteItem : vote.getVoteItems()) {
+            totalPoints += voteItem.getTotalPoints();
+            if (voteItem.getVotedNumber() < electedVoteItem.getVotedNumber()) {
+                electedVoteItem = voteItem;
+            } else if (voteItem.getVotedNumber() == electedVoteItem.getVotedNumber()
+                    && voteItem.getTotalPoints() < electedVoteItem.getTotalPoints()) {
+                electedVoteItem = voteItem;
+            }
+        }
+
+        prediction.setPredictionEnd();
+        predictionRepository.save(prediction);
+        if (electedVoteItem.getVotedNumber() == prediction.getVoteItem().getVotedNumber()) {
+            long myPoints = prediction.getPredictionPoints() +
+                    (prediction.getPredictionPoints() * electedVoteItem.getTotalPoints()
+                            / (totalPoints - electedVoteItem.getTotalPoints()));
+            pointService.addPoint(myPoints, "Vote prediction succeeded.", userId);
+        }
         return true;
     }
 
