@@ -30,6 +30,10 @@ public class Prediction extends BaseEntity {
         this.predictionPoints += predictionPoints;
     }
 
+    public void setPredictionEnd() {
+        this.isReceivePoints = true;
+    }
+
     public void deletePrediction() {
         super.delete();
     }
