@@ -14,5 +14,6 @@ public class VoteDto {
     private long id;
     private String title;
     private boolean isClosed;
+    private long predictionId;
     private long predictedPoint;
 }
