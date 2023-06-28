@@ -166,10 +166,14 @@ public class VoteController {
     @Operation(summary = "투표 종료 후 포인트 획득", description = "투표 종료 후 포인트 획득, 예측 실패 시 0포인트 획득",
             security = {@SecurityRequirement(name = SECURITY_SCHEME_NAME)})
     @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
-    @PatchMapping("/{prediction_id}")
+    @PatchMapping("/{vote_id}/{prediction_id}")
     public ResponseEntity<String> getVoteResultPoints(@RequestHeader(name = "Authorization", required = false) String token,
+                                                      @PathVariable("vote_id") long voteId,
                                                       @PathVariable("prediction_id") long predictionId) {
         User user = jwtService.findUserByToken(token);
+        if (voteService.getVoteResultPoints(user.getId(), predictionId, voteId)) {
+            return ResponseEntity.created(null).build();
+        }
         return ResponseEntity.badRequest().build();
     }
 
