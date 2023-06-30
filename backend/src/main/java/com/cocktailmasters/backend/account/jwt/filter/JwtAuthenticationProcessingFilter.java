@@ -44,6 +44,8 @@ public class JwtAuthenticationProcessingFilter extends OncePerRequestFilter {
                 filterChain.doFilter(request, response);
                 return;
             }
+            System.out.println("Authorization : " + request.getHeader("Authorization"));
+            System.out.println("Authorization-refresh : " + request.getHeader("Authorization-refresh"));
             String refreshToken = jwtService.extractRefreshToken(request)
                     .filter(jwtService::validateToken)
                     .orElse(null);
@@ -66,10 +68,14 @@ public class JwtAuthenticationProcessingFilter extends OncePerRequestFilter {
                                                        String refreshToken) {
         userRepository.findByRefreshToken(refreshToken)
                 .ifPresent(user -> {
-                    reIssueRefreshToken(user);
                     response.setStatus(HttpServletResponse.SC_OK);
-                    jwtService.setAccessTokenHeader(response, jwtService.createAccessToken(user));
-                    jwtService.setRefreshTokenHeader(response, jwtService.createRefreshToken(user));
+                    String newAccess = jwtService.createAccessToken(user);
+                    String newRefresh = reIssueRefreshToken(user);
+                    System.out.println("new Access " + newAccess);
+                    System.out.println("new Refresh " + newRefresh);
+
+                    jwtService.setAccessTokenHeader(response, newAccess);
+                    jwtService.setRefreshTokenHeader(response, newRefresh);
                 });
     }
 

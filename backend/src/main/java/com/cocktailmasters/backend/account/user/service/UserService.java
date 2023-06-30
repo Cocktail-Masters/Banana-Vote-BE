@@ -61,9 +61,8 @@ public class UserService {
         return false;
     }
 
-    public boolean signOut(User user) {
-        user.updateRefreshToken("");
-        return true;
+    public void signOut(User user) {
+        user.updateRefreshToken(null);
     }
 
     @Transactional
@@ -179,6 +178,7 @@ public class UserService {
                                     .title(vote.getVoteTitle())
                                     .isClosed(vote.isClosed())
                                     .predictedPoint(prediction.getPredictionPoints())
+                                    .predictionId(prediction.getId())
                                     .build();
                         })
                         .collect(Collectors.toList()))
