@@ -87,7 +87,7 @@ public class PicketController {
             @RequestBody PicketRequest picketRequest) {
         long userId = jwtService.findUserByToken(token).getId();
 
-        if (picketService.changePicketImage(userId, userId, picketRequest))
+        if (picketService.changePicketImage(voteId, userId, picketRequest))
             return ResponseEntity.ok().build();
         else
             return ResponseEntity.badRequest().build();
