@@ -3,7 +3,6 @@ package com.cocktailmasters.backend.season.controller.dto.item;
 import com.cocktailmasters.backend.season.domain.entity.SeasonRanking;
 import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
-
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
