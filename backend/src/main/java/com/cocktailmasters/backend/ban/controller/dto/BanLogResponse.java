@@ -4,7 +4,6 @@ import com.cocktailmasters.backend.account.user.domain.entity.User;
 import com.cocktailmasters.backend.ban.domain.entity.BanLog;
 import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
-
 import lombok.Builder;
 import lombok.Getter;
 
