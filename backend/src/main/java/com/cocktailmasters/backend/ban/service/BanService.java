@@ -31,7 +31,7 @@ public class BanService {
 
         List<BanLogResponse> banLogsDtos = new ArrayList<>();
         for (BanLog banLog : banLogs)
-            banLogsDtos.add(BanLogResponse.createLogReponse(banLog));
+            banLogsDtos.add(BanLogResponse.createLogResponse(banLog));
 
         return banLogsDtos;
     }

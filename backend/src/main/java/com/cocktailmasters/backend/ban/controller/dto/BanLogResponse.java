@@ -20,7 +20,7 @@ public class BanLogResponse {
 
     private long banCount;
 
-    public static BanLogResponse createLogReponse(BanLog banLog) {
+    public static BanLogResponse createLogResponse(BanLog banLog) {
         User bannedUser = banLog.getUser();
 
         return BanLogResponse.builder()
